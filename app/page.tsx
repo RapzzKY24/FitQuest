@@ -113,10 +113,6 @@ export default function FitQuestDemoPage() {
           >
             FitQuest <span style={{ color: "var(--primary)" }}>UI KIT</span>
           </h1>
-          <p className="t-body" style={{ color: "var(--muted)", fontSize: 14 }}>
-            Semua komponen dari fase 1, 2, dan 3 (Advanced) digabung di sini
-            bro!
-          </p>
         </div>
 
         {/* ═══════════════════════════════════════════════════════════
