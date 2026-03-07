@@ -25,6 +25,13 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Radio } from "@/components/ui/Radio";
 import { useToast, ToastContainer } from "@/components/ui/Toast";
 
+// ── Imports Advanced UI ──
+import { Avatar } from "@/components/ui/Avatar";
+import { Progress } from "@/components/ui/Progress";
+import { Accordion } from "@/components/ui/Accordion";
+import { Stepper } from "@/components/ui/Stepper";
+import { WeeklyCalendar } from "@/components/ui/Calendar";
+
 // ── Mock Data ──
 const WORKOUT_OPTIONS = [
   { value: "run", label: "Running", icon: "🏃" },
@@ -107,7 +114,8 @@ export default function FitQuestDemoPage() {
             FitQuest <span style={{ color: "var(--primary)" }}>UI KIT</span>
           </h1>
           <p className="t-body" style={{ color: "var(--muted)", fontSize: 14 }}>
-            Semua komponen dari fase 1 dan 2 digabung di sini bro!
+            Semua komponen dari fase 1, 2, dan 3 (Advanced) digabung di sini
+            bro!
           </p>
         </div>
 
@@ -670,6 +678,130 @@ export default function FitQuestDemoPage() {
                   <Skeleton width={`${w}%`} height={14} />
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════
+            PHASE 3: ADVANCED COMPONENTS (BARU)
+            ═══════════════════════════════════════════════════════════ */}
+
+        <div style={{ marginBottom: 56 }}>
+          <div className="fq-section-label">Advanced UI Components</div>
+
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
+          >
+            {/* Kolom Kiri: Avatar & Progress */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <Avatar
+                  fallback="JB"
+                  size="lg"
+                  ringColor="var(--primary)"
+                  src="https://i.pravatar.cc/150?img=11"
+                />
+                <div>
+                  <h3 className="t-heading" style={{ fontSize: "1.4rem" }}>
+                    John Biceps
+                  </h3>
+                  <p
+                    style={{
+                      color: "var(--accent)",
+                      fontFamily: "'Space Mono',monospace",
+                      fontSize: 12,
+                    }}
+                  >
+                    Level 15 Warrior
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+                <Progress
+                  variant="circular"
+                  value={75}
+                  label="XP"
+                  color="var(--accent)"
+                  size={100}
+                />
+                <div style={{ flex: 1 }}>
+                  <Progress
+                    variant="linear"
+                    value={60}
+                    label="Weekly Goal"
+                    color="var(--success)"
+                  />
+                  <div style={{ marginTop: 16 }} />
+                  <Progress
+                    variant="linear"
+                    value={85}
+                    label="Energy"
+                    color="var(--info)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Kolom Kanan: Accordion */}
+            <div>
+              <Accordion
+                items={[
+                  {
+                    id: "1",
+                    title: "🔥 Push Day Routine",
+                    content:
+                      "1. Bench Press (4x10)\n2. Overhead Press (3x12)\n3. Tricep Dips (3x15)",
+                  },
+                  {
+                    id: "2",
+                    title: "🦵 Leg Day Routine",
+                    content:
+                      "1. Squats (4x8)\n2. Leg Press (3x12)\n3. Calf Raises (4x20)",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+
+          {/* Stepper & Calendar Full Width */}
+          <div
+            style={{
+              marginTop: 24,
+              display: "flex",
+              flexDirection: "column",
+              gap: 24,
+            }}
+          >
+            <WeeklyCalendar
+              days={[
+                { date: "Mon", day: 10, status: "completed" },
+                { date: "Tue", day: 11, status: "missed" },
+                { date: "Wed", day: 12, status: "completed" },
+                { date: "Thu", day: 13, status: "today" },
+                { date: "Fri", day: 14, status: "upcoming" },
+                { date: "Sat", day: 15, status: "upcoming" },
+                { date: "Sun", day: 16, status: "upcoming" },
+              ]}
+            />
+
+            <div
+              style={{
+                background: "var(--surface)",
+                padding: 24,
+                border: "1px solid var(--border)",
+                clipPath:
+                  "polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))",
+              }}
+            >
+              <Stepper
+                currentStep={1}
+                steps={[
+                  { label: "Profile", description: "Isi data diri" },
+                  { label: "Goals", description: "Pilih target" },
+                  { label: "Workout", description: "Mulai sesi" },
+                ]}
+              />
             </div>
           </div>
         </div>
