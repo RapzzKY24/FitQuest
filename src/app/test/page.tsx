@@ -1,11 +1,11 @@
 import React from "react";
-import {createClient} from "@/utils/supabase/server";
+import { createClient } from "@/src/utils/supabase/server";
 
 type Props = object;
 
 const TestPage = async (props: Props) => {
   const supabase = await createClient();
-  const {data: quests} = await supabase.from("quests").select();
+  const { data: quests } = await supabase.from("quests").select();
 
   console.log(quests, "quests");
 
