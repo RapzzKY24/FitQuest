@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "UI KIT FitQuest",
+  description: "Hello world",
 };
 
 export default function RootLayout({

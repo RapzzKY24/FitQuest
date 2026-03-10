@@ -2,35 +2,35 @@
 import { useState } from "react";
 
 // ── Imports UI Dasar ──
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/src/components/ui/Button";
 import {
   Card,
   CardHeader,
   CardContent,
   CardFooter,
-} from "@/components/ui/Card";
-import { Alert } from "@/components/ui/Alert";
-import { Dialog } from "@/components/ui/Dialog";
-import { BadgePill } from "@/components/ui/badge-pill";
-import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
+} from "@/src/components/ui/Card";
+import { Alert } from "@/src/components/ui/Alert";
+import { Dialog } from "@/src/components/ui/Dialog";
+import { BadgePill } from "@/src/components/ui/badge-pill";
+import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
 
 // ── Imports Form Kit ──
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/TextArea";
-import { Select } from "@/components/ui/Select";
-import { Slider } from "@/components/ui/Slider";
-import { Toggle } from "@/components/ui/Toggle";
-import { Tabs } from "@/components/ui/Tabs";
-import { Checkbox } from "@/components/ui/Checkbox";
-import { Radio } from "@/components/ui/Radio";
-import { useToast, ToastContainer } from "@/components/ui/Toast";
+import { Input } from "@/src/components/ui/Input";
+import { Textarea } from "@/src/components/ui/TextArea";
+import { Select } from "@/src/components/ui/Select";
+import { Slider } from "@/src/components/ui/Slider";
+import { Toggle } from "@/src/components/ui/Toggle";
+import { Tabs } from "@/src/components/ui/Tabs";
+import { Checkbox } from "@/src/components/ui/Checkbox";
+import { Radio } from "@/src/components/ui/Radio";
+import { useToast, ToastContainer } from "@/src/components/ui/Toast";
 
 // ── Imports Advanced UI ──
-import { Avatar } from "@/components/ui/Avatar";
-import { Progress } from "@/components/ui/Progress";
-import { Accordion } from "@/components/ui/Accordion";
-import { Stepper } from "@/components/ui/Stepper";
-import { WeeklyCalendar } from "@/components/ui/Calendar";
+import { Avatar } from "@/src/components/ui/Avatar";
+import { Progress } from "@/src/components/ui/Progress";
+import { Accordion } from "@/src/components/ui/Accordion";
+import { Stepper } from "@/src/components/ui/Stepper";
+import { WeeklyCalendar } from "@/src/components/ui/Calendar";
 
 // ── Mock Data ──
 const WORKOUT_OPTIONS = [
