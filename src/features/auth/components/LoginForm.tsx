@@ -1,15 +1,15 @@
 // src/features/auth/components/LoginForm.tsx
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {useState} from "react";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { signIn } from "../actions/auth.actions";
-import { loginSchema } from "../schemas/auth.schemas";
-import type { LoginSchema } from "../schemas/auth.schemas";
-import { Input } from "@/src/components/ui/Input";
-import { Button } from "@/src/components/ui/Button";
+import {signIn} from "../actions/auth.actions";
+import {loginSchema} from "../schemas/auth.schemas";
+import type {LoginSchema} from "../schemas/auth.schemas";
+import {Input} from "@/src/components/ui/Input";
+import {Button} from "@/src/components/ui/Button";
 
 export function LoginForm() {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
@@ -90,9 +90,9 @@ export function LoginForm() {
         {/* Stats teaser */}
         <div className="relative z-10 flex gap-8">
           {[
-            { value: "2.4K+", label: "Warriors Aktif" },
-            { value: "18K+", label: "Sesi Dilog" },
-            { value: "94%", label: "Konsistensi" },
+            {value: "2.4K+", label: "Warriors Aktif"},
+            {value: "18K+", label: "Sesi Dilog"},
+            {value: "94%", label: "Konsistensi"},
           ].map((stat) => (
             <div key={stat.label}>
               <p className="font-display font-black text-2xl text-fq-text">
@@ -150,12 +150,8 @@ export function LoginForm() {
                 placeholder="kamu@email.com"
                 autoComplete="email"
                 label="Email"
+                error={errors?.email?.message}
               />
-              {errors.email && (
-                <p className="font-body text-xs text-fq-danger mt-1.5">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
 
             {/* Password */}
@@ -174,20 +170,12 @@ export function LoginForm() {
                 placeholder="••••••••"
                 label="Password"
                 autoComplete="current-password"
+                error={errors?.password?.message}
               />
-              {errors.password && (
-                <p className="font-body text-xs text-fq-danger mt-1.5">
-                  {errors.password.message}
-                </p>
-              )}
             </div>
 
             {/* Submit */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
-            >
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -213,8 +201,7 @@ export function LoginForm() {
             Belum punya akun?{" "}
             <Link
               href="/auth/register"
-              className="text-fq-primary font-semibold hover:text-fq-secondary transition-colors"
-            >
+              className="text-fq-primary font-semibold hover:text-fq-secondary transition-colors">
               Daftar gratis
             </Link>
           </p>

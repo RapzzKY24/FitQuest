@@ -1,27 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {useState} from "react";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { signUp } from "../actions/auth.actions";
-import { registerSchema } from "../schemas/auth.schemas";
-import type { RegisterSchema } from "../schemas/auth.schemas";
-import { Input } from "@/src/components/ui/Input";
-import { Button } from "@/src/components/ui/Button";
+import {signUp} from "../actions/auth.actions";
+import {registerSchema} from "../schemas/auth.schemas";
+import type {RegisterSchema} from "../schemas/auth.schemas";
+import {Input} from "@/src/components/ui/Input";
+import {Button} from "@/src/components/ui/Button";
 
-function PasswordStrength({ password }: { password: string }) {
+function PasswordStrength({password}: {password: string}) {
   const checks = [
-    { label: "8+ karakter", ok: password.length >= 8 },
-    { label: "Huruf kapital", ok: /[A-Z]/.test(password) },
-    { label: "Angka", ok: /[0-9]/.test(password) },
+    {label: "8+ karakter", ok: password.length >= 8},
+    {label: "Huruf kapital", ok: /[A-Z]/.test(password)},
+    {label: "Angka", ok: /[0-9]/.test(password)},
   ];
   const strength = checks.filter((c) => c.ok).length;
   const colors = [
-    "bg-fq-muted",
-    "bg-fq-danger",
-    "bg-fq-warning",
-    "bg-fq-success",
+    "bg-(--muted)",
+    "bg-(--danger)",
+    "bg-(--warning)",
+    "bg-(--success)",
   ];
   const labels = ["", "Lemah", "Lumayan", "Kuat"];
 
@@ -47,8 +47,7 @@ function PasswordStrength({ password }: { password: string }) {
             key={c.label}
             className={`font-mono text-[9px] tracking-wide transition-colors ${
               c.ok ? "text-fq-success" : "text-fq-muted"
-            }`}
-          >
+            }`}>
             {c.ok ? "✓" : "○"} {c.label}
           </span>
         ))}
@@ -65,7 +64,7 @@ export function RegisterForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: {errors},
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
@@ -127,37 +126,24 @@ export function RegisterForm() {
           <div>
             <Input
               label="Profile Name"
-              {...register("displayName")}
               type="text"
               placeholder="Contoh: Budi Setiawan"
               autoComplete="name"
+              error={errors?.displayName?.message as string} // Tip: You can pass the error directly to your component!
+              {...register("displayName")}
             />
-            {errors.displayName && (
-              <p className="font-body text-xs text-fq-danger mt-1.5">
-                {errors.displayName.message}
-              </p>
-            )}
           </div>
 
           {/* Username */}
           <div>
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono text-sm text-fq-muted pointer-events-none">
-                @
-              </span>
-              <Input
-                {...register("username")}
-                type="text"
-                label="Username"
-                placeholder="budisetiawan"
-                autoComplete="username"
-              />
-            </div>
-            {errors.username && (
-              <p className="font-body text-xs text-fq-danger mt-1.5">
-                {errors.username.message}
-              </p>
-            )}
+            <Input
+              {...register("username")}
+              type="text"
+              label="Username"
+              placeholder="budisetiawan"
+              autoComplete="username"
+              error={errors?.username?.message as string}
+            />
           </div>
 
           {/* Email */}
@@ -168,12 +154,8 @@ export function RegisterForm() {
               label="Email"
               placeholder="kamu@email.com"
               autoComplete="email"
+              error={errors?.email?.message}
             />
-            {errors.email && (
-              <p className="font-body text-xs text-fq-danger mt-1.5">
-                {errors.email.message}
-              </p>
-            )}
           </div>
 
           {/* Password */}
@@ -184,13 +166,9 @@ export function RegisterForm() {
               label="Password"
               placeholder="Min. 8 karakter"
               autoComplete="new-password"
+              error={errors?.password?.message}
             />
             <PasswordStrength password={passwordValue} />
-            {errors.password && (
-              <p className="font-body text-xs text-fq-danger mt-1.5">
-                {errors.password.message}
-              </p>
-            )}
           </div>
 
           {/* Confirm Password */}
@@ -201,20 +179,12 @@ export function RegisterForm() {
               label="Konfirmasi Password"
               placeholder="Ulangi password"
               autoComplete="new-password"
+              error={errors?.confirmPassword?.message}
             />
-            {errors.confirmPassword && (
-              <p className="font-body text-xs text-fq-danger mt-1.5">
-                {errors.confirmPassword.message}
-              </p>
-            )}
           </div>
 
           {/* Submit */}
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -231,8 +201,7 @@ export function RegisterForm() {
           Sudah punya akun?{" "}
           <Link
             href="/auth/login"
-            className="text-fq-primary font-semibold hover:text-fq-secondary transition-colors"
-          >
+            className="text-fq-primary font-semibold hover:text-fq-secondary transition-colors">
             Masuk
           </Link>
         </p>
