@@ -35,7 +35,7 @@ function PasswordStrength({password}: {password: string}) {
           <div
             key={i}
             className={`flex-1 h-1 cc-xs transition-colors duration-300 ${
-              i < strength ? colors[strength] : "bg-fq-border"
+              i < strength ? colors[strength] : "bg-border"
             }`}
           />
         ))}
@@ -45,8 +45,8 @@ function PasswordStrength({password}: {password: string}) {
         {checks.map((c) => (
           <span
             key={c.label}
-            className={`font-mono text-[9px] tracking-wide transition-colors ${
-              c.ok ? "text-fq-success" : "text-fq-muted"
+            className={`font-mono text-xxs tracking-wide transition-colors ${
+              c.ok ? "text-success" : "text-muted"
             }`}>
             {c.ok ? "✓" : "○"} {c.label}
           </span>
@@ -87,36 +87,34 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="min-h-screen bg-fq-bg flex items-center justify-center p-6 ">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6 ">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-8 h-8 bg-fq-primary cc-xs flex items-center justify-center">
-            <span className="font-display font-black text-white text-sm">
-              FQ
-            </span>
+          <div className="w-8 h-8 bg-primary cc-xs flex items-center justify-center">
+            <span className="font-display font-black text-sm">FQ</span>
           </div>
-          <span className="font-display font-black text-fq-text text-lg tracking-wider uppercase">
+          <span className="font-display font-black text-lg tracking-wider uppercase">
             FitQuest
           </span>
         </div>
 
         {/* Heading */}
         <div className="mb-8">
-          <p className="font-mono text-[10px] tracking-[4px] uppercase text-fq-primary mb-3">
+          <p className="font-mono text-xs tracking-[4px] uppercase text-primary mb-3">
             MULAI PERJALANANMU
           </p>
-          <h2 className="font-display font-black text-4xl uppercase text-fq-text leading-none">
+          <h2 className="font-display font-black text-4xl uppercase leading-none">
             BUAT AKUN
             <br />
-            <span className="text-fq-primary">WARRIOR</span>
+            <span className="text-primary">WARRIOR</span>
           </h2>
         </div>
 
         {/* Server error */}
         {serverError && (
-          <div className="mb-6 px-4 py-3 bg-fq-danger/10 border border-fq-danger/30 cc-sm">
-            <p className="font-body text-sm text-fq-danger">{serverError}</p>
+          <div className="mb-6 px-4 py-3 bg-danger/10 border border-danger/30 cc-sm">
+            <p className="font-body text-sm text-danger">{serverError}</p>
           </div>
         )}
 
@@ -197,11 +195,11 @@ export function RegisterForm() {
         </form>
 
         {/* Login link */}
-        <p className="font-body text-center text-sm text-fq-muted mt-7">
+        <p className="font-body text-center text-sm text-muted mt-7">
           Sudah punya akun?{" "}
           <Link
             href="/auth/login"
-            className="text-fq-primary font-semibold hover:text-fq-secondary transition-colors">
+            className="text-primary font-semibold hover:text-secondary transition-colors">
             Masuk
           </Link>
         </p>

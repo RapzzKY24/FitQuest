@@ -2,9 +2,9 @@ import {RegisterForm} from "@/src/features/auth";
 
 const RegisterPage = () => {
   return (
-    <div>
+    <main>
       <RegisterForm />
-    </div>
+    </main>
   );
 };
 

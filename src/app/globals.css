@@ -16,6 +16,7 @@
   --warning: #eab308;
   --danger: #ef4444;
   --info: #3b82f6;
+  --text-xxs : 10px;
 }
 
 @theme {
@@ -33,6 +34,7 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+  --text-xxs : var(--text-xxs);
 }
 
 @layer base {
