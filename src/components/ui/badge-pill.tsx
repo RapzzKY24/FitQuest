@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import type {ReactNode} from "react";
 
 const badgePillColors = {
   primary: {
@@ -34,13 +34,19 @@ type BadgePillColor = keyof typeof badgePillColors;
 interface BadgePillProps {
   children?: ReactNode;
   color?: BadgePillColor;
+  className?: string;
 }
 
-export function BadgePill({ children, color = "primary" }: BadgePillProps) {
+export function BadgePill({
+  children,
+  color = "primary",
+  className,
+}: BadgePillProps) {
   const c = badgePillColors[color];
 
   return (
     <span
+      className={className}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -55,8 +61,7 @@ export function BadgePill({ children, color = "primary" }: BadgePillProps) {
         border: `1px solid ${c.border}`,
         clipPath:
           "polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))",
-      }}
-    >
+      }}>
       {children}
     </span>
   );
