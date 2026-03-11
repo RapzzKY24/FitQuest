@@ -37,7 +37,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-fq-bg flex">
+    <div className="min-h-screen bg-background flex">
       {/* ── Left panel — branding ── */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden">
         {/* Background grid */}
@@ -51,37 +51,37 @@ export function LoginForm() {
         />
         {/* Orange accent blob */}
         <div
-          className="absolute top-1/3 left-1/4 w-64 h-64 rounded-full pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(255,77,0,0.12) 0%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
+          className="absolute top-1/3 left-1/4 w-64 h-64 rounded-full pointer-events-none bg-primary/70 blur-3xl"
+          // style={{
+          //   background:
+          //     "radial-gradient(circle, rgba(255,77,0,0.12) 0%, transparent 70%)",
+          //   filter: "blur(40px)",
+          // }}
         />
 
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 bg-fq-primary cc-sm flex items-center justify-center">
+          <div className="w-9 h-9 bg-primary cc-sm flex items-center justify-center">
             <span className="font-display font-black text-white text-base leading-none">
               FQ
             </span>
           </div>
-          <span className="font-display font-black text-fq-text text-xl tracking-wider uppercase">
+          <span className="font-display font-black text-xl tracking-wider uppercase">
             FitQuest
           </span>
         </div>
 
         {/* Center copy */}
         <div className="relative z-10">
-          <p className="font-mono text-[10px] tracking-[4px] uppercase text-fq-primary mb-6">
+          <p className="font-mono text-[10px] tracking-[4px] uppercase text-primary mb-6">
             LEVEL UP YOUR LIFE
           </p>
-          <h1 className="font-display font-black text-6xl leading-none text-fq-text uppercase mb-6">
+          <h1 className="font-display font-black text-6xl leading-none uppercase mb-6">
             EVERY REP
             <br />
-            <span className="text-fq-primary">COUNTS.</span>
+            <span className="text-primary">COUNTS.</span>
           </h1>
-          <p className="font-body text-fq-muted text-base max-w-sm leading-relaxed">
+          <p className="font-body text-muted text-base max-w-sm leading-relaxed">
             Workout harian jadi quest. XP numpuk tiap sesi. GymBro-mu evolve
             seiring progresmu.
           </p>
@@ -95,10 +95,10 @@ export function LoginForm() {
             {value: "94%", label: "Konsistensi"},
           ].map((stat) => (
             <div key={stat.label}>
-              <p className="font-display font-black text-2xl text-fq-text">
+              <p className="font-display font-black text-2xl">
                 {stat.value}
               </p>
-              <p className="font-mono text-[10px] tracking-widest uppercase text-fq-muted mt-0.5">
+              <p className="font-mono text-[10px] tracking-widest uppercase text-muted mt-0.5">
                 {stat.label}
               </p>
             </div>
@@ -111,32 +111,32 @@ export function LoginForm() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-10 lg:hidden">
-            <div className="w-8 h-8 bg-fq-primary cc-xs flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary cc-xs flex items-center justify-center">
               <span className="font-display font-black text-white text-sm">
                 FQ
               </span>
             </div>
-            <span className="font-display font-black text-fq-text text-lg tracking-wider uppercase">
+            <span className="font-display font-black text-lg tracking-wider uppercase">
               FitQuest
             </span>
           </div>
 
           {/* Heading */}
           <div className="mb-8">
-            <p className="font-mono text-[10px] tracking-[4px] uppercase text-fq-primary mb-3">
+            <p className="font-mono text-[10px] tracking-[4px] uppercase text-primary mb-3">
               WELCOME BACK
             </p>
-            <h2 className="font-display font-black text-4xl uppercase text-fq-text leading-none">
+            <h2 className="font-display font-black text-4xl uppercase leading-none">
               MASUK KE
               <br />
-              <span className="text-fq-primary">AKUNMU</span>
+              <span className="text-primary">AKUNMU</span>
             </h2>
           </div>
 
           {/* Server error */}
           {serverError && (
-            <div className="mb-6 px-4 py-3 bg-fq-danger/10 border border-fq-danger/30 cc-sm">
-              <p className="font-body text-sm text-fq-danger">{serverError}</p>
+            <div className="mb-6 px-4 py-3 bg-danger/10 border border-danger/30 cc-sm">
+              <p className="font-body text-sm text-danger">{serverError}</p>
             </div>
           )}
 
@@ -189,19 +189,19 @@ export function LoginForm() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-7">
-            <div className="flex-1 h-px bg-fq-border" />
-            <span className="font-mono text-[10px] tracking-widest uppercase text-fq-muted">
+            <div className="flex-1 h-px bg-border" />
+            <span className="font-mono text-[10px] tracking-widest uppercase text-muted">
               atau
             </span>
-            <div className="flex-1 h-px bg-fq-border" />
+            <div className="flex-1 h-px bg-border" />
           </div>
 
           {/* Register link */}
-          <p className="font-body text-center text-sm text-fq-muted">
+          <p className="font-body text-center text-sm text-muted">
             Belum punya akun?{" "}
             <Link
               href="/auth/register"
-              className="text-fq-primary font-semibold hover:text-fq-secondary transition-colors">
+              className="text-primary font-semibold hover:text-secondary transition-colors">
               Daftar gratis
             </Link>
           </p>
