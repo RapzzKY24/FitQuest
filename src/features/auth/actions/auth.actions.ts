@@ -79,7 +79,7 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
     return { success: false, error: msg };
   }
 
-  redirect("/dashboard");
+  redirect("/test");
 }
 
 // ─────────────────────────────────────────────
@@ -88,7 +88,7 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
 export async function signOut(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/auth/login");
 }
 
 // ─────────────────────────────────────────────
