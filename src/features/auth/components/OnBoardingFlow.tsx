@@ -157,14 +157,15 @@ export function OnboardingFlow() {
                 </p>
               )}
 
-              <button
+              <Button
+                variant="secondary"
                 type="button"
                 disabled={!selectedGoal}
                 onClick={() => setStep(1)}
                 className="btn-primary w-full py-3 text-sm mt-2 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 LANJUTKAN
-              </button>
+              </Button>
             </div>
           )}
 
@@ -200,6 +201,7 @@ export function OnboardingFlow() {
               <div className="flex gap-3 pt-2">
                 {/* Back */}
                 <Button
+                  variant="outline"
                   type="button"
                   onClick={() => setStep(0)}
                   className="btn-outline flex-1 py-3 text-sm"
