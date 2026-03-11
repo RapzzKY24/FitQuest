@@ -1,7 +1,6 @@
 import React from "react";
 import {createClient} from "@/src/utils/supabase/server";
-import {Button} from "@/src/components/ui/Button";
-import {Input} from "@/src/components/ui/Input";
+import SignoutButton from "./SignoutButton";
 
 type Props = object;
 
@@ -9,18 +8,19 @@ const TestPage = async (props: Props) => {
   const supabase = await createClient();
   const {data: quests} = await supabase.from("quests").select();
 
-  console.log(quests, "quests");
+  const {data: session} = await supabase.auth.getUser();
 
   return (
     <>
       <ul>
         {quests?.map((quest) => (
           <li className="text-2xl" key={quest.id}>
-            <Button variant="danger">{quest.title}</Button>
+            {quest.title}
           </li>
         ))}
       </ul>
-      <Input label="Email" type="email" placeholder="kamu@email.com" />
+      {JSON.stringify(session)}
+      <SignoutButton />
     </>
   );
 };
