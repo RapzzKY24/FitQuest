@@ -45,7 +45,7 @@ export function LoginForm() {
           className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
+              "linear-gradient(var(--text) 2px, transparent 2px), linear-gradient(90deg, var(--text) 2px, transparent 2px)",
             backgroundSize: "40px 40px",
           }}
         />
@@ -73,7 +73,7 @@ export function LoginForm() {
 
         {/* Center copy */}
         <div className="relative z-10">
-          <p className="font-mono text-[10px] tracking-[4px] uppercase text-primary mb-6">
+          <p className="font-mono text-xxs tracking-[4px] uppercase text-primary mb-6">
             LEVEL UP YOUR LIFE
           </p>
           <h1 className="font-display font-black text-6xl leading-none uppercase mb-6">
@@ -81,7 +81,7 @@ export function LoginForm() {
             <br />
             <span className="text-primary">COUNTS.</span>
           </h1>
-          <p className="font-body text-muted text-base max-w-sm leading-relaxed">
+          <p className="font-mono text-base max-w-sm leading-relaxed">
             Workout harian jadi quest. XP numpuk tiap sesi. GymBro-mu evolve
             seiring progresmu.
           </p>
