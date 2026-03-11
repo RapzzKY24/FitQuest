@@ -1,14 +1,14 @@
 import React from "react";
-import {createClient} from "@/src/utils/supabase/server";
+import { createClient } from "@/src/utils/supabase/server";
 import SignoutButton from "./SignoutButton";
 
 type Props = object;
 
 const TestPage = async (props: Props) => {
   const supabase = await createClient();
-  const {data: quests} = await supabase.from("quests").select();
+  const { data: quests } = await supabase.from("quests").select();
 
-  const {data: session} = await supabase.auth.getUser();
+  const { data: session } = await supabase.auth.getUser();
 
   return (
     <>
