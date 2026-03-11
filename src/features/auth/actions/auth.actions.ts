@@ -79,7 +79,7 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
     return { success: false, error: msg };
   }
 
-  redirect("/test");
+  redirect("/dashboard");
 }
 
 // ─────────────────────────────────────────────
