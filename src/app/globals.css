@@ -1,28 +1,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
-
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --elevated: #1c1c1c;
-    --border: #272727;
-    --text: #f5f5f5;
-    --muted: #555;
-    --primary: #ff4d00;
-    --primary-hover: #ff6a1a;
-    --secondary: #ff8c42;
-    --accent: #ffb347;
-    --success: #22c55e;
-    --warning: #eab308;
-    --danger: #ef4444;
-    --info: #3b82f6;
-  }
+:root {
+  --background: #0a0a0a;
+  --surface: #141414;
+  --elevated: #1c1c1c;
+  --border: #272727;
+  --text: #f5f5f5;
+  --muted: #555;
+  --primary: #ff4d00;
+  --primary-hover: #ff6a1a;
+  --secondary: #ff8c42;
+  --accent: #ffb347;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --info: #3b82f6;
+}
 
+@theme {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-border: var(--border);
+  --color-broken-white: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+}
+
+@layer base {
   body {
-    background-color: var(--bg);
-    color: var(--text);
+    @apply bg-background text-broken-white;
     font-family: "DM Sans", sans-serif;
   }
 }
