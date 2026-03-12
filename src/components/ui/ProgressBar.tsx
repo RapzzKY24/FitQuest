@@ -4,7 +4,7 @@ import React from "react";
 interface ProgressBarProps {
   value: number;
   max: number;
-  variant?: "orange" | "yellow" | "blue";
+  variant?: "orange" | "yellow" | "blue" | "green";
   type?: "linear" | "segmented";
   segments?: number; // Jumlah kotak untuk tipe segmented
   className?: string;
@@ -23,6 +23,7 @@ export function ProgressBar({
     orange: "bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]",
     yellow: "bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]",
     blue: "bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]",
+    green : "bg-green-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
   };
 
   // Hitung persentase untuk tipe linear
