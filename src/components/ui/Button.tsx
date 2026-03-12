@@ -19,6 +19,7 @@ const btnBase = {
 };
 
 const btnSizes = {
+  xs: { padding: "4px 16px", fontSize: "0.7rem" },
   sm: { padding: "7px 16px", fontSize: "0.85rem" },
   md: { padding: "11px 22px", fontSize: "1rem" },
   lg: { padding: "14px 28px", fontSize: "1.1rem" },
