@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode, type CSSProperties, type MouseEventHandler } from "react";
+import { useState, type ReactNode, type MouseEventHandler } from "react";
 
 type CardVariant =
   | "default"
@@ -16,103 +16,81 @@ interface CardProps {
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-interface CardSectionProps {
-  children?: ReactNode;
-  style?: CSSProperties;
-}
-
 export function Card({
   variant = "default",
   children,
-  className = "",
+  className = "", // Default string kosong
   onClick,
 }: CardProps) {
   const [hovered, setHovered] = useState(false);
 
-  const variants = {
-    default: {
-      background: "var(--surface)",
-      border: "1px solid var(--border)",
-      clipPath:
-        "polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))",
-    },
-    elevated: {
-      background: "var(--surface)",
-      border: "1px solid var(--border)",
-      clipPath:
-        "polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))",
-      transform: hovered ? "translateY(-4px)" : "none",
-      boxShadow: hovered ? "0 16px 40px rgba(0,0,0,0.4)" : "none",
-      transition: "all 0.2s ease",
-      cursor: "pointer",
-    },
-    stat: {
-      background: "var(--elevated)",
-      border: "1px solid var(--border)",
-      clipPath: "polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)",
-    },
-    highlight: {
-      background: "var(--surface)",
-      borderTop: "2px solid var(--primary)",
-      borderRight: "1px solid var(--border)",
-      borderBottom: "1px solid var(--border)",
-      borderLeft: "1px solid var(--border)",
-      clipPath:
-        "polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))",
-    },
-    quest: {
-      background: "var(--elevated)",
-      border: "1px solid var(--border)",
-      clipPath:
-        "polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))",
-      transform: hovered ? "translateY(-3px)" : "none",
-      transition: "all 0.2s ease",
-      cursor: onClick ? "pointer" : "default",
-    },
-    achievement: {
-      background: "var(--elevated)",
-      border: hovered ? "1px solid var(--accent)" : "1px solid var(--border)",
-      clipPath:
-        "polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))",
-      transform: hovered ? "scale(1.03)" : "none",
-      transition: "all 0.2s ease",
-      cursor: "pointer",
-    },
+  // 1. Definisikan base class untuk tiap variant
+  const variantClasses = {
+    default: "bg-[var(--surface)] border border-[var(--border)]",
+    elevated: `bg-[var(--surface)] border border-[var(--border)] cursor-pointer transition-all duration-200 ${
+      hovered ? "-translate-y-1 shadow-xl" : ""
+    }`,
+    stat: "bg-[var(--elevated)] border border-[var(--border)]",
+    highlight:
+      "bg-[var(--surface)] border-t-2 border-t-[var(--primary)] border-x border-b border-[var(--border)]",
+    quest: `bg-[var(--elevated)] border border-[var(--border)] transition-all duration-200 ${
+      onClick ? "cursor-pointer" : "cursor-default"
+    } ${hovered ? "-translate-y-0.5" : ""}`,
+    achievement: `bg-[var(--elevated)] transition-all duration-200 cursor-pointer border ${
+      hovered ? "border-[var(--accent)] scale-[1.05]" : "border-[var(--border)]"
+    }`,
   };
+
+  const clipPathStyle =
+    variant === "stat"
+      ? "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%)"
+      : "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))";
 
   return (
     <div
-      className={className}
-      style={{
-        position: "relative",
-        ...variants[variant as keyof typeof variants],
-      }}
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
+      // 2. Gabungkan class bawaan dengan className dari props
+      className={`relative ${variantClasses[variant]} ${className}`}
+      style={{ clipPath: clipPathStyle }}
     >
       {children}
     </div>
   );
 }
 
-export function CardHeader({ children, style }: CardSectionProps) {
-  return <div style={{ padding: "18px 20px 0", ...style }}>{children}</div>;
+// Komponen section juga diupdate agar menerima className
+export function CardHeader({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={`pt-[18px] px-[20px] ${className}`}>{children}</div>;
 }
 
-export function CardContent({ children, style }: CardSectionProps) {
-  return <div style={{ padding: "12px 20px", ...style }}>{children}</div>;
+export function CardContent({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={`py-[12px] px-[20px] ${className}`}>{children}</div>;
 }
 
-export function CardFooter({ children, style }: CardSectionProps) {
+export function CardFooter({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <div
-      style={{
-        padding: "12px 20px 18px",
-        borderTop: "1px solid var(--border)",
-        marginTop: 4,
-        ...style,
-      }}
+      className={`pt-[12px] px-[20px] pb-[18px] border-t border-[var(--border)] mt-1 ${className}`}
     >
       {children}
     </div>
