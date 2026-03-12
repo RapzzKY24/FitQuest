@@ -1,6 +1,12 @@
-import React from "react";
 import { createClient } from "@/src/utils/supabase/server";
 import SignoutButton from "./SignoutButton";
+import {
+  DurationSlider,
+  IntensityCard,
+  Notes,
+  StepperLog,
+  WorkoutTypeGrid,
+} from "@/src/features/logWorkoutDashboard";
 
 type Props = object;
 
@@ -21,6 +27,11 @@ const TestPage = async (props: Props) => {
       </ul>
       {JSON.stringify(session)}
       <SignoutButton />
+      <WorkoutTypeGrid />
+      <DurationSlider />
+      <IntensityCard />
+      <Notes />
+      <StepperLog />
     </>
   );
 };

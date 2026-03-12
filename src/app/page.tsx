@@ -211,13 +211,7 @@ export default function FitQuestDemoPage() {
                   Surface card dengan cut corner. Digunakan untuk konten umum.
                 </p>
               </CardContent>
-              <CardFooter
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+              <CardFooter>
                 <BadgePill color="muted">General</BadgePill>
                 <Button size="sm" variant="ghost" iconRight="→">
                   Detail
@@ -226,7 +220,7 @@ export default function FitQuestDemoPage() {
             </Card>
 
             <Card variant="stat">
-              <CardContent style={{ padding: "20px", textAlign: "center" }}>
+              <CardContent>
                 <p
                   style={{
                     fontFamily: "'Space Mono',monospace",
@@ -271,7 +265,7 @@ export default function FitQuestDemoPage() {
             </Card>
 
             <Card variant="quest">
-              <CardContent style={{ padding: "16px 18px" }}>
+              <CardContent>
                 <div
                   style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
                 >
