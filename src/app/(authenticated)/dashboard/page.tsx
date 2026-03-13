@@ -1,11 +1,8 @@
+import DashboardPages from "@/src/features/dashboard/pages/DashboardPages";
 import React from "react";
 
 const DashboardPage = () => {
-  return (
-    <section className="px-4 py-6 text-primary font-bold font-">
-      ini DashboardPage
-    </section>
-  );
+  return <DashboardPages />;
 };
 
 export default DashboardPage;
