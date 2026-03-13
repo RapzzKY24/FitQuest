@@ -34,7 +34,7 @@ const StatisticCard = () => {
     <section>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {statsCards.map((stat) => (
-          <Card key={stat.id} className="w-full bg-black/40" variant="stat">
+          <Card key={stat.id} className="w-full " variant="stat">
             <CardContent className="flex flex-col justify-center gap-y-2">
               <div className="flex items-baseline gap-1">
                 <h1

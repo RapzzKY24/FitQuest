@@ -6,6 +6,7 @@ import { Achievement, AchievementCard } from "../components/AchievementCard";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import { ProgressBar } from "@/src/components/ui/ProgressBar";
+import PieDiagram from "../components/PieDiagram";
 
 const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
@@ -118,7 +119,7 @@ const AchievementPages = () => {
           {/* Sidebar (Col Span 1) */}
           <div className="lg:col-span-1 flex flex-col gap-y-6">
             {/* Completion */}
-            <Card className="w-full bg-black/40">
+            <Card className="w-full ">
               <CardHeader>
                 <div className="flex flex-col justify-center">
                   <div className="flex items-center gap-3 text-nowrap">
@@ -130,6 +131,9 @@ const AchievementPages = () => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="relative flex items-center justify-center h-50 w-full">
+                  <PieDiagram />
+                </div>
                 <div className="flex justify-center items-center gap-2">
                   {/* stats */}
                   <Card className="w-full" variant="stat">
@@ -153,28 +157,30 @@ const AchievementPages = () => {
                     </CardContent>
                   </Card>
                 </div>
+
                 <div className="h-px border text-broken-white/10" />
+
                 <div className="flex flex-col justify-center gap-y-4">
                   <div className="flex justify-between items-center">
-                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#ffab40] before:[clip-path:polygon(0_0,_75%_0,_100%_25%,_100%_100%,_25%_100%,_0_75%)]">
+                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#ffab40] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]">
                       Legendary
                     </li>
                     <p className="text-accent font-extralight">0/4</p>
                   </div>
                   <div className="flex justify-between items-center">
-                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#ab47bc] before:[clip-path:polygon(0_0,_75%_0,_100%_25%,_100%_100%,_25%_100%,_0_75%)]">
+                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#ab47bc] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]">
                       Epic
                     </li>
                     <p className="text-[#AB47BC] font-extralight">0/7</p>
                   </div>
                   <div className="flex justify-between items-center">
-                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,_75%_0,_100%_25%,_100%_100%,_25%_100%,_0_75%)]">
+                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]">
                       Rare
                     </li>
                     <p className="text-info font-extralight">0/4</p>
                   </div>
                   <div className="flex justify-between items-center">
-                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#78909c] before:[clip-path:polygon(0_0,_75%_0,_100%_25%,_100%_100%,_25%_100%,_0_75%)]">
+                    <li className="flex items-center text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#78909c] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]">
                       Common
                     </li>
                     <p className="text-muted font-extralight">0/4</p>
@@ -183,7 +189,7 @@ const AchievementPages = () => {
               </CardContent>
             </Card>
             {/* terbaru dibuka */}
-            <Card className="w-full bg-black/40">
+            <Card className="w-full ">
               <CardHeader>
                 <div className="flex flex-col justify-center">
                   <div className="flex items-center gap-3 text-nowrap">
