@@ -3,6 +3,7 @@ import {Tabs} from "@/src/components/ui/Tabs";
 import React from "react";
 import FeedTabs from "../components/FeedTabs";
 import LeaderboardTabs from "../components/LeaderboardTabs";
+import FriendTabs from "../components/FriendTabs";
 
 const SocialPages = () => {
   const [tabVal, setTabVal] = React.useState("feed");
@@ -35,6 +36,7 @@ const SocialPages = () => {
         {tabVal == "feed" && <FeedTabs />}
 
         {tabVal == "leaderboard" && <LeaderboardTabs />}
+        {tabVal == "friend" && <FriendTabs />}
       </div>
     </main>
   );
