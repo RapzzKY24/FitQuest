@@ -4,6 +4,7 @@ import ProfileCard from "../components/ProfileCard";
 import { Tabs } from "@/src/components/ui/Tabs";
 import InfoTabs from "../components/InfoTabs";
 import ActivityTabs from "../components/ActivityTabs";
+import Gymbro from "../components/Gymbro";
 
 const ProfilePages = () => {
   const [tabVal, setTabVal] = useState("info");
@@ -11,7 +12,6 @@ const ProfilePages = () => {
     { value: "info", label: "Info dan Edit" },
     { value: "aktivitas", label: "Aktivitas" },
     { value: "gymbro", label: "GymBro" },
-    { value: "pengaturan", label: "Pengaturan" },
   ];
   return (
     <main className="w-full">
@@ -35,6 +35,7 @@ const ProfilePages = () => {
         {/* tabs section */}
         {tabVal == "info" && <InfoTabs />}
         {tabVal == "aktivitas" && <ActivityTabs />}
+        {tabVal == "gymbro" && <Gymbro />}
       </div>
     </main>
   );
