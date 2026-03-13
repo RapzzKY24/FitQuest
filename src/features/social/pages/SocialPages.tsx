@@ -1,16 +1,14 @@
 "use client";
-import {BadgePill} from "@/src/components/ui/badge-pill";
-import {Card, CardContent} from "@/src/components/ui/Card";
 import {Tabs} from "@/src/components/ui/Tabs";
-import {Dot} from "lucide-react";
 import React from "react";
-import FeedTabs from "../FeedTabs";
+import FeedTabs from "../components/FeedTabs";
+import LeaderboardTabs from "../components/LeaderboardTabs";
 
 const SocialPages = () => {
   const [tabVal, setTabVal] = React.useState("feed");
   const SOCIAL_TABS = [
     {value: "feed", label: "Activity Feed", badge: "3"},
-    {value: "leaderboard", label: "Leaderboard", badge: "2"},
+    {value: "leaderboard", label: "Leaderboard"},
     {value: "friend", label: "Teman"},
   ];
   return (
@@ -34,10 +32,9 @@ const SocialPages = () => {
           variant="underline"
         />
 
-        {tabVal == "feed" && (
-         <FeedTabs/>
-        )}
-        
+        {tabVal == "feed" && <FeedTabs />}
+
+        {tabVal == "leaderboard" && <LeaderboardTabs />}
       </div>
     </main>
   );
