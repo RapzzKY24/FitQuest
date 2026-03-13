@@ -1,7 +1,8 @@
 "use client";
+
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
 import { SectionLabel } from "../shared/SectionLabel";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 interface HeatCell {
   date: string;
@@ -24,8 +25,6 @@ const MONTHS = [
   "Dec",
 ] as const;
 
-const VISIBLE_DAY_LABELS = new Set([1, 3, 5]);
-
 const HEATMAP_DATA: HeatCell[] = [
   { date: "2026/01/11", count: 2 },
   { date: "2026/01/12", count: 20 },
@@ -40,6 +39,8 @@ const HEATMAP_DATA: HeatCell[] = [
   { date: "2026/03/12", count: 22 },
 ];
 
+// ─── Build week grid ───────────────────────────────────────────────────────
+
 function buildWeekGrid(data: HeatCell[], totalWeeks = 26) {
   const countMap = new Map<string, number>();
   data.forEach(({ date, count }) =>
@@ -49,7 +50,7 @@ function buildWeekGrid(data: HeatCell[], totalWeeks = 26) {
   const today = new Date();
   const start = new Date(today);
   start.setDate(today.getDate() - totalWeeks * 7 + 1);
-  start.setDate(start.getDate() - start.getDay());
+  start.setDate(start.getDate() - start.getDay()); // snap to Sunday
 
   const weeks: Array<Array<{ date: Date; count: number }>> = [];
   const cur = new Date(start);
@@ -66,6 +67,8 @@ function buildWeekGrid(data: HeatCell[], totalWeeks = 26) {
 
   return weeks;
 }
+
+// ─── Intensity level ───────────────────────────────────────────────────────
 
 function toLevel(count: number): 0 | 1 | 2 | 3 | 4 {
   if (count === 0) return 0;
@@ -85,6 +88,8 @@ const CELL_BG: Record<0 | 1 | 2 | 3 | 4, string> = {
 
 const LEGEND_LEVELS = [0, 1, 2, 3, 4] as const;
 
+// ─── Component ─────────────────────────────────────────────────────────────
+
 export const ActivityHeatmap = ({
   data = HEATMAP_DATA,
 }: {
@@ -97,81 +102,80 @@ export const ActivityHeatmap = ({
       <CardHeader className="px-6 pt-6 pb-0">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <SectionLabel>Activity Heatmap</SectionLabel>
-          <span className="f-mono text-muted text-xs uppercase tracking-[2px]">
+          <span className="font-mono text-muted text-xs uppercase tracking-[2px]">
             26 MINGGU TERAKHIR
           </span>
         </div>
       </CardHeader>
 
       <CardContent className="px-6 pb-6 pt-5">
-        <div className="w-full overflow-x-auto pb-2">
-          <div className="flex gap-3 min-w-max">
-            {/* Kolom Label Hari */}
-            <div className="flex flex-col gap-[3px] pt-6 shrink-0">
-              {WEEK_DAYS.map((day, i) => (
-                <div
-                  key={day}
-                  className="h-6 flex items-center justify-end pr-2"
-                >
-                  <span className="f-mono text-muted text-xs w-8 text-right">
-                    {VISIBLE_DAY_LABELS.has(i) ? day : ""}
+        <div className="w-full">
+          <div
+            className="grid gap-[3px]"
+            style={{
+              gridTemplateColumns: `max-content repeat(${weeks.length}, minmax(0, 1fr))`,
+            }}
+          >
+            <div />
+
+            {/* Render nama bulan */}
+            {weeks.map((week, wi) => {
+              const first = week.find((d) => d.date.getDate() === 1);
+              return (
+                <div key={wi} className="relative h-5">
+                  {first && (
+                    <span className="absolute bottom-1 left-0 font-mono text-muted text-[9px] whitespace-nowrap z-10">
+                      {MONTHS[first.date.getMonth()]}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* ── BARIS 2-8: Nama Hari & Kotak Heatmap ── */}
+            {WEEK_DAYS.map((dayName, dayIdx) => (
+              <React.Fragment key={dayName}>
+                {/* Kolom 1: Nama Hari */}
+                <div className="flex items-center justify-end pr-3">
+                  <span className="font-mono text-muted text-[9px] leading-none">
+                    {dayName}
                   </span>
                 </div>
-              ))}
-            </div>
 
-            {/* Grid Heatmap Utama */}
-            <div className="flex flex-col">
-              <div className="flex gap-[3px] mb-1 h-6">
+                {/* Kolom 2 - 27: Kotak Heatmap untuk hari tersebut (di-render per minggu) */}
                 {weeks.map((week, wi) => {
-                  const first = week.find((d) => d.date.getDate() === 1);
+                  const { date, count } = week[dayIdx]; // Ambil data sesuai index hari (0-6)
+                  const level = toLevel(count);
+                  const tip = `${date.toLocaleDateString("id-ID", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                  })}: ${count} workout`;
+
                   return (
-                    <div key={wi} className="w-6 shrink-0 flex items-end">
-                      {first && (
-                        <span className="f-mono text-muted text-xs whitespace-nowrap">
-                          {MONTHS[first.date.getMonth()]}
-                        </span>
-                      )}
-                    </div>
+                    <div
+                      key={`${wi}-${dayIdx}`}
+                      title={tip}
+                      className={`w-full aspect-square rounded-[2px] cursor-default transition-opacity hover:opacity-70 ${CELL_BG[level]}`}
+                    />
                   );
                 })}
-              </div>
-
-              <div className="grid grid-rows-7 grid-flow-col gap-[3px]">
-                {weeks.map((week) =>
-                  week.map(({ date, count }, di) => {
-                    const level = toLevel(count);
-                    const tip = `${date.toLocaleDateString("id-ID", {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                    })}: ${count} workout`;
-
-                    return (
-                      <div
-                        key={`${date.toISOString()}-${di}`}
-                        title={tip}
-                        className={`size-6 rounded-sm cursor-default transition-opacity hover:opacity-70 ${CELL_BG[level]}`}
-                      />
-                    );
-                  }),
-                )}
-              </div>
-            </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
 
-        {/* Legend Heatmap */}
+        {/* ── Legend ── */}
         <div className="flex items-center justify-end gap-2 mt-5">
-          <span className="f-mono text-muted text-xs uppercase tracking-[2px]">
+          <span className="font-mono text-muted text-[9px] uppercase tracking-[2px]">
             Less
           </span>
           <div className="flex gap-1">
             {LEGEND_LEVELS.map((lv) => (
-              <div key={lv} className={`size-4 rounded-sm ${CELL_BG[lv]}`} />
+              <div key={lv} className={`size-3.5 rounded-sm ${CELL_BG[lv]}`} />
             ))}
           </div>
-          <span className="f-mono text-muted text-xs uppercase tracking-[2px]">
+          <span className="font-mono text-muted text-[9px] uppercase tracking-[2px]">
             More
           </span>
         </div>
