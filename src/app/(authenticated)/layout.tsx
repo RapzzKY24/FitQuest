@@ -32,10 +32,12 @@ export default async function AutheticatedLayout({
   };
 
   return (
-    <main>
-      <div className="flex gap-10">
+    <main className="h-screen w-full overflow-hidden">
+      <div className="flex h-full gap-10">
         <Sidebar user={formattedUser} />
-        {children}
+        <div className="flex-1 h-full overflow-y-auto pb-10 pr-10">
+          {children}
+        </div>
       </div>
     </main>
   );
