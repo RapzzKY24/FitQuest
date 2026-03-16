@@ -74,7 +74,7 @@ const ProfileCard = () => {
             </div>
           </div>
 
-          <StreakBadgePill />
+          <StreakBadgePill streak={17} />
         </div>
 
         {/* BOTTOM SECTION: Statistics Grid */}

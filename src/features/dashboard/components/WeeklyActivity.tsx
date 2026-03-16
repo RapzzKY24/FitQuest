@@ -1,145 +1,75 @@
-"use client";
-import React, { useState } from "react";
-import { Card, CardContent } from "@/src/components/ui/Card";
-import { ProgressBar } from "@/src/components/ui/ProgressBar"; // Sesuaikan path
+import { createClient } from "@/src/utils/supabase/server";
+import WeeklyActivityClient from "./client/WeeklyActivityClient";
 
-// --- MOCK DATA ---
-const weeklyData = {
-  xp: [
-    { day: "Sen", value: 0 },
-    { day: "Sel", value: 80 },
-    { day: "Rab", value: 155 },
-    { day: "Kam", value: 0 },
-    { day: "Jum", value: 48 },
-    { day: "Sab", value: 105 },
-    { day: "Min", value: 90, isToday: true },
-  ],
-  menit: [
-    { day: "Sen", value: 0 },
-    { day: "Sel", value: 45 },
-    { day: "Rab", value: 60 },
-    { day: "Kam", value: 0 },
-    { day: "Jum", value: 30 },
-    { day: "Sab", value: 75 },
-    { day: "Min", value: 45, isToday: true },
-  ],
-};
+export default async function WeeklyActivity() {
+  const supabase = await createClient();
 
-const WeeklyActivity = () => {
-  // State untuk toggle tab (XP atau Menit)
-  const [activeTab, setActiveTab] = useState<"xp" | "menit">("xp");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
 
-  // Ambil data sesuai tab yang aktif
-  const currentData = weeklyData[activeTab];
+  // 1. Tentukan Tanggal Awal & Akhir Minggu Ini (Senin - Minggu)
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0 = Minggu, 1 = Senin, dst
+  const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-  // Cari nilai max buat patokan 100% progress bar
-  const maxValue = Math.max(...currentData.map((d) => d.value), 1);
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - daysSinceMonday);
+  startOfWeek.setHours(0, 0, 0, 0);
 
-  return (
-    <Card className="w-full bg-surface border-border" variant="default">
-      <CardContent className="p-6 md:p-8">
-        {/* --- HEADER --- */}
-        <div className="flex items-center justify-between mb-10">
-          <span className="text-muted tracking-[0.2em] text-[11px] font-bold uppercase">
-            Aktivitas Minggu Ini
-          </span>
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
 
-          {/* Toggle Tab */}
-          <div className="flex gap-4">
-            <button
-              onClick={() => setActiveTab("xp")}
-              className={`font-mono text-[11px] font-bold tracking-[0.2em] uppercase transition-colors ${
-                activeTab === "xp"
-                  ? "text-primary"
-                  : "text-muted hover:text-broken-white"
-              }`}
-            >
-              XP
-            </button>
-            <button
-              onClick={() => setActiveTab("menit")}
-              className={`font-mono text-[11px] font-bold tracking-[0.2em] uppercase transition-colors ${
-                activeTab === "menit"
-                  ? "text-blue-500"
-                  : "text-muted hover:text-broken-white"
-              }`}
-            >
-              Menit
-            </button>
-          </div>
-        </div>
+  // 2. Tarik data dari DB khusus rentang minggu ini
+  const { data: logs, error } = await supabase
+    .from("workout_logs")
+    .select("xp_earned, duration_min, logged_at")
+    .eq("user_id", user.id)
+    .gte("logged_at", startOfWeek.toISOString())
+    .lte("logged_at", endOfWeek.toISOString());
 
-        {/* --- BAR CHART AREA --- */}
-        <div className="flex justify-between items-end gap-2 w-full mb-8">
-          {currentData.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col flex-1 items-center gap-2"
-            >
-              {/* Angka Value (Cuma muncul kalau nilainya > 0) */}
-              <span
-                className={`font-mono text-[9px] font-bold h-3 ${
-                  activeTab === "xp" ? "text-primary" : "text-blue-500"
-                }`}
-              >
-                {item.value > 0 ? item.value : ""}
-              </span>
+  if (error) {
+    console.error("Gagal narik data mingguan:", error.message);
+  }
 
-              {/* Progress Bar Horizontal */}
-              <ProgressBar
-                value={item.value}
-                max={maxValue}
-                variant={activeTab === "xp" ? "orange" : "blue"}
-                className="w-full"
-              />
+  // 3. Siapkan kerangka data kosong (Senin-Minggu)
+  const daysLabel = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+  const todayIndex = daysSinceMonday; // Buat nentuin hari ini
 
-              {/* Label Hari */}
-              <span
-                className={`font-mono text-[10px] tracking-wider mt-1 font-bold ${
-                  item.isToday ? "text-broken-white" : "text-muted"
-                }`}
-              >
-                {item.day}
-              </span>
-            </div>
-          ))}
-        </div>
+  const weeklyData = {
+    xp: daysLabel.map((day, idx) => ({
+      day,
+      value: 0,
+      isToday: idx === todayIndex,
+    })),
+    menit: daysLabel.map((day, idx) => ({
+      day,
+      value: 0,
+      isToday: idx === todayIndex,
+    })),
+  };
 
-        {/* --- BOTTOM STATS --- */}
-        <div className="grid grid-cols-3 border-t border-border/60 pt-6">
-          {/* Total Sesi */}
-          <div className="flex flex-col items-center justify-center border-r border-border/60">
-            <h2 className="text-broken-white font-black text-3xl md:text-4xl mb-1 drop-shadow-sm">
-              4
-            </h2>
-            <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">
-              Sesi
-            </p>
-          </div>
+  const totals = { sessions: 0, minutes: 0, xp: 0 };
 
-          {/* Total Menit */}
-          <div className="flex flex-col items-center justify-center border-r border-border/60">
-            <h2 className="text-broken-white font-black text-3xl md:text-4xl mb-1 drop-shadow-sm">
-              144
-            </h2>
-            <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">
-              Menit
-            </p>
-          </div>
+  // 4. Masukin data dari DB ke kerangka hari yang sesuai
+  logs?.forEach((log) => {
+    const logDate = new Date(log.logged_at);
+    const logDay = logDate.getDay();
+    // Ubah format index JS (Minggu=0) jadi format kita (Senin=0, Minggu=6)
+    const index = logDay === 0 ? 6 : logDay - 1;
 
-          {/* Total XP */}
-          <div className="flex flex-col items-center justify-center">
-            <h2 className="text-primary font-black text-3xl md:text-4xl mb-1 drop-shadow-sm">
-              +680
-            </h2>
-            <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">
-              XP
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+    // Tambahin value-nya
+    weeklyData.xp[index].value += log.xp_earned;
+    weeklyData.menit[index].value += log.duration_min;
 
-export default WeeklyActivity;
+    // Kalkulasi Total Bawah
+    totals.sessions += 1;
+    totals.minutes += log.duration_min;
+    totals.xp += log.xp_earned;
+  });
+
+  // 5. Lempar data matang ke UI Client
+  return <WeeklyActivityClient weeklyData={weeklyData} totals={totals} />;
+}
