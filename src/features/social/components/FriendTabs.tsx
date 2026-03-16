@@ -75,7 +75,7 @@ const FriendTabs = () => {
     <section>
       <section className="space-y-4">
         <Card>
-          <CardContent className="text-muted text-xs">
+          <CardContent className="text-muted text-xs p-24">
             {/* Card Header */}
             <div className="flex items-center gap-3">
               <p className="uppercase tracking-[0.3em] text-nowrap font-black">
@@ -84,7 +84,9 @@ const FriendTabs = () => {
               <div className="h-px w-full bg-white/10" />
             </div>
             {/* Input Search */}
-            <Input prefixNode="🔍" placeholder="Cari username atau nama..." />
+            <div className="py-4">
+              <Input prefixNode="🔍" placeholder="Cari username atau nama..." />
+            </div>
           </CardContent>
         </Card>
 
