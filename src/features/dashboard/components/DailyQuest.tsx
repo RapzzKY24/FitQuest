@@ -1,147 +1,79 @@
-"use client";
-import React from "react";
-import { Card, CardContent } from "@/src/components/ui/Card";
-import { BadgePill } from "@/src/components/ui/badge-pill";
-import { ProgressBar } from "@/src/components/ui/ProgressBar";
-import Link from "next/link";
+import { createClient } from "@/src/utils/supabase/server";
+import DailyQuestClient, { MappedQuest } from "./client/DailyQuestClient";
 
-const mockQuests = [
-  {
-    id: 1,
-    title: "30 Menit Non-Stop",
-    icon: "💧",
-    iconBg: "bg-green-500/10 border-green-500/20",
-    status: "DONE",
-    progress: 1,
-    max: 1,
-    barVariant: "green",
-    isMuted: false,
-  },
-  {
-    id: 2,
-    title: "First Log Today",
-    icon: "⚡",
-    iconBg: "bg-green-500/10 border-green-500/20",
-    status: "CLAIMED",
-    progress: 1,
-    max: 1,
-    barVariant: "green",
-    isMuted: false,
-  },
-  {
-    id: 3,
-    title: "Lari 3x Minggu Ini",
-    icon: "🏃",
-    iconBg: "bg-orange-500/10 border-orange-500/20",
-    status: "1/3",
-    progress: 1,
-    max: 3,
-    barVariant: "orange",
-    isMuted: false,
-  },
-  {
-    id: 4,
-    title: "Streak Terjaga",
-    icon: "🔥",
-    iconBg: "bg-white/5 border-white/10",
-    status: "0/1",
-    progress: 0,
-    max: 1,
-    barVariant: "orange",
-    isMuted: true,
-  },
-] as const;
+export default async function DailyQuest() {
+  const supabase = await createClient();
 
-const DailyQuest = () => {
-  return (
-    <Card className="w-full bg-surface border-border" variant="default">
-      <CardContent className="p-6 md:p-8">
-        {/* --- HEADER --- */}
-        <div className="flex items-center justify-between mb-8">
-          <span className="text-muted tracking-[0.2em] text-[11px] font-bold uppercase">
-            Daily Quest
-          </span>
-          <div className="flex-1 h-px bg-border mx-4"></div>
-          <span className="text-muted tracking-[0.2em] text-[11px] font-semibold uppercase cursor-pointer hover:text-broken-white transition-colors">
-            <Link href={"/quest"}>Semua Quest &rarr;</Link>
-          </span>
-        </div>
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
 
-        {/* --- TIMER BANNER --- */}
-        <div className="bg-[#1a1a1a] border border-border p-3.5 px-5 flex justify-between items-center mb-8 clip-path-sm">
-          <div className="flex items-center gap-3 text-muted text-sm tracking-wide">
-            <span>⏱️</span>
-            <span>
-              Reset dalam{" "}
-              <span className="text-broken-white font-mono font-bold tracking-widest ml-1">
-                21:07:06
-              </span>
-            </span>
-          </div>
-          <BadgePill color="primary">2 / 4 DONE</BadgePill>
-        </div>
+  // 1. Dapatkan tanggal hari ini (Format YYYY-MM-DD) biar cocok sama database
+  // Karena SQL CURRENT_DATE biasanya pakai UTC, trik gampangnya gini:
+  const todayStr = new Date().toISOString().split("T")[0];
 
-        {/* --- QUEST LIST --- */}
-        <div className="flex flex-col">
-          {mockQuests.map((quest, index) => (
-            <div
-              key={quest.id}
-              className={`py-5 flex flex-col gap-4 ${
-                index !== 0 ? "border-t border-border/60" : "pt-0"
-              }`}
-            >
-              {/* Info Quest */}
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-5">
-                  {/* Icon Box */}
-                  <div
-                    className={`w-10 h-10 flex items-center justify-center border ${quest.iconBg} text-xl`}
-                    style={{
-                      clipPath:
-                        "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
-                    }}
-                  >
-                    {quest.icon}
-                  </div>
-                  {/* Judul Quest */}
-                  <span
-                    className={`font-bold text-[15px] tracking-wide ${
-                      quest.isMuted ? "text-muted" : "text-broken-white"
-                    }`}
-                  >
-                    {quest.title}
-                  </span>
-                </div>
+  // 2. Tarik semua data Daily Quest yang lagi aktif
+  const { data: allDailyQuests } = await supabase
+    .from("quests")
+    .select("*")
+    .eq("quest_type", "daily")
+    .eq("is_active", true)
+    .order("id", { ascending: true });
 
-                {/* Status Kanan (Badge atau Teks) */}
-                <div>
-                  {quest.status === "DONE" && (
-                    <BadgePill color="success">DONE</BadgePill>
-                  )}
-                  {quest.status === "CLAIMED" && (
-                    <BadgePill color="muted">CLAIMED</BadgePill>
-                  )}
-                  {quest.status !== "DONE" && quest.status !== "CLAIMED" && (
-                    <span className="text-muted text-xs font-mono font-bold tracking-widest">
-                      {quest.status}
-                    </span>
-                  )}
-                </div>
-              </div>
+  if (!allDailyQuests) return null;
 
-              {/* Progress Bar */}
-              <ProgressBar
-                value={quest.progress}
-                max={quest.max}
-                variant={quest.barVariant}
-                className="mt-1"
-              />
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+  // 3. Tarik progress user khusus untuk quest hari ini
+  const { data: userProgress } = await supabase
+    .from("user_quests")
+    .select("quest_id, progress, is_completed, is_claimed")
+    .eq("user_id", user.id)
+    .eq("period_start", todayStr);
 
-export default DailyQuest;
+  // 4. Gabungin data Master Quest dengan Progress User
+  const mappedQuests: MappedQuest[] = allDailyQuests.map((quest) => {
+    // Cari apakah user udah ada progress di quest ini
+    const progressRecord = userProgress?.find((up) => up.quest_id === quest.id);
+
+    // Ambil nilai progress (kalau belum mulai, berarti 0)
+    const currentProgress = progressRecord?.progress || 0;
+    const maxTarget = quest.target_value;
+
+    const isCompleted =
+      progressRecord?.is_completed || currentProgress >= maxTarget;
+    const isClaimed = progressRecord?.is_claimed || false;
+
+    // Tentukan Status String
+    let status = `${currentProgress}/${maxTarget}`;
+    if (isClaimed) status = "CLAIMED";
+    else if (isCompleted) status = "DONE";
+
+    // Tentukan Warna & Tampilan berdasarkan status
+    let iconBg = "bg-white/5 border-white/10";
+    let barVariant: "green" | "orange" | "blue" = "orange";
+    let isMuted = currentProgress === 0;
+
+    if (isCompleted) {
+      iconBg = "bg-green-500/10 border-green-500/20";
+      barVariant = "green";
+      isMuted = false;
+    } else if (currentProgress > 0) {
+      iconBg = "bg-orange-500/10 border-orange-500/20";
+      isMuted = false;
+    }
+
+    return {
+      id: quest.id,
+      title: quest.title,
+      icon: quest.icon || "🎯",
+      iconBg,
+      status,
+      progress: Math.min(currentProgress, maxTarget),
+      max: maxTarget,
+      barVariant,
+      isMuted,
+    };
+  });
+
+  return <DailyQuestClient quests={mappedQuests} />;
+}

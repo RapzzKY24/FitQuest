@@ -1,82 +1,61 @@
-"use client";
 import React from "react";
-import { Card, CardContent } from "@/src/components/ui/Card";
+import { createClient } from "@/src/utils/supabase/server";
+import LevelProgressClient from "./client/LevelProgressClient";
 
-const LevelProgressWidget = () => {
-  const currentLevel = 7;
-  const currentTitle = "Iron Warrior";
-  const nextLevel = 8;
-  const nextTitle = "Steel Lord";
-  const currentXp = 340;
-  const targetXp = 600;
+// Helper dari sebelumnya
+const getLevelTitle = (lvl: number) => {
+  if (lvl <= 2) return "Rookie";
+  if (lvl <= 5) return "Fighter";
+  if (lvl <= 9) return "Warrior";
+  if (lvl <= 14) return "Iron Warrior";
+  if (lvl <= 19) return "Steel Knight";
+  if (lvl <= 29) return "Champion";
+  if (lvl <= 39) return "Legend";
+  return "GOD MODE";
+};
 
-  // Kalkulasi otomatis
-  const xpLeft = targetXp - currentXp;
-  const percentage = Math.floor((currentXp / targetXp) * 100);
+const LevelProgressWidget = async () => {
+  const supabase = await createClient();
 
+  // 1. Cek User
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  // 2. Tarik data dari View
+  const { data: vDashboard, error } = await supabase
+    .from("v_user_dashboard")
+    .select("level, level_title, xp_current, xp_to_next, xp_pct")
+    .eq("id", user.id)
+    .single();
+
+  if (error || !vDashboard) return null;
+
+  // 3. Mapping Data
+  const currentLevel = vDashboard.level || 1;
+  const currentTitle = vDashboard.level_title || "Rookie";
+  const nextLevel = currentLevel + 1;
+  const nextTitle = getLevelTitle(nextLevel);
+  const currentXp = vDashboard.xp_current || 0;
+  const targetXp = vDashboard.xp_to_next || 200;
+
+  const xpLeft = Math.max(0, targetXp - currentXp);
+  const percentage =
+    vDashboard.xp_pct || Math.floor((currentXp / targetXp) * 100);
+
+  // 4. Lempar ke Client Component
   return (
-    <Card className="w-full bg-surface border-border" variant="default">
-      <CardContent className="p-6 md:p-8 flex flex-col h-full justify-between">
-        {/* --- HEADER --- */}
-        <div className="flex items-center justify-between mb-8">
-          <span className="text-muted tracking-[0.2em] text-[11px] font-bold uppercase">
-            Level Progress
-          </span>
-          <div className="flex-1 h-px bg-border ml-4"></div>
-        </div>
-
-        {/* --- LEVEL INFO (Kiri Angka, Kanan Title) --- */}
-        <div className="flex items-end gap-4 mb-8">
-          {/* Angka Level (Gede & Miring) */}
-          <h1 className="text-broken-white font-black text-7xl italic leading-none tracking-tighter drop-shadow-md">
-            {currentLevel}
-          </h1>
-
-          {/* Title & Next Level */}
-          <div className="flex flex-col pb-1.5 gap-1.5">
-            <span className="text-primary font-mono text-[13px] font-bold tracking-[0.15em] uppercase leading-none">
-              {currentTitle}
-            </span>
-            <span className="text-muted font-mono text-[10px] tracking-[0.15em] uppercase flex items-center gap-1 leading-none">
-              &rarr; LV.{nextLevel} {nextTitle}
-            </span>
-          </div>
-        </div>
-
-        {/* --- PROGRESS BAR SECTION --- */}
-        <div className="w-full flex flex-col gap-2.5">
-          {/* Text: XP & Persentase */}
-          <div className="flex justify-between items-end w-full">
-            <span className="text-muted font-mono text-[10px] tracking-widest uppercase font-semibold">
-              {currentXp} <span className="opacity-50">/ {targetXp} XP</span>
-            </span>
-            <span className="text-muted font-mono text-[10px] tracking-widest uppercase font-semibold">
-              {percentage}%
-            </span>
-          </div>
-
-          {/* Bar Wrapper (Custom Clip-path) */}
-          <div
-            className="h-1.5 w-full bg-[#111] overflow-hidden"
-            style={{
-              clipPath:
-                "polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px))",
-            }}
-          >
-            {/* Bar Fill */}
-            <div
-              className="h-full bg-primary shadow-[0_0_10px_rgba(255,77,0,0.5)] transition-all duration-700 ease-out"
-              style={{ width: `${percentage}%` }}
-            />
-          </div>
-
-          {/* Footer Text */}
-          <p className="text-muted font-mono text-[10px] tracking-[0.2em] uppercase mt-2 font-medium opacity-80">
-            {xpLeft} XP lagi untuk naik level
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <LevelProgressClient
+      currentLevel={currentLevel}
+      currentTitle={currentTitle}
+      nextLevel={nextLevel}
+      nextTitle={nextTitle}
+      currentXp={currentXp}
+      targetXp={targetXp}
+      xpLeft={xpLeft}
+      percentage={percentage}
+    />
   );
 };
 

@@ -1,50 +1,71 @@
-"use client";
 import { Card, CardContent } from "@/src/components/ui/Card";
+import { createClient } from "@/src/utils/supabase/server";
 import React from "react";
 
-const MockDataDashboard = [
-  {
-    id: 1,
-    icon: "⚡",
-    value: "340",
-    valueColor: "text-primary",
-    label: "XP Hari Ini",
-    trend: "↑ +90 dari kemarin",
-    trendColor: "text-success",
-  },
-  {
-    id: 2,
-    icon: "⏱️",
-    value: "45",
-    valueColor: "text-info",
-    label: "Menit Workout",
-    trend: "↓ -5 dari kemarin",
-    trendColor: "text-danger",
-  },
-  {
-    id: 3,
-    icon: "🔥",
-    value: "420",
-    valueColor: "text-danger",
-    label: "Kalori Terbakar",
-    trend: "↑ +120 dari kemarin",
-    trendColor: "text-success",
-  },
-  {
-    id: 4,
-    icon: "🎯",
-    value: "12",
-    valueColor: "text-accent",
-    label: "Sesi Bulan Ini",
-    trend: "On track bro! 💪",
-    trendColor: "text-primary-hover",
-  },
-];
+const StatsDashboard = async () => {
+  const supabase = await createClient();
 
-const StatsDashboard = () => {
+  // 1. Cek User
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null; // Atau render state empty/redirect
+  }
+
+  // 2. Tarik data dari View v_user_dashboard
+  const { data: vDashboard } = await supabase
+    .from("v_user_dashboard")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  // 3. Map data DB ke format Card lu
+  // Fallback ke 0 kalau datanya belum ada (misal user baru daftar)
+  const RealDataDashboard = [
+    {
+      id: 1,
+      icon: "⚡",
+      value: vDashboard?.weekly_xp || 0,
+      valueColor: "text-primary",
+      label: "XP Minggu Ini",
+      trend: "Kumpulkan terus XP-mu!",
+      trendColor: "text-success",
+    },
+    {
+      id: 2,
+      icon: "⏱️",
+      value: vDashboard?.total_minutes || 0,
+      valueColor: "text-info",
+      label: "Total Menit",
+      trend: "Waktu aktif olahragamu",
+      trendColor: "text-info",
+    },
+    {
+      id: 3,
+      icon: "🔥",
+      value: vDashboard?.streak_current || 0,
+      valueColor: "text-danger",
+      label: "Streak Aktif",
+      // Ambil best streak buat dimunculin di tulisan kecil bawahnya
+      trend: `Rekor terbaik: ${vDashboard?.streak_best || 0} Hari`,
+      trendColor: "text-success",
+    },
+    {
+      id: 4,
+      icon: "⚔️",
+      value: vDashboard?.total_sessions || 0,
+      valueColor: "text-accent",
+      label: "Total Sesi",
+      trend: "On track bro! 💪",
+      trendColor: "text-primary-hover",
+    },
+  ];
+
   return (
     <>
-      {MockDataDashboard.map((stat) => (
+      {RealDataDashboard.map((stat) => (
         <Card key={stat.id} className="overflow-hidden" variant="stat">
           <CardContent className="p-6">
             <div className="flex flex-col items-start justify-center">

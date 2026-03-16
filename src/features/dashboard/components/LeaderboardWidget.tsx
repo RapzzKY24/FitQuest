@@ -1,22 +1,50 @@
-"use client";
 import React from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/src/components/ui/Card";
+import { createClient } from "@/src/utils/supabase/server";
 
-const mockTopLeaderboard = [
-  { rank: 1, name: "WarriorAdi", icon: "😤", xp: "14,200 XP" },
-  { rank: 2, name: "FitSari", icon: "🔥", xp: "13,450 XP" },
-  { rank: 3, name: "RunnerDewa", icon: "⚡", xp: "12,890 XP" },
-];
+const LeaderboardWidget = async () => {
+  const supabase = await createClient();
 
-const currentUserRank = {
-  rank: 7,
-  name: "Budi (You)",
-  icon: "💪",
-  xp: "12,450 XP",
-};
+  // 1. Cek User Saat Ini
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
 
-const LeaderboardWidget = () => {
+  // 2. Tarik Top 3 Leaderboard
+  const { data: topUsers } = await supabase
+    .from("v_weekly_leaderboard")
+    .select("*")
+    .order("rank", { ascending: true })
+    .limit(3);
+
+  // 3. Tarik Posisi & Data User Saat Ini
+  const { data: currentUserData } = await supabase
+    .from("v_weekly_leaderboard")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
+
+  // 4. Format Data buat Top 3
+  const topLeaderboard =
+    topUsers?.map((u) => ({
+      rank: u.rank,
+      // Kasih tanda "(You)" kalau kebetulan user masuk Top 3
+      name: u.user_id === user.id ? `${u.display_name} (You)` : u.display_name,
+      icon: u.avatar_emoji || "😤",
+      // Format angka ribuan (14200 -> 14.200)
+      xp: `${(u.weekly_xp || 0).toLocaleString("id-ID")} XP`,
+    })) || [];
+
+  // 5. Format Data buat User Saat Ini ("Posisimu")
+  const currentUserRank = {
+    rank: currentUserData?.rank || "-", // Kalau rank belum ada, kasih strip
+    name: `${currentUserData?.display_name || "Kamu"} (You)`,
+    icon: currentUserData?.avatar_emoji || "💪",
+    xp: `${(currentUserData?.weekly_xp || 0).toLocaleString("id-ID")} XP`,
+  };
+
   return (
     <Card className="w-full bg-surface border-border" variant="default">
       <CardContent className="p-6 md:p-8">
@@ -36,11 +64,11 @@ const LeaderboardWidget = () => {
 
         {/* --- TOP 3 LIST --- */}
         <div className="flex flex-col">
-          {mockTopLeaderboard.map((user, index) => (
+          {topLeaderboard.map((u, index) => (
             <div
-              key={user.rank}
+              key={u.rank}
               className={`py-4 flex items-center justify-between ${
-                index !== mockTopLeaderboard.length - 1
+                index !== topLeaderboard.length - 1
                   ? "border-b border-border/60"
                   : "pb-6"
               }`}
@@ -48,7 +76,7 @@ const LeaderboardWidget = () => {
               <div className="flex items-center gap-5">
                 {/* Angka Rank */}
                 <span className="text-primary font-black text-lg w-4 text-center">
-                  {user.rank}
+                  {u.rank}
                 </span>
 
                 {/* Icon Box */}
@@ -59,21 +87,28 @@ const LeaderboardWidget = () => {
                       "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
                   }}
                 >
-                  {user.icon}
+                  {u.icon}
                 </div>
 
                 {/* Nama */}
-                <h3 className="text-broken-white font-bold text-[15px] tracking-wide">
-                  {user.name}
+                <h3 className="text-broken-white font-bold text-[15px] tracking-wide truncate max-w-[120px] sm:max-w-[200px]">
+                  {u.name}
                 </h3>
               </div>
 
               {/* XP */}
               <span className="text-muted font-mono text-[11px] tracking-widest font-semibold uppercase">
-                {user.xp}
+                {u.xp}
               </span>
             </div>
           ))}
+
+          {/* Fallback kalau belum ada data yang masuk DB sama sekali */}
+          {topLeaderboard.length === 0 && (
+            <p className="text-muted text-sm text-center py-4">
+              Belum ada data minggu ini. Jadilah yang pertama!
+            </p>
+          )}
         </div>
 
         {/* --- DIVIDER POSISIMU --- */}
@@ -93,7 +128,7 @@ const LeaderboardWidget = () => {
               "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
           }}
         >
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2.5">
             {/* Angka Rank */}
             <span className="text-primary font-black text-lg w-4 text-center">
               {currentUserRank.rank}
@@ -101,7 +136,7 @@ const LeaderboardWidget = () => {
 
             {/* Icon Box (Border Primary) */}
             <div
-              className="w-10 h-10 flex items-center justify-center bg-elevated/50 border border-primary text-xl shadow-inner"
+              className="w-10 h-10 flex items-center  justify-center bg-elevated/50 border border-primary text-xl shadow-inner"
               style={{
                 clipPath:
                   "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -111,13 +146,13 @@ const LeaderboardWidget = () => {
             </div>
 
             {/* Nama (Text Primary) */}
-            <h3 className="text-primary font-bold text-[15px] tracking-wide">
+            <h3 className="text-primary font-bold text-[12px] max-w-[120px] sm:max-w-[180px]">
               {currentUserRank.name}
             </h3>
           </div>
 
           {/* XP (Text Primary) */}
-          <span className="text-primary font-mono text-[11px] tracking-widest font-semibold uppercase">
+          <span className="text-primary font-mono text-[12px]  font-semibold uppercase">
             {currentUserRank.xp}
           </span>
         </div>
