@@ -11,10 +11,10 @@ import {
   QuestPageProps,
   UserQuestWithDetails,
 } from "@/src/features/quests/types/quest";
-import {useToast} from "@/src/components/ui/Toast";
+import {ToastContainer, useToast} from "@/src/components/ui/Toast";
 
 const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
-  const {toasts, show: showToast} = useToast();
+  const {toasts, show: showToast,dismiss:dismissToast} = useToast();
   const [tabVal, setTabVal] = React.useState("daily");
   const [isClaiming, setIsClaiming] = React.useState(false);
   const QUEST_TABS = [
@@ -488,6 +488,7 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
           </section>
         </div>
       </div>
+        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </main>
   );
 };
