@@ -5,14 +5,14 @@ import {
   registerSchema,
   onboardingSchema,
 } from "../schemas/auth.schemas";
-import { redirect } from "next/navigation";
-import type { AuthActionResult } from "../types/auth.types";
+import {redirect} from "next/navigation";
+import type {AuthActionResult} from "../types/auth.types";
 import type {
   LoginSchema,
   RegisterSchema,
   OnboardingSchema,
 } from "../schemas/auth.schemas";
-import { createClient } from "@/src/utils/supabase/server";
+import {createClient} from "@/src/utils/supabase/server";
 
 // ─────────────────────────────────────────────
 // SIGN UP
@@ -20,23 +20,23 @@ import { createClient } from "@/src/utils/supabase/server";
 export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
   const parsed = registerSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0].message };
+    return {success: false, error: parsed.error.issues[0].message};
   }
 
   const supabase = await createClient();
 
   // Cek username sudah dipakai atau belum
-  const { data: existing } = await supabase
+  const {data: existing} = await supabase
     .from("user_profiles")
     .select("id")
     .eq("username", parsed.data.username)
     .single();
 
   if (existing) {
-    return { success: false, error: "Username sudah dipakai, coba yang lain" };
+    return {success: false, error: "Username sudah dipakai, coba yang lain"};
   }
 
-  const { error } = await supabase.auth.signUp({
+  const {error} = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
@@ -49,7 +49,7 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
     },
   });
 
-  if (error) return { success: false, error: error.message };
+  if (error) return {success: false, error: error.message};
 
   // Setelah signup, arahkan ke onboarding untuk pilih goal & data fisik
   redirect("/register/onboarding");
@@ -61,12 +61,12 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
 export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
   const parsed = loginSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0].message };
+    return {success: false, error: parsed.error.issues[0].message};
   }
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const {error} = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
   });
@@ -76,7 +76,7 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
     const msg = error.message.includes("Invalid login credentials")
       ? "Email atau password salah"
       : error.message;
-    return { success: false, error: msg };
+    return {success: false, error: msg};
   }
 
   redirect("/dashboard");
@@ -99,16 +99,16 @@ export async function saveOnboarding(
 ): Promise<AuthActionResult> {
   const parsed = onboardingSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: "Data tidak valid" };
+    return {success: false, error: "Data tidak valid"};
   }
 
   const supabase = await createClient();
   const {
-    data: { user },
+    data: {user},
   } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: "Sesi tidak ditemukan" };
+  if (!user) return {success: false, error: "Sesi tidak ditemukan"};
 
-  const { error } = await supabase
+  const {error} = await supabase
     .from("user_profiles")
     .update({
       goal: parsed.data.goal as string,
@@ -119,7 +119,28 @@ export async function saveOnboarding(
     } as any)
     .eq("id", user.id);
 
-  if (error) return { success: false, error: error.message };
+  if (error) return {success: false, error: error.message};
+
+  if (parsed.data.weightKg) {
+    const {error: weightError} = await supabase.from("weight_logs").insert({
+      user_id: user.id,
+      weight_kg: parsed.data.weightKg,
+      // Kolom logged_at dan created_at gak perlu diisi manual
+      // karena di SQL lu udah ada "DEFAULT CURRENT_DATE" dan "DEFAULT NOW()"
+    });
+
+    if (weightError) {
+      console.error(
+        "Failed to insert initial weight log:",
+        weightError.message,
+      );
+      // Return error biar tau kalau gagal bikin log awal
+      return {
+        success: false,
+        error: "Gagal menyimpan riwayat berat badan awal",
+      };
+    }
+  }
 
   redirect("/dashboard");
 }

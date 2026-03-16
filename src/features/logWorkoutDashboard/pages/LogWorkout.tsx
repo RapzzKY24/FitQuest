@@ -1,16 +1,21 @@
-import React from "react";
-import {
-  DurationSlider,
-  IntensityCard,
-  Notes,
-  StepperLog,
-  WorkoutTypeGrid,
-} from "..";
-import { Button } from "@/src/components/ui/Button";
-import { ArrowLeft, Zap } from "lucide-react";
 import ExpBreakdown from "../components/ExpBreakdown";
+import {createClient} from "@/src/utils/supabase/server";
+import {WorkoutLogForm} from "./LogWorkoutForm";
 
-const LogWorkoutPages = () => {
+const LogWorkoutPages = async () => {
+  const supabase = await createClient();
+
+  // Fetch data workout types yang statusnya aktif
+  const {data: workoutTypes, error} = await supabase
+    .from("workout_types")
+    .select("id, name, icon, category")
+    .eq("is_active", true)
+    .order("name", {ascending: true});
+
+  if (error) {
+    console.error("Gagal tarik data workout_types:", error.message);
+  }
+
   return (
     <main className="w-full ">
       <div className="px-4 py-6 flex flex-col justify-center gap-y-4 ">
@@ -23,29 +28,13 @@ const LogWorkoutPages = () => {
             Log <span className="text-primary">Workout</span>
           </h1>
         </div>
-        {/* stepper */}
-        <StepperLog />
+        {/* HOLD stepper */}
+        {/* <StepperLog /> */}
+
         {/* grid section log */}
         <div className="grid grid-cols-5 gap-3">
           <div className="grid col-span-4  gap-y-2.5">
-            <WorkoutTypeGrid />
-            <DurationSlider />
-            <IntensityCard />
-            <Notes />
-            <div className="w-full flex items-center gap-4">
-              <Button variant="outline" className="w-[35%]">
-                <div className="flex items-center gap-2">
-                  <ArrowLeft size={18} />
-                  Batal
-                </div>
-              </Button>
-              <Button className="w-[65%]">
-                <div className="flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                  Simpan dan Klaim EXP
-                </div>
-              </Button>
-            </div>
+            <WorkoutLogForm workoutTypes={workoutTypes || []} />
           </div>
           <div className="grid col-span-1 ">
             <ExpBreakdown />
