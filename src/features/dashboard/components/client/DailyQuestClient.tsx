@@ -36,7 +36,7 @@ const DailyQuestClient = ({ quests }: Props) => {
     const updateTimer = () => {
       const now = new Date();
       const midnight = new Date(now);
-      midnight.setHours(24, 0, 0, 0); // Set ke jam 12 malam nanti
+      midnight.setUTCHours(24, 0, 0, 0); // Set ke jam 7 malam nanti
 
       const diff = midnight.getTime() - now.getTime();
 

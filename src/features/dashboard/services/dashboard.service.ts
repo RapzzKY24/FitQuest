@@ -8,14 +8,15 @@ export const DashboardService = {
     userId: string,
     todayStrId: string,
   ) => {
-    // 2. Tarik data Master Quest & Progress User secara BERSAMAAN (Paralel)
+    // Tarik data Master Quest & Progress User secara BERSAMAAN (Paralel)
     const [questsResponse, progressResponse] = await Promise.all([
       supabase
         .from("quests")
         .select("*")
         .eq("quest_type", "daily")
         .eq("is_active", true)
-        .order("id", { ascending: true }),
+        .order("id", { ascending: true })
+        .limit(3),
       supabase
         .from("user_quests")
         .select("quest_id, progress, is_completed, is_claimed")
@@ -23,7 +24,7 @@ export const DashboardService = {
         .eq("period_start", todayStrId),
     ]);
 
-    // 3. Handle Error jika salah satu query gagal
+    // Handle Error jika salah satu query gagal
     if (questsResponse.error) {
       console.error("Gagal fetch daily quests:", questsResponse.error.message);
       return null; // Atau return [] tergantung kebutuhan UI
@@ -42,18 +43,13 @@ export const DashboardService = {
   },
 
   headerDashboard: async (supabase: SupabaseClient, userId: string) => {
-    const now = new Date();
-    const formatter = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Asia/Jakarta",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    const [{ value: mo }, , { value: da }, , { value: ye }] =
-      formatter.formatToParts(now);
+    // 1. Ambil tanggal hari ini dengan format YYYY-MM-DD (Berdasarkan zona waktu UTC)
+    const todayStrId = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "UTC",
+    }).format(new Date());
 
-    // ISO String untuk jam 00:00:00 WIB (UTC+7)
-    const startOfTodayWIB = `${ye}-${mo}-${da}T00:00:00+07:00`;
+    // 2. Bikin string ISO start of day UTC (Misal: "2026-03-18T00:00:00Z")
+    const startOfTodayUTC = `${todayStrId}T00:00:00Z`;
 
     // Fetch Dashboard & Hitung Sesi secara BERSAMAAN (Paralel)
     const [vDashboardResponse, sessionsResponse] = await Promise.all([
@@ -66,7 +62,7 @@ export const DashboardService = {
         .from("workout_logs")
         .select("*", { count: "exact", head: true })
         .eq("user_id", userId)
-        .gte("logged_at", startOfTodayWIB),
+        .gte("logged_at", startOfTodayUTC),
     ]);
 
     if (vDashboardResponse.error) {
@@ -163,22 +159,27 @@ export const DashboardService = {
   weeklyActivity: async (supabase: SupabaseClient, userId: string) => {
     const now = new Date();
 
-    const startOfWeek = new Date(now);
-    const dayOfWeek = now.getDay(); // 0 = Minggu, 1 = Senin, dst
-    const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    // Ambil hari berdasarkan UTC (0 = Minggu, 1 = Senin, dst)
+    const dayOfWeekUTC = now.getUTCDay();
 
-    startOfWeek.setDate(now.getDate() - daysSinceMonday);
-    startOfWeek.setHours(0, 0, 0, 0);
+    // Hitung jarak hari ini ke hari Senin
+    const daysSinceMonday = dayOfWeekUTC === 0 ? 6 : dayOfWeekUTC - 1;
 
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
+    // Set Start of Week (Senin 00:00:00 UTC)
+    const startOfWeekUTC = new Date(now);
+    startOfWeekUTC.setUTCDate(now.getUTCDate() - daysSinceMonday);
+    startOfWeekUTC.setUTCHours(0, 0, 0, 0);
+
+    // Set End of Week (Minggu 23:59:59 UTC)
+    const endOfWeekUTC = new Date(startOfWeekUTC);
+    endOfWeekUTC.setUTCDate(startOfWeekUTC.getUTCDate() + 6);
+    endOfWeekUTC.setUTCHours(23, 59, 59, 999);
     const { data: logs, error } = await supabase
       .from("workout_logs")
       .select("xp_earned, duration_min, logged_at")
       .eq("user_id", userId)
-      .gte("logged_at", startOfWeek.toISOString())
-      .lte("logged_at", endOfWeek.toISOString());
+      .gte("logged_at", startOfWeekUTC.toISOString())
+      .lte("logged_at", endOfWeekUTC.toISOString());
 
     if (error) {
       console.error("Gagal narik data mingguan:", error.message);

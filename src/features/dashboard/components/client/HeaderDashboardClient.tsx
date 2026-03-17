@@ -5,6 +5,7 @@ import React from "react";
 import { Button } from "@/src/components/ui/Button";
 import StreakBadgePill from "../../../profile/components/shared/StreakBadgePill"; // Sesuaikan path
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import Link from "next/link";
 
 interface Props {
   displayName: string;
@@ -44,7 +45,7 @@ const HeaderDashboardClient = ({
                 : `Yuk mulai olahraga pertamamu hari ini! 💪`}
             </p>
             <Button variant="primary" size="sm" className="w-[50%]">
-              ⚡ LOG WORKOUT SEKARANG
+              <Link href={"/log"}>⚡ LOG WORKOUT SEKARANG</Link>
             </Button>
           </div>
 

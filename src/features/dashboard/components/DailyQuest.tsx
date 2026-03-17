@@ -11,7 +11,7 @@ export default async function DailyQuest() {
   if (!user) return null;
 
   const todayStrId = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jakarta",
+    timeZone: "UTC",
   }).format(new Date());
 
   const response = await DashboardService.dailyQuest(
