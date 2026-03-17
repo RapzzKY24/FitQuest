@@ -1,18 +1,7 @@
 import React from "react";
 import { createClient } from "@/src/utils/supabase/server";
 import LevelProgressClient from "./client/LevelProgressClient";
-
-// Helper dari sebelumnya
-const getLevelTitle = (lvl: number) => {
-  if (lvl <= 2) return "Rookie";
-  if (lvl <= 5) return "Fighter";
-  if (lvl <= 9) return "Warrior";
-  if (lvl <= 14) return "Iron Warrior";
-  if (lvl <= 19) return "Steel Knight";
-  if (lvl <= 29) return "Champion";
-  if (lvl <= 39) return "Legend";
-  return "GOD MODE";
-};
+import { dashboardUtils } from "@/src/utils/DashboardUtils";
 
 const LevelProgressWidget = async () => {
   const supabase = await createClient();
@@ -36,7 +25,7 @@ const LevelProgressWidget = async () => {
   const currentLevel = vDashboard.level || 1;
   const currentTitle = vDashboard.level_title || "Rookie";
   const nextLevel = currentLevel + 1;
-  const nextTitle = getLevelTitle(nextLevel);
+  const nextTitle = dashboardUtils.getLevelTitle(nextLevel);
   const currentXp = vDashboard.xp_current || 0;
   const targetXp = vDashboard.xp_to_next || 200;
 

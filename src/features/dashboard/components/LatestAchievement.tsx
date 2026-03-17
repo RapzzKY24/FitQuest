@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/src/components/ui/Card";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import { createClient } from "@/src/utils/supabase/server";
+import { dashboardUtils } from "@/src/utils/DashboardUtils";
 
 // --- TYPES (Biar Anti-Error TypeScript!) ---
 type UserBadgeLog = {
@@ -14,21 +15,6 @@ type UserBadgeLog = {
     icon: string;
     rarity: "common" | "rare" | "epic" | "legendary";
   } | null;
-};
-
-// --- HELPER FUNCTIONS ---
-// 1. Format waktu ("2 hari lalu")
-const formatRelativeTime = (dateString: string) => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return "Hari ini";
-  if (diffDays === 1) return "Kemarin";
-  if (diffDays < 7) return `${diffDays} hari lalu`;
-  const diffWeeks = Math.floor(diffDays / 7);
-  return `${diffWeeks} minggu lalu`;
 };
 
 // 2. Mapping Styling Rarity (Warnanya dibikin dinamis sesuai level)
@@ -101,7 +87,7 @@ const LatestAchievements = async () => {
           id: `${badge.id}-${index}`,
           title: badge.name,
           icon: badge.icon || "🏅",
-          subtitle: `${badge.description} · ${formatRelativeTime(log.earned_at)}`,
+          subtitle: `${badge.description} · ${dashboardUtils.formatRelativeTime(log.earned_at)}`,
           badgeText: badge.rarity.toUpperCase(),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           badgeColor: style.badgeColor as any,

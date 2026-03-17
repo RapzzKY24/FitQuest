@@ -31,7 +31,7 @@ const LeaderboardWidget = async () => {
     topUsers?.map((u) => ({
       rank: u.rank,
       // Kasih tanda "(You)" kalau kebetulan user masuk Top 3
-      name: u.user_id === user.id ? `${u.display_name} (You)` : u.display_name,
+      name: u.user_id === user.id ? `${u.username} (You)` : u.username,
       icon: u.avatar_emoji || "😤",
       // Format angka ribuan (14200 -> 14.200)
       xp: `${(u.weekly_xp || 0).toLocaleString("id-ID")} XP`,
@@ -40,7 +40,7 @@ const LeaderboardWidget = async () => {
   // 5. Format Data buat User Saat Ini ("Posisimu")
   const currentUserRank = {
     rank: currentUserData?.rank || "-", // Kalau rank belum ada, kasih strip
-    name: `${currentUserData?.display_name || "Kamu"} (You)`,
+    name: `${currentUserData?.username || "Kamu"} (You)`,
     icon: currentUserData?.avatar_emoji || "💪",
     xp: `${(currentUserData?.weekly_xp || 0).toLocaleString("id-ID")} XP`,
   };
