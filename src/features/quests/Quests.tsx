@@ -14,7 +14,7 @@ import {
 import {ToastContainer, useToast} from "@/src/components/ui/Toast";
 
 const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
-  const {toasts, show: showToast,dismiss:dismissToast} = useToast();
+  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
   const [tabVal, setTabVal] = React.useState("daily");
   const [isClaiming, setIsClaiming] = React.useState(false);
   const QUEST_TABS = [
@@ -40,7 +40,6 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
         message: "Quest Berhasil Di Klaim!",
       });
     } else {
-      alert("Gagal klaim: " + res?.error);
       showToast({
         type: "danger",
         title: "Error",
@@ -354,7 +353,7 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                               size="xs"
                               onClick={() => handleClaim(uq.id)}
                               disabled={isClaiming}>
-                              {isClaiming ? "..." : "KLAIM"}
+                              KLAIM
                             </Button>
                           ) : isClaimed ? (
                             <BadgePill color="muted">
@@ -488,7 +487,7 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
           </section>
         </div>
       </div>
-        <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </main>
   );
 };

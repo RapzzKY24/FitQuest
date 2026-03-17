@@ -9,6 +9,8 @@ import {registerSchema} from "../schemas/auth.schemas";
 import type {RegisterSchema} from "../schemas/auth.schemas";
 import {Input} from "@/src/components/ui/Input";
 import {Button} from "@/src/components/ui/Button";
+import {ToastContainer, useToast} from "@/src/components/ui/Toast";
+import {useRouter} from "next/navigation";
 
 function PasswordStrength({password}: {password: string}) {
   const checks = [
@@ -57,8 +59,10 @@ function PasswordStrength({password}: {password: string}) {
 }
 
 export function RegisterForm() {
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
 
   const {
     register,
@@ -77,13 +81,22 @@ export function RegisterForm() {
 
     const result = await signUp(data);
 
-    console.log(result);
-
     if (result?.error) {
       setServerError(result.error);
       setIsLoading(false);
+      return; // Stop eksekusi di sini kalau gagal
     }
-    // Kalau sukses → redirect ke /register/onboarding (dari action)
+
+    if (result?.success) {
+      showToast({
+        type: "success",
+        title: "Berhasil Membuat Akun!",
+        message: "Silakan periksa email anda untuk verifikasi!.",
+      });
+    }
+    setTimeout(() => {
+      router.push("/auth/login");
+    }, 2000);
   }
 
   return (
@@ -204,6 +217,7 @@ export function RegisterForm() {
           </Link>
         </p>
       </div>
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }
