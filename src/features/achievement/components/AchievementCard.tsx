@@ -17,6 +17,7 @@ export interface Achievement {
   status: AchievementStatus;
   progress?: number;
   max?: number;
+  unlockedAt?: string;
 }
 
 interface RarityStyle {
