@@ -10,8 +10,12 @@ import {loginSchema} from "../schemas/auth.schemas";
 import type {LoginSchema} from "../schemas/auth.schemas";
 import {Input} from "@/src/components/ui/Input";
 import {Button} from "@/src/components/ui/Button";
+import {useRouter} from "next/navigation";
+import {ToastContainer, useToast} from "@/src/components/ui/Toast";
 
 export function LoginForm() {
+  const router = useRouter();
+  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +37,24 @@ export function LoginForm() {
     if (result?.error) {
       setServerError(result.error);
       setIsLoading(false);
+      return;
+    }
+
+    if (result?.success) {
+      showToast({
+        type: "success",
+        title: "Login Berhasil!",
+        // Pesan beda tergantung arah redirect
+        message:
+          result.redirectTo === "/auth/register/onboarding"
+            ? "Mari lengkapi data fisikmu dulu..."
+            : "Selamat datang kembali!",
+      });
+
+      // Biarkan tombol muter (loading), arahin sesuai hasil deteksi server
+      setTimeout(() => {
+        router.push(result.redirectTo as string);
+      }, 2000);
     }
   }
 
@@ -95,9 +117,7 @@ export function LoginForm() {
             {value: "94%", label: "Konsistensi"},
           ].map((stat) => (
             <div key={stat.label}>
-              <p className="font-display font-black text-2xl">
-                {stat.value}
-              </p>
+              <p className="font-display font-black text-2xl">{stat.value}</p>
               <p className="font-mono text-[10px] tracking-widest uppercase text-muted mt-0.5">
                 {stat.label}
               </p>
@@ -207,6 +227,7 @@ export function LoginForm() {
           </p>
         </div>
       </div>
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

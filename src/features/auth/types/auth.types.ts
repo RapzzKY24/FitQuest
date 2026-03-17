@@ -52,4 +52,5 @@ export interface OnboardingFormData {
 export interface AuthActionResult {
   success: boolean;
   error?: string;
+  redirectTo?:string;
 }

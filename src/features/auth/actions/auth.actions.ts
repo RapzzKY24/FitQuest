@@ -23,36 +23,64 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
     return {success: false, error: parsed.error.issues[0].message};
   }
 
-  const supabase = await createClient();
+  let isSuccess = false;
+  try {
+    const supabase = await createClient();
 
-  // Cek username sudah dipakai atau belum
-  const {data: existing} = await supabase
-    .from("user_profiles")
-    .select("id")
-    .eq("username", parsed.data.username)
-    .single();
+    // Cek username sudah dipakai atau belum
+    const {data: existing} = await supabase
+      .from("user_profiles")
+      .select("id")
+      .eq("username", parsed.data.username)
+      .single();
 
-  if (existing) {
-    return {success: false, error: "Username sudah dipakai, coba yang lain"};
+    if (existing) {
+      return {success: false, error: "Username sudah dipakai, coba yang lain"};
+    }
+
+    // Create new user
+    const {error} = await supabase.auth.signUp({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      options: {
+        data: {
+          // Data ini dibaca oleh trigger fn_handle_new_user di Supabase
+          // untuk auto-create user_profiles + user_stats
+          display_name: parsed.data.displayName,
+          username: parsed.data.username,
+        },
+      },
+    });
+
+    // Tangkap dan Translate Error dari Supabase
+    if (error) {
+      // Kalau Supabase ngomel karena email udah ada
+      if (error.message.includes("already registered") || error.status === 422)
+        return {
+          success: false,
+          error: "Email ini sudah terdaftar!",
+        };
+
+      // Tangkap error lain (misal: password kurang dari 6 karakter, dll)
+      return {success: false, error: error.message};
+    }
+
+    // Change isSuccess jika tidak ada error dari supabase
+    isSuccess = true;
+  } catch (error) {
+    console.error("Signup System Error:", error);
+    return {
+      success: false,
+      error: "Terjadi kesalahan pada sistem. Coba lagi nanti.",
+    };
+  }
+  // Return success true jika berhasil membuat user baru
+  if (isSuccess) {
+    return {success: true};
   }
 
-  const {error} = await supabase.auth.signUp({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    options: {
-      data: {
-        // Data ini dibaca oleh trigger fn_handle_new_user di Supabase
-        // untuk auto-create user_profiles + user_stats
-        display_name: parsed.data.displayName,
-        username: parsed.data.username,
-      },
-    },
-  });
-
-  if (error) return {success: false, error: error.message};
-
-  // Setelah signup, arahkan ke onboarding untuk pilih goal & data fisik
-  redirect("/register/onboarding");
+  // Fallback (seharusnya tidak pernah sampai ke sini)
+  return {success: false, error: "Unknown error occurred"};
 }
 
 // ─────────────────────────────────────────────
@@ -64,22 +92,49 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
     return {success: false, error: parsed.error.issues[0].message};
   }
 
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const {error} = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
+    const {data: authData, error: authError} =
+      await supabase.auth.signInWithPassword({
+        email: parsed.data.email,
+        password: parsed.data.password,
+      });
 
-  if (error) {
-    // Terjemahkan error Supabase ke bahasa yang lebih friendly
-    const msg = error.message.includes("Invalid login credentials")
-      ? "Email atau password salah"
-      : error.message;
-    return {success: false, error: msg};
+    if (authError) {
+      // Supabase ngasih error kalau email belum diverifikasi atau password salah
+      if (authError.message.includes("Email not confirmed")) {
+        return {
+          success: false,
+          error: "Email belum diverifikasi. Silakan cek email anda!",
+        };
+      }
+      return {success: false, error: "Email atau password salah!."};
+    }
+
+    // 2. Cek Status Onboarding di user_profiles
+    const {data: profile} = await supabase
+      .from("user_profiles")
+      .select("height_cm, weight_kg")
+      .eq("id", authData.user.id)
+      .single();
+
+    // 3. Tentukan arah redirect-nya
+    // Kalau tinggi atau berat badannya masih null, berarti belum onboarding
+    const needsOnboarding = !profile?.height_cm || !profile?.weight_kg;
+    const redirectUrl = needsOnboarding ? "/auth/register/onboarding" : "/dashboard";
+
+    return {
+      success: true,
+      redirectTo: redirectUrl, // Kita kasih tau Client harus pindah ke mana
+    };
+  } catch (error) {
+    console.error("System error during sign in:", error);
+    return {
+      success: false,
+      error: "Terjadi kesalahan sistem. Coba beberapa saat lagi.",
+    };
   }
-
-  redirect("/dashboard");
 }
 
 // ─────────────────────────────────────────────
