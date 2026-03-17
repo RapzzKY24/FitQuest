@@ -38,8 +38,8 @@ export async function updateSession(request: NextRequest) {
   // Ambil path yang sedang diakses user
   const pathname = request.nextUrl.pathname;
 
-  // KONDISI User TIDAK ADA session, tapi mencoba akses protected page (/test)
-  if (!user && pathname.startsWith("/test")) {
+  // KONDISI User TIDAK ADA session, tapi mencoba akses protected page (/dashboard)
+  if (!user && pathname.startsWith("/dashboard")) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/auth/login";
     return NextResponse.redirect(loginUrl);
@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
   // KONDISI User ADA session, tapi mencoba akses halaman login (/auth/login)
   if (user && pathname.startsWith("/auth/login")) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/test"; // Redirect ke /test
+    redirectUrl.pathname = "/dashboard"; // Redirect ke /dashboard
     return NextResponse.redirect(redirectUrl);
   }
 
