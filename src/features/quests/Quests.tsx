@@ -17,16 +17,56 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
   const {toasts, show: showToast, dismiss: dismissToast} = useToast();
   const [tabVal, setTabVal] = React.useState("daily");
   const [isClaiming, setIsClaiming] = React.useState(false);
-  const QUEST_TABS = [
-    {value: "daily", label: "Daily", badge: "3"},
-    {value: "weekly", label: "Weekly", badge: "2"},
-    {value: "special", label: "Special"},
-  ];
 
+  // 1. Bikin fungsi kecil buat ngitung quest yang siap diklaim berdasarkan tipe
+  const getClaimableCount = (type: string) => {
+    const count = initialQuests.filter(
+      (q) =>
+        q.quests?.quest_type === type && // Tipenya cocok (daily/weekly/special)
+        q.is_completed === true && // Udah selesai
+        q.is_claimed === false, // Belum diklaim
+    ).length;
+
+    // Kalau ada isinya, balikin angkanya sebagai string. Kalau 0, balikin undefined biar badge-nya ngilang
+    return count > 0 ? count.toString() : undefined;
+  };
+
+  // ... (Kodingan getClaimableCount & QUEST_TABS lu yang tadi) ...
+
+  // Hitung statistik untuk Header Cards
+  const questsTersedia = initialQuests.filter((q) => !q.is_completed).length;
+  
+  const questSelesai = initialQuests.filter((q) => q.is_completed).length;
+  
+  // Pake reduce buat ngejumlahin semua xp_reward dari quest yang belum diklaim
+  const xpTersisa = initialQuests
+    .filter((q) => !q.is_claimed)
+    .reduce((total, q) => total + (q.quests?.xp_reward || 0), 0);
+
+
+  // 2. Terapin fungsinya ke array QUEST_TABS lu
+  const QUEST_TABS = [
+    {
+      value: "daily",
+      label: "Daily",
+      badge: getClaimableCount("daily"),
+    },
+    {
+      value: "weekly",
+      label: "Weekly",
+      badge: getClaimableCount("weekly"),
+    },
+    {
+      value: "special",
+      label: "Special",
+      badge: getClaimableCount("special"),
+    },
+  ];
   // Filter quest berdasarkan tab yang dipilih (daily/weekly)
   const activeQuests = initialQuests.filter(
     (q) => q.quests.quest_type === tabVal,
   );
+
 
   const handleClaim = async (userQuestId: string) => {
     setIsClaiming(true);
@@ -65,7 +105,7 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
         <section className="grid grid-cols-3 gap-3">
           <Card>
             <CardContent>
-              <p className="text-primary font-extrabold text-3xl">3</p>
+              <p className="text-primary font-extrabold text-3xl">{questsTersedia}</p>
               <p className="font-mono text-muted tracking-[0.3em] text-xs">
                 QUEST TERSEDIA
               </p>
@@ -73,7 +113,7 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
           </Card>
           <Card>
             <CardContent>
-              <p className="text-success font-extrabold text-3xl">2</p>
+              <p className="text-success font-extrabold text-3xl">{questSelesai}</p>
               <p className="font-mono text-muted tracking-[0.3em] text-xs">
                 SELESAI HARI INI
               </p>
@@ -81,7 +121,7 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
           </Card>
           <Card>
             <CardContent>
-              <p className="text-accent font-extrabold text-3xl">+350</p>
+              <p className="text-accent font-extrabold text-3xl">{xpTersisa}</p>
               <p className="font-mono text-muted tracking-[0.3em] text-xs">
                 XP TERSISA
               </p>
@@ -101,178 +141,202 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
           <section className="w-full">
             {/* tabs content */}
             {tabVal === "daily" && (
-              // <section className="py-6 space-y-3">
-              //   <Card>
-              //     <CardContent className="flex items-center justify-between gap-6">
-              //       <div>
-              //         <BadgePill>
-              //           <span className="text-3xl">🏃‍♂️</span>
-              //         </BadgePill>
-              //       </div>
-              //       <div className="space-y-2 basis-full">
-              //         {/* Task Title & Desc */}
-              //         <div className="space-y-1">
-              //           <div className="flex gap-6">
-              //             <h2 className="text-xl font-semibold">
-              //               Lari 3 Kali Minggu Ini
-              //             </h2>
-              //             <BadgePill className="h-fit">Daily</BadgePill>
-              //           </div>
-              //           <p className="text-muted text-sm">
-              //             Catat 3 sesi lari dalam 7 hari terakhir
-              //           </p>
-              //         </div>
+              <section className="py-6 space-y-3">
+                {/* MAPPING DATA QUEST DI SINI */}
+                {activeQuests.map((uq) => {
+                  const quest = uq.quests;
+                  const isDone = uq.is_completed;
+                  const isClaimed = uq.is_claimed;
 
-              //         {/* Task Progress Bar */}
-              //         <div className="flex text-muted items-center gap-3 tracking-[0.5em] text-sm">
-              //           <ProgressBar
-              //             value={1}
-              //             max={3}
-              //             variant="orange"
-              //             type="linear"
-              //           />{" "}
-              //           <span>1/3</span>
-              //         </div>
-              //       </div>
+                  return (
+                    <Card
+                      key={uq.id}
+                      // Ganti warna card sesuai status
+                      className={
+                        isClaimed
+                          ? "opacity-50"
+                          : isDone
+                            ? "border-success/30 bg-success/5"
+                            : ""
+                      }>
+                      <CardContent className="flex items-center justify-between gap-6">
+                        <div>
+                          <BadgePill
+                            color={
+                              isDone && !isClaimed
+                                ? "success"
+                                : isClaimed
+                                  ? "muted"
+                                  : "primary"
+                            }>
+                            <span className="text-3xl">{quest.icon}</span>
+                          </BadgePill>
+                        </div>
 
-              //       {/* Task XP & Progress Status */}
-              //       <div className="space-y-2 text-end">
-              //         <BadgePill>+150 XP</BadgePill>
-              //         <BadgePill color="muted">IN PROGRESS</BadgePill>
-              //       </div>
-              //     </CardContent>
-              //   </Card>
+                        <div className="space-y-2 basis-full">
+                          <div className="space-y-1">
+                            <div className="flex gap-6">
+                              <h2 className="text-xl font-semibold">
+                                {quest.title}
+                              </h2>
+                              {isClaimed && (
+                                <BadgePill color="muted">CLAIMED</BadgePill>
+                              )}
+                            </div>
+                            <p className="text-muted text-sm">
+                              {quest.description}
+                            </p>
+                          </div>
 
-              //   <Card className="border-success/30 bg-success/5">
-              //     <CardContent className="flex items-center justify-between gap-6">
-              //       <div>
-              //         <BadgePill color="success">
-              //           <span className="text-3xl">💧</span>
-              //         </BadgePill>
-              //       </div>
-              //       <div className="space-y-2 basis-full">
-              //         {/* Task Title & Desc */}
-              //         <div className="space-y-1">
-              //           <div className="flex gap-6">
-              //             <h2 className="text-xl font-semibold">
-              //               30 Menit Non-Stop
-              //             </h2>
-              //             <BadgePill className="h-fit">Daily</BadgePill>
-              //           </div>
-              //           <p className="text-muted text-sm">
-              //             Satu sesi minimal 30 menit tanpa henti
-              //           </p>
-              //         </div>
+                          {/* Progress Bar Dinamis */}
+                          <div className="flex items-center gap-3 tracking-tight text-sm text-success">
+                            <ProgressBar
+                              value={uq.progress}
+                              max={quest.target_value}
+                              variant={isDone ? "green" : "orange"}
+                              type="linear"
+                            />
+                            {isDone ? (
+                              <>
+                                <Check size={14} />{" "}
+                                {isClaimed ? "CLAIMED" : "DONE"}
+                              </>
+                            ) : (
+                              <span className="text-muted">
+                                {uq.progress}/{quest.target_value}
+                              </span>
+                            )}
+                          </div>
+                        </div>
 
-              //         {/* Task Progress Bar */}
-              //         <div className="flex items-center gap-3 tracking-tight text-sm text-success">
-              //           <ProgressBar
-              //             value={1}
-              //             max={1}
-              //             variant="green"
-              //             type="linear"
-              //           />{" "}
-              //           <Check size={14} />
-              //           DONE
-              //         </div>
-              //       </div>
+                        <div className="space-y-2 text-end">
+                          <BadgePill
+                            color={isDone && !isClaimed ? "success" : "muted"}>
+                            +{quest.xp_reward} XP
+                          </BadgePill>
 
-              //       {/* Task XP & Progress Status */}
-              //       <div className="space-y-2 text-end">
-              //         <BadgePill color="success">+150 XP</BadgePill>
-              //         <Button size="xs">KLAIM</Button>
-              //       </div>
-              //     </CardContent>
-              //   </Card>
+                          {/* LOGIC TOMBOL CLAIM */}
+                          {isDone && !isClaimed ? (
+                            <Button
+                              size="xs"
+                              onClick={() => handleClaim(uq.id)}
+                              disabled={isClaiming}>
+                              KLAIM
+                            </Button>
+                          ) : isClaimed ? (
+                            <BadgePill color="muted">
+                              <Check size={14} /> CLAIMED
+                            </BadgePill>
+                          ) : (
+                            <BadgePill color="muted">IN PROGRESS</BadgePill>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </section>
+            )}
 
-              //   <Card className="border-success/30 bg-success/5">
-              //     <CardContent className="flex items-center justify-between gap-6">
-              //       <div>
-              //         <BadgePill color="success">
-              //           <span className="text-3xl">🔥</span>
-              //         </BadgePill>
-              //       </div>
-              //       <div className="space-y-2 basis-full">
-              //         {/* Task Title & Desc */}
-              //         <div className="space-y-1">
-              //           <div className="flex gap-6">
-              //             <h2 className="text-xl font-semibold">
-              //               Streak Terjaga
-              //             </h2>
-              //             <BadgePill className="h-fit">Daily</BadgePill>
-              //           </div>
-              //           <p className="text-muted text-sm">
-              //             Login dan log workout 7 hari berturut-turut
-              //           </p>
-              //         </div>
+            {tabVal === "weekly" && (
+              <section className="py-6 space-y-3">
+                {/* MAPPING DATA QUEST DI SINI */}
+                {activeQuests.map((uq) => {
+                  const quest = uq.quests;
+                  const isDone = uq.is_completed;
+                  const isClaimed = uq.is_claimed;
 
-              //         {/* Task Progress Bar */}
-              //         <div className="flex items-center gap-3 tracking-tight text-sm text-success">
-              //           <ProgressBar
-              //             value={1}
-              //             max={1}
-              //             variant="green"
-              //             type="linear"
-              //           />{" "}
-              //           <Check size={14} />
-              //           DONE
-              //         </div>
-              //       </div>
+                  return (
+                    <Card
+                      key={uq.id}
+                      // Ganti warna card sesuai status
+                      className={
+                        isClaimed
+                          ? "opacity-50"
+                          : isDone
+                            ? "border-success/30 bg-success/5"
+                            : ""
+                      }>
+                      <CardContent className="flex items-center justify-between gap-6">
+                        <div>
+                          <BadgePill
+                            color={
+                              isDone && !isClaimed
+                                ? "success"
+                                : isClaimed
+                                  ? "muted"
+                                  : "primary"
+                            }>
+                            <span className="text-3xl">{quest.icon}</span>
+                          </BadgePill>
+                        </div>
 
-              //       {/* Task XP & Progress Status */}
-              //       <div className="space-y-2 text-end">
-              //         <BadgePill color="success">+200 XP</BadgePill>
-              //         <Button size="xs">KLAIM</Button>
-              //       </div>
-              //     </CardContent>
-              //   </Card>
-              //   <Card className="opacity-50">
-              //     <CardContent className="flex items-center justify-between gap-6">
-              //       <div>
-              //         <BadgePill color="muted">
-              //           <span className="text-3xl">⚡️</span>
-              //         </BadgePill>
-              //       </div>
-              //       <div className="space-y-2 basis-full">
-              //         {/* Task Title & Desc */}
-              //         <div className="space-y-1">
-              //           <div className="flex gap-6">
-              //             <h2 className="text-xl font-semibold">
-              //               First Log Today
-              //             </h2>
-              //             <BadgePill className="h-fit" color="muted">
-              //               CLAIMED
-              //             </BadgePill>
-              //           </div>
-              //           <p className="text-muted text-sm">
-              //             Log workout pertamamu hari ini
-              //           </p>
-              //         </div>
+                        <div className="space-y-2 basis-full">
+                          <div className="space-y-1">
+                            <div className="flex gap-6">
+                              <h2 className="text-xl font-semibold">
+                                {quest.title}
+                              </h2>
+                              {isClaimed && (
+                                <BadgePill color="muted">CLAIMED</BadgePill>
+                              )}
+                            </div>
+                            <p className="text-muted text-sm">
+                              {quest.description}
+                            </p>
+                          </div>
 
-              //         {/* Task Progress Bar */}
-              //         <div className="flex items-center gap-3 tracking-tight text-sm text-muted">
-              //           <ProgressBar
-              //             value={1}
-              //             max={1}
-              //             variant="green"
-              //             type="linear"
-              //           />{" "}
-              //           <Check size={14} />
-              //           CLAIMED
-              //         </div>
-              //       </div>
+                          {/* Progress Bar Dinamis */}
+                          <div className="flex items-center gap-3 tracking-tight text-sm text-success">
+                            <ProgressBar
+                              value={uq.progress}
+                              max={quest.target_value}
+                              variant={isDone ? "green" : "orange"}
+                              type="linear"
+                            />
+                            {isDone ? (
+                              <>
+                                <Check size={14} />{" "}
+                                {isClaimed ? "CLAIMED" : "DONE"}
+                              </>
+                            ) : (
+                              <span className="text-muted">
+                                {uq.progress}/{quest.target_value}
+                              </span>
+                            )}
+                          </div>
+                        </div>
 
-              //       {/* Task XP & Progress Status */}
-              //       <div className="space-y-2 text-end">
-              //         <BadgePill color="muted">+50 XP</BadgePill>
-              //         <BadgePill color="muted">
-              //           <Check size={14} /> CLAIMED
-              //         </BadgePill>
-              //       </div>
-              //     </CardContent>
-              //   </Card>
-              // </section>
+                        <div className="space-y-2 text-end">
+                          <BadgePill
+                            color={isDone && !isClaimed ? "success" : "muted"}>
+                            +{quest.xp_reward} XP
+                          </BadgePill>
 
+                          {/* LOGIC TOMBOL CLAIM */}
+                          {isDone && !isClaimed ? (
+                            <Button
+                              size="xs"
+                              onClick={() => handleClaim(uq.id)}
+                              disabled={isClaiming}>
+                              KLAIM
+                            </Button>
+                          ) : isClaimed ? (
+                            <BadgePill color="muted">
+                              <Check size={14} /> CLAIMED
+                            </BadgePill>
+                          ) : (
+                            <BadgePill color="muted">IN PROGRESS</BadgePill>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </section>
+            )}
+
+            {tabVal === "special" && (
               <section className="py-6 space-y-3">
                 {/* MAPPING DATA QUEST DI SINI */}
                 {activeQuests.map((uq) => {
