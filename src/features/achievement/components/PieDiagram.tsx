@@ -3,17 +3,26 @@
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
-const data = [
-  { name: "Unlocked", value: 18 },
-  { name: "Locked", value: 24 },
-];
+// 1. Definisikan props yang mau diterima
+interface PieDiagramProps {
+  unlockedCount: number;
+  lockedCount: number;
+}
 
-const PieDiagram = () => {
-  const total = data.reduce((acc, entry) => acc + entry.value, 0);
-  const percentage = Math.round((data[0].value / total) * 100);
+const PieDiagram = ({ unlockedCount, lockedCount }: PieDiagramProps) => {
+  // 2. Masukin data dari props ke array data Recharts
+  const data = [
+    { name: "Unlocked", value: unlockedCount },
+    { name: "Locked", value: lockedCount },
+  ];
+
+  const total = unlockedCount + lockedCount;
+  // 3. Pake ternary operator biar aman dari error NaN kalau total badge = 0
+  const percentage = total > 0 ? Math.round((unlockedCount / total) * 100) : 0;
 
   return (
-    <>
+    // Kasih min-h-[150px] atau ukuran spesifik di div bungkusnya biar ResponsiveContainer recharts mau nampil
+    <div className="w-full h-[150px] relative">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -21,7 +30,7 @@ const PieDiagram = () => {
             cx="50%"
             cy="50%"
             innerRadius={60}
-            outerRadius={80}
+            outerRadius={75}
             paddingAngle={5}
             dataKey="value"
             stroke="none"
@@ -31,6 +40,7 @@ const PieDiagram = () => {
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
+                // fill-primary buat Unlocked (index 0), fill-muted buat Locked (index 1)
                 className={`${index === 0 ? "fill-primary" : "fill-muted"} outline-none`}
               />
             ))}
@@ -43,11 +53,11 @@ const PieDiagram = () => {
         <span className="block text-3xl font-black text-white leading-none">
           {percentage}%
         </span>
-        <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">
+        <span className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">
           Done
         </span>
       </div>
-    </>
+    </div>
   );
 };
 

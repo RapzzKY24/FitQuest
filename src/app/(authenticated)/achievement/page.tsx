@@ -1,8 +1,21 @@
 import AchievementPages from "@/src/features/achievement/pages/AchievementPages";
-import React from "react";
+import { FetchUserAchievement } from "@/src/features/achievement/service/achievement.service";
+import { createClient } from "@/src/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-const page = () => {
-  return <AchievementPages />;
-};
+export default async function Page() {
+  const supabase = await createClient();
 
-export default page;
+  // 1. Cek User yang lagi login
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+
+  // 2. FETCH DATA
+  const achievementsData = await FetchUserAchievement(user.id);
+
+  return <AchievementPages achievements={achievementsData} />;
+}

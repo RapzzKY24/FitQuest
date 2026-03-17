@@ -1,30 +1,44 @@
 import { Card, CardContent } from "@/src/components/ui/Card";
 import React from "react";
 
-const StatisticCard = () => {
+interface StatisticCardProps {
+  totalUnlocked: number;
+  maxBadges: number;
+  legendaryCount: number;
+  epicCount: number;
+  completionRate: number;
+}
+
+const StatisticCard = ({
+  totalUnlocked,
+  maxBadges,
+  legendaryCount,
+  epicCount,
+  completionRate,
+}: StatisticCardProps) => {
   const statsCards = [
     {
       id: 1,
-      value: "18",
-      subValue: "/ 42",
+      value: totalUnlocked.toString(),
+      subValue: `/ ${maxBadges}`,
       label: "Total Unlocked",
       color: "text-white",
     },
     {
       id: 2,
-      value: "2",
+      value: legendaryCount.toString(),
       label: "Legendary",
       color: "text-amber-500",
     },
     {
       id: 3,
-      value: "4",
+      value: epicCount.toString(),
       label: "Epic",
       color: "text-purple-500",
     },
     {
       id: 4,
-      value: "43%",
+      value: `${completionRate}%`,
       label: "Completion",
       color: "text-orange-600",
     },
