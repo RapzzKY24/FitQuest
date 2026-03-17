@@ -4,9 +4,9 @@ import { Card, CardContent } from "@/src/components/ui/Card";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import { createClient } from "@/src/utils/supabase/server";
 import { dashboardUtils } from "@/src/utils/DashboardUtils";
+import { DashboardService } from "../services/dashboard.service";
 
-// --- TYPES (Biar Anti-Error TypeScript!) ---
-type UserBadgeLog = {
+export type UserBadgeLog = {
   earned_at: string;
   badges: {
     id: number;
@@ -15,30 +15,6 @@ type UserBadgeLog = {
     icon: string;
     rarity: "common" | "rare" | "epic" | "legendary";
   } | null;
-};
-
-// 2. Mapping Styling Rarity (Warnanya dibikin dinamis sesuai level)
-const getRarityStyle = (rarity: string) => {
-  switch (rarity) {
-    case "legendary":
-      return {
-        badgeColor: "warning",
-        iconBg: "bg-orange-500/10 border-orange-500/20",
-      };
-    case "epic":
-      return {
-        badgeColor: "purple",
-        iconBg: "bg-purple-500/10 border-purple-500/20",
-      };
-    case "rare":
-      return {
-        badgeColor: "info",
-        iconBg: "bg-blue-500/10 border-blue-500/20",
-      };
-    case "common":
-    default:
-      return { badgeColor: "muted", iconBg: "bg-elevated border-border" };
-  }
 };
 
 const LatestAchievements = async () => {
@@ -50,38 +26,19 @@ const LatestAchievements = async () => {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  // 2. Tarik log achievement terakhir (Join tabel user_badges & badges)
-  const { data: recentBadges, error } = await supabase
-    .from("user_badges")
-    .select(
-      `
-      earned_at,
-      badges (
-        id,
-        name,
-        description,
-        icon,
-        rarity
-      )
-    `,
-    )
-    .eq("user_id", user.id)
-    .order("earned_at", { ascending: false }) // Urutkan dari yang paling baru didapet
-    .limit(3) // Ambil 3 aja buat di dashboard
-    .returns<UserBadgeLog[]>();
-
-  if (error) {
-    console.error("Gagal narik achievement:", error.message);
-  }
+  // 2. Tarik log achievement terakhir
+  const { recentBadges } = await DashboardService.latestAchievement(
+    supabase,
+    user.id,
+  );
 
   // 3. Format Data DB biar pas sama Desain UI lu
-  // Kita filter out yang badges-nya null (buat jaga-jaga kalau datanya rusak)
   const formattedAchievements =
     recentBadges
       ?.filter((log) => log.badges !== null)
       .map((log, index) => {
         const badge = log.badges!;
-        const style = getRarityStyle(badge.rarity);
+        const style = dashboardUtils.getRarityStyle(badge.rarity);
 
         return {
           id: `${badge.id}-${index}`,

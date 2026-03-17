@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/src/components/ui/Card";
 import { createClient } from "@/src/utils/supabase/server";
+import { DashboardService } from "../services/dashboard.service";
 
 const LeaderboardWidget = async () => {
   const supabase = await createClient();
@@ -13,18 +14,10 @@ const LeaderboardWidget = async () => {
   if (!user) return null;
 
   // 2. Tarik Top 3 Leaderboard
-  const { data: topUsers } = await supabase
-    .from("v_weekly_leaderboard")
-    .select("*")
-    .order("rank", { ascending: true })
-    .limit(3);
-
-  // 3. Tarik Posisi & Data User Saat Ini
-  const { data: currentUserData } = await supabase
-    .from("v_weekly_leaderboard")
-    .select("*")
-    .eq("user_id", user.id)
-    .single();
+  const { topUsers, currentUserData } = await DashboardService.leaderboard(
+    supabase,
+    user.id,
+  );
 
   // 4. Format Data buat Top 3
   const topLeaderboard =
