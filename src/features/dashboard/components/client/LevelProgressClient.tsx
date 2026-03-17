@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/src/components/ui/Card";
 import { Dialog } from "@/src/components/ui/Dialog";
 import { Button } from "@/src/components/ui/Button";
+import { useLevelDetection } from "../../hooks/useLevelDetection";
 
 interface Props {
   currentLevel: number;
@@ -25,25 +26,8 @@ const LevelProgressClient = ({
   xpLeft,
   percentage,
 }: Props) => {
-  const [showLevelUpDialog, setShowLevelUpDialog] = useState(false);
-
-  // LOGIC DETEKSI LEVEL UP
-  useEffect(() => {
-    // Ambil data level terakhir dari browser
-    const savedLevelStr = localStorage.getItem("fitquest_last_level");
-
-    if (savedLevelStr) {
-      const savedLevel = parseInt(savedLevelStr, 10);
-      // Kalau level dari database > level di browser, berarti NAIK LEVEL!
-      if (currentLevel > savedLevel) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setShowLevelUpDialog(true);
-      }
-    }
-
-    // Selalu update browser dengan level terbaru, biar gak spam dialog
-    localStorage.setItem("fitquest_last_level", currentLevel.toString());
-  }, [currentLevel]);
+  const { showLevelUpDialog, closeLevelUpDialog } =
+    useLevelDetection(currentLevel);
 
   return (
     <>
@@ -105,7 +89,7 @@ const LevelProgressClient = ({
       {/* --- DIALOG LEVEL UP (Muncul kalau state true) --- */}
       <Dialog
         open={showLevelUpDialog}
-        onClose={() => setShowLevelUpDialog(false)}
+        onClose={closeLevelUpDialog}
         variant="levelup"
         size="sm"
         title="KAMU NAIK LEVEL!"
@@ -113,7 +97,7 @@ const LevelProgressClient = ({
           <Button
             variant="primary"
             className="w-full"
-            onClick={() => setShowLevelUpDialog(false)}
+            onClick={closeLevelUpDialog}
           >
             LANJUTKAN PERJALANAN ⚡
           </Button>

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/src/components/ui/Card";
 import { ProgressBar } from "@/src/components/ui/ProgressBar";
 
-// Bikin tipe data biar rapi
+// TYPE
 type DailyStat = { day: string; value: number; isToday: boolean };
 type WeeklyData = { xp: DailyStat[]; menit: DailyStat[] };
 type WeeklyTotals = { sessions: number; minutes: number; xp: number };
@@ -45,7 +45,7 @@ const WeeklyActivityClient = ({ weeklyData, totals }: Props) => {
               onClick={() => setActiveTab("menit")}
               className={`font-mono text-[11px] font-bold tracking-[0.2em] uppercase transition-colors ${
                 activeTab === "menit"
-                  ? "text-blue-500"
+                  ? "text-info"
                   : "text-muted hover:text-broken-white"
               }`}
             >
@@ -63,7 +63,7 @@ const WeeklyActivityClient = ({ weeklyData, totals }: Props) => {
             >
               <span
                 className={`font-mono text-[9px] font-bold h-3 ${
-                  activeTab === "xp" ? "text-primary" : "text-blue-500"
+                  activeTab === "xp" ? "text-primary" : "text-info"
                 }`}
               >
                 {item.value > 0 ? item.value : ""}
@@ -99,7 +99,7 @@ const WeeklyActivityClient = ({ weeklyData, totals }: Props) => {
           </div>
 
           <div className="flex flex-col items-center justify-center border-r border-border/60">
-            <h2 className="text-broken-white font-black text-3xl md:text-4xl mb-1 drop-shadow-sm">
+            <h2 className="font-black text-3xl md:text-4xl mb-1 drop-shadow-sm text-info">
               {totals.minutes}
             </h2>
             <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/src/components/ui/Card";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import Link from "next/link";
 import { createClient } from "@/src/utils/supabase/server";
+import { dashboardUtils } from "@/src/utils/DashboardUtils";
 
 type RecentWorkoutLog = {
   id: string;
@@ -14,46 +15,6 @@ type RecentWorkoutLog = {
     name: string;
     icon: string;
   } | null;
-};
-
-// --- HELPER FUNCTIONS ---
-// Buat nerjemahin intensitas DB ke bahasa UI
-const translateIntensity = (intensity: string) => {
-  switch (intensity) {
-    case "light":
-      return "Ringan";
-    case "moderate":
-      return "Sedang";
-    case "intense":
-      return "Intens";
-    default:
-      return "Biasa";
-  }
-};
-
-// Buat bikin format "Hari ini 06:30" / "Kemarin 18:00"
-const formatRelativeTime = (dateString: string) => {
-  const date = new Date(dateString);
-  const now = new Date();
-
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-  const timeFormatted = date.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  if (diffDays === 0 && now.getDate() === date.getDate()) {
-    return `Hari ini ${timeFormatted}`;
-  } else if (
-    diffDays === 1 ||
-    (diffDays === 0 && now.getDate() !== date.getDate())
-  ) {
-    return `Kemarin ${timeFormatted}`;
-  } else {
-    return `${diffDays} hari lalu`;
-  }
 };
 
 const WorkoutStats = async () => {
@@ -98,7 +59,7 @@ const WorkoutStats = async () => {
       // Di Supabase join, data relasi ada di dalam object
       title: log.workout_types?.name || "Olahraga",
       icon: log.workout_types?.icon || "⚡",
-      subtitle: `${translateIntensity(log.intensity)} · ${log.duration_min} mnt · ${formatRelativeTime(log.logged_at)}`,
+      subtitle: `${dashboardUtils.translateIntensity(log.intensity)} · ${log.duration_min} mnt · ${dashboardUtils.formatRelativeTime(log.logged_at)}`,
       xp: `+${log.xp_earned} XP`,
     })) || [];
 
