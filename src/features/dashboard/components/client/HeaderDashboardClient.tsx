@@ -111,7 +111,7 @@ const PieDiagramSession = ({ sesiSelesai }: { sesiSelesai: number }) => {
 
       <div className="absolute inset-0 flex flex-col items-center justify-center pt-1">
         <span className="text-primary text-4xl font-black leading-none">
-          {sesiSelesai}
+          {safeSelesai}
         </span>
         <span className="text-muted text-xs font-bold tracking-widest mt-1">
           / {totalSesi}

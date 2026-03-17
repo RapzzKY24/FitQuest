@@ -4,8 +4,9 @@ import { BadgePill } from "@/src/components/ui/badge-pill";
 import Link from "next/link";
 import { createClient } from "@/src/utils/supabase/server";
 import { dashboardUtils } from "@/src/utils/DashboardUtils";
+import { DashboardService } from "../services/dashboard.service";
 
-type RecentWorkoutLog = {
+export type RecentWorkoutLog = {
   id: string;
   duration_min: number;
   intensity: string;
@@ -28,35 +29,15 @@ const WorkoutStats = async () => {
   if (!user) return null;
 
   // 2. Tarik log terakhir (Join table workout_logs & workout_types)
-  const { data: recentWorkouts, error } = await supabase
-    .from("workout_logs")
-    .select(
-      `
-      id,
-      duration_min,
-      intensity,
-      xp_earned,
-      logged_at,
-      workout_types (
-        name,
-        icon
-      )
-    `,
-    )
-    .eq("user_id", user.id)
-    .order("logged_at", { ascending: false }) // Urutkan dari yang terbaru
-    .limit(3)
-    .returns<RecentWorkoutLog[]>();
-
-  if (error) {
-    console.error("Gagal narik riwayat workout:", error.message);
-  }
+  const { recentWorkouts } = await DashboardService.workoutStats(
+    supabase,
+    user.id,
+  );
 
   // 3. Format data dari DB biar pas sama UI lu
   const formattedWorkouts =
     recentWorkouts?.map((log) => ({
       id: log.id,
-      // Di Supabase join, data relasi ada di dalam object
       title: log.workout_types?.name || "Olahraga",
       icon: log.workout_types?.icon || "⚡",
       subtitle: `${dashboardUtils.translateIntensity(log.intensity)} · ${log.duration_min} mnt · ${dashboardUtils.formatRelativeTime(log.logged_at)}`,

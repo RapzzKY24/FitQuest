@@ -66,4 +66,26 @@ export const dashboardUtils = {
     if (lvl <= 39) return "Legend";
     return "GOD MODE";
   },
+  getRarityStyle: (rarity: string) => {
+    switch (rarity) {
+      case "legendary":
+        return {
+          badgeColor: "warning",
+          iconBg: "bg-orange-500/10 border-orange-500/20",
+        };
+      case "epic":
+        return {
+          badgeColor: "purple",
+          iconBg: "bg-purple-500/10 border-purple-500/20",
+        };
+      case "rare":
+        return {
+          badgeColor: "info",
+          iconBg: "bg-blue-500/10 border-blue-500/20",
+        };
+      case "common":
+      default:
+        return { badgeColor: "muted", iconBg: "bg-elevated border-border" };
+    }
+  },
 };

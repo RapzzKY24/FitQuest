@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/src/components/ui/Card";
 import { createClient } from "@/src/utils/supabase/server";
 import React from "react";
+import { DashboardService } from "../services/dashboard.service";
 
 const StatsDashboard = async () => {
   const supabase = await createClient();
@@ -15,14 +16,13 @@ const StatsDashboard = async () => {
   }
 
   // 2. Tarik data dari View v_user_dashboard
-  const { data: vDashboard } = await supabase
-    .from("v_user_dashboard")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+  const response = await DashboardService.statsDashboard(supabase, user.id);
+
+  if (!response) return null;
+
+  const { vDashboard } = response;
 
   // 3. Map data DB ke format Card lu
-  // Fallback ke 0 kalau datanya belum ada (misal user baru daftar)
   const RealDataDashboard = [
     {
       id: 1,
@@ -48,7 +48,6 @@ const StatsDashboard = async () => {
       value: vDashboard?.streak_current || 0,
       valueColor: "text-danger",
       label: "Streak Aktif",
-      // Ambil best streak buat dimunculin di tulisan kecil bawahnya
       trend: `Rekor terbaik: ${vDashboard?.streak_best || 0} Hari`,
       trendColor: "text-success",
     },
