@@ -35,14 +35,13 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
 
   // Hitung statistik untuk Header Cards
   const questsTersedia = initialQuests.filter((q) => !q.is_completed).length;
-  
+
   const questSelesai = initialQuests.filter((q) => q.is_completed).length;
-  
+
   // Pake reduce buat ngejumlahin semua xp_reward dari quest yang belum diklaim
   const xpTersisa = initialQuests
     .filter((q) => !q.is_claimed)
     .reduce((total, q) => total + (q.quests?.xp_reward || 0), 0);
-
 
   // 2. Terapin fungsinya ke array QUEST_TABS lu
   const QUEST_TABS = [
@@ -66,7 +65,6 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
   const activeQuests = initialQuests.filter(
     (q) => q.quests.quest_type === tabVal,
   );
-
 
   const handleClaim = async (userQuestId: string) => {
     setIsClaiming(true);
@@ -105,7 +103,9 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
         <section className="grid grid-cols-3 gap-3">
           <Card>
             <CardContent>
-              <p className="text-primary font-extrabold text-3xl">{questsTersedia}</p>
+              <p className="text-primary font-extrabold text-3xl">
+                {questsTersedia}
+              </p>
               <p className="font-mono text-muted tracking-[0.3em] text-xs">
                 QUEST TERSEDIA
               </p>
@@ -113,7 +113,9 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
           </Card>
           <Card>
             <CardContent>
-              <p className="text-success font-extrabold text-3xl">{questSelesai}</p>
+              <p className="text-success font-extrabold text-3xl">
+                {questSelesai}
+              </p>
               <p className="font-mono text-muted tracking-[0.3em] text-xs">
                 SELESAI HARI INI
               </p>
@@ -437,67 +439,6 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
 
           {/* user card stat */}
           <section className="space-y-4 basis-1/3">
-            <Card>
-              <CardContent className="text-muted space-y-4">
-                <div className="flex items-center gap-3">
-                  <p className="uppercase tracking-[0.3em] text-nowrap">
-                    {"//"} XP HARI INI
-                  </p>
-                  <div className="h-px w-full bg-white/10" />
-                </div>
-                <section className="space-y-4">
-                  <p>
-                    <span className="text-primary font-black text-4xl">
-                      350
-                    </span>{" "}
-                    / 700 XP
-                  </p>
-
-                  <div className="flex items-center justify-between text-xs">
-                    <p className="tracking-[0.3em]">PROGRESS HARI INI</p>
-                    <p>50%</p>
-                  </div>
-                  <ProgressBar
-                    value={350}
-                    max={700}
-                    variant="orange"
-                    type="linear"
-                  />
-
-                  {/* divider */}
-                  <div className="h-px w-full bg-white/10 my-6" />
-
-                  <ul className="list-disc ml-4 space-y-4">
-                    <li className="text-broken-white">
-                      <p className="flex items-center justify-between">
-                        Lari 3X Minggu Ini{" "}
-                        <span className="tracking-[0.3em] text-muted text-xxs">
-                          1/3
-                        </span>
-                      </p>
-                    </li>
-                    <li className="text-success">
-                      <p className="flex items-center justify-between">
-                        30 Menit Non-Stop <Check size={12} />
-                      </p>
-                    </li>
-                    <li className="text-success">
-                      <p className="flex items-center justify-between">
-                        Streak Terjaga <Check size={12} />
-                      </p>
-                    </li>
-                    <li>
-                      <p className="flex items-center justify-between">
-                        First Log Today{" "}
-                        <span className="flex items-center text-xxs gap-1">
-                          <Check size={12} /> CLAIMED
-                        </span>
-                      </p>
-                    </li>
-                  </ul>
-                </section>
-              </CardContent>
-            </Card>
             <Card>
               <CardContent className="text-muted space-y-4">
                 <div className="flex items-center gap-3">
