@@ -3,88 +3,47 @@ import { SectionLabel } from "../shared/SectionLabel";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import { Button } from "@/src/components/ui/Button";
 
-interface WorkoutLog {
+export interface WorkoutLog {
   id: string;
   emoji: string;
   name: string;
-  intensity: "Ringan" | "Sedang" | "Intens";
+  intensity: string;
   duration: number;
   xp: number;
   timestamp: string;
 }
 
-const RECENT_WORKOUTS: WorkoutLog[] = [
-  {
-    id: "1",
-    emoji: "🏃",
-    name: "Lari Pagi",
-    intensity: "Sedang",
-    duration: 45,
-    xp: 90,
-    timestamp: "Hari ini, 06:30",
-  },
-  {
-    id: "2",
-    emoji: "🏋️",
-    name: "Gym — Upper Body",
-    intensity: "Intens",
-    duration: 60,
-    xp: 156,
-    timestamp: "Kemarin, 18:00",
-  },
-  {
-    id: "3",
-    emoji: "🚴",
-    name: "Bersepeda Sore",
-    intensity: "Ringan",
-    duration: 30,
-    xp: 48,
-    timestamp: "2 hari lalu",
-  },
-  {
-    id: "4",
-    emoji: "🧘",
-    name: "Yoga & Meditasi",
-    intensity: "Ringan",
-    duration: 40,
-    xp: 64,
-    timestamp: "3 hari lalu",
-  },
-  {
-    id: "5",
-    emoji: "🏋️",
-    name: "Gym — Leg Day",
-    intensity: "Intens",
-    duration: 75,
-    xp: 195,
-    timestamp: "4 hari lalu",
-  },
-];
+interface WorkoutHistoryProps {
+  logs: WorkoutLog[];
+}
 
-function intensityClass(i: WorkoutLog["intensity"]) {
+function intensityClass(i: string) {
   if (i === "Intens") return "text-danger";
   if (i === "Sedang") return "text-warning";
+  if (i === "Ringan") return "text-info";
   return "text-muted";
 }
 
-export const WorkoutHistory = ({
-  logs = RECENT_WORKOUTS,
-}: {
-  logs?: WorkoutLog[];
-}) => (
+export const WorkoutHistory = ({ logs }: WorkoutHistoryProps) => (
   <Card className="w-full border-border bg-surface">
     <CardHeader className="px-6 pt-6 pb-0">
       <div className="flex items-center justify-between gap-4">
-        <SectionLabel>Riwayat Workout</SectionLabel>
+        <SectionLabel>{"// "}Riwayat Workout</SectionLabel>
 
         <Button variant="outline">LIHAT SEMUA →</Button>
       </div>
     </CardHeader>
 
-    <CardContent className="px-6 pb-6 pt-4">
-      {logs.map((log) => (
-        <WorkoutRow key={log.id} log={log} />
-      ))}
+    <CardContent className="px-6 pb-6 pt-4 flex flex-col gap-0">
+      {logs && logs.length > 0 ? (
+        logs.map((log) => <WorkoutRow key={log.id} log={log} />)
+      ) : (
+        <div className="py-10 text-center f-mono text-muted text-sm border border-dashed border-border mt-4">
+          Belum ada riwayat workout.
+          <br />
+          <span className="text-primary">Ayo mulai bergerak! 🔥</span>
+        </div>
+      )}
     </CardContent>
   </Card>
 );
@@ -107,7 +66,7 @@ const WorkoutRow = ({ log }: { log: WorkoutLog }) => (
     </div>
 
     <BadgePill>
-      <h1 className="text-[16px]">+{log.xp} XP</h1>
+      <h1 className="text-[16px] font-bold text-accent">+{log.xp} XP</h1>
     </BadgePill>
   </div>
 );

@@ -1,11 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import ProfileCard from "../components/ProfileCard";
+import ProfileCard, { UserProfileData } from "../components/ProfileCard";
 import { Tabs } from "@/src/components/ui/Tabs";
 import InfoTabs from "../components/InfoTabs";
 import ActivityTabs from "../components/ActivityTabs";
+import Gymbro from "../components/Gymbro";
 
-const ProfilePages = () => {
+const ProfilePages = ({
+  userData,
+  monthlyData,
+  workoutLog,
+}: ProfilePagesProps) => {
   const [tabVal, setTabVal] = useState("info");
   const PROFILE_TABS = [
     { value: "info", label: "Info dan Edit" },
@@ -25,7 +30,7 @@ const ProfilePages = () => {
             Pro<span className="text-primary">file</span>
           </h1>
         </div>
-        <ProfileCard />
+        <ProfileCard user={userData} />
         <Tabs
           tabs={PROFILE_TABS}
           value={tabVal}
@@ -35,6 +40,7 @@ const ProfilePages = () => {
         {/* tabs section */}
         {tabVal == "info" && <InfoTabs />}
         {tabVal == "aktivitas" && <ActivityTabs />}
+        {tabVal == "gymbro" && <Gymbro />}
       </div>
     </main>
   );

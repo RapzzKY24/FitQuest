@@ -11,80 +11,118 @@ interface StatBoxProps {
   isLast?: boolean;
 }
 
-const ProfileCard = () => {
+export interface UserProfileData {
+  name: string;
+  username: string;
+  avatar: string;
+  created_at: string;
+  level: number;
+  title: string;
+  xp: number;
+  xpMax: number;
+  streak: number;
+  total_sessions: number;
+  total_minutes: number;
+  total_xp: number;
+  total_achievements: number;
+}
+
+interface ProfileCardProps {
+  user: UserProfileData;
+}
+
+const ProfileCard = ({ user }: ProfileCardProps) => {
+  const joinDate = user?.created_at
+    ? new Intl.DateTimeFormat("id-ID", {
+        month: "long",
+        year: "numeric",
+      }).format(new Date(user.created_at))
+    : "Baru Saja";
+
+  const currentXp = user?.xp || 0;
+  const targetXp = user?.xpMax || 100;
+  const xpRemaining = targetXp - currentXp;
+
   return (
-    <Card className="w-full  overflow-hidden">
+    <Card className="w-full overflow-hidden">
       <CardContent className="p-8">
-        {/* TOP SECTION: Profile & Streak */}
+        {/* TOP SECTION */}
         <div className="flex justify-between items-start mb-10">
           <div className="flex items-center gap-8">
-            {/* Profile Emoji Container */}
             <div className="relative">
-              <div className="w-32 h-32 bg-[#141414] border-2 border-[#272727] rounded-sm flex items-center justify-center text-6xl shadow-inner">
-                💪
+              <div className="w-32 h-32 bg-[#141414] border-2 border-[#272727] rounded-sm flex items-center justify-center text-6xl shadow-inner font-black text-white/50 uppercase">
+                {user?.avatar}
               </div>
             </div>
 
-            {/* Biodata & Progress */}
             <div className="flex flex-col gap-y-6 min-w-[400px]">
-              {/* Name and Level */}
               <div className="flex items-center gap-4">
                 <h1 className="font-black text-4xl uppercase tracking-tighter">
-                  Budi Warrior
+                  {user?.name}
                 </h1>
                 <BadgePill className="bg-[#1c1c1c] border border-[#272727] px-3 py-1 rounded-sm flex items-center gap-3">
-                  <span className="font-bold text-sm">LV.7</span>
+                  <span className="font-bold text-sm">LV.{user?.level}</span>
                   <span className="w-px h-3 bg-[#555]"></span>
                   <span className="text-sm font-medium uppercase tracking-wider">
-                    Iron Warrior
+                    {user?.title}
                   </span>
                 </BadgePill>
               </div>
 
-              {/* Username & Join Date */}
               <div className="flex items-center gap-3 text-muted text-sm font-medium tracking-[0.2em] uppercase">
                 <span className="hover:text-broken-white transition-colors">
-                  @budiwarrior
+                  @
+                  {user?.username ||
+                    user?.name?.toLowerCase().replace(/\s/g, "")}
                 </span>
                 <span className="text-muted/40">•</span>
-                <span>Bergabung Maret 2025</span>
+                <span>Bergabung {joinDate}</span>
               </div>
 
-              {/* Progress Section */}
               <div className="space-y-3">
                 <div className="flex justify-between items-end">
                   <h2 className="uppercase text-muted text-xxs font-bold tracking-[0.3em]">
-                    Xp ke level 8
+                    Xp ke level {(user?.level || 0) + 1}
                   </h2>
                   <p className="text-sm font-bold">
-                    340 <span className="text-muted">/ 600</span>
+                    {currentXp} <span className="text-muted">/ {targetXp}</span>
                   </p>
                 </div>
 
                 <ProgressBar
-                  value={340}
-                  max={600}
+                  value={currentXp}
+                  max={targetXp}
                   className="h-2 bg-[#1c1c1c]"
                 />
 
                 <p className="uppercase text-[#555] text-[10px] font-bold tracking-[0.2em]">
-                  260 XP lagi untuk naik level
+                  {xpRemaining > 0
+                    ? `${xpRemaining} XP lagi untuk naik level`
+                    : "Siap Level Up!"}
                 </p>
               </div>
             </div>
           </div>
 
-          <StreakBadgePill streak={17} />
+          <StreakBadgePill streak={user?.streak || 0} />
         </div>
 
-        {/* BOTTOM SECTION: Statistics Grid */}
+        {/* BOTTOM SECTION */}
         <div className="grid grid-cols-4 border-t border-[#272727] pt-8">
-          <StatBox label="Total Sesi" value="47" />
-          <StatBox label="Total Menit" value="2,840" />
-          <StatBox label="Total XP" value="12,450" color="text-[#ffb347]" />
+          <StatBox label="Total Sesi" value={user?.total_sessions || 0} />
+          <StatBox
+            label="Total Menit"
+            value={(user?.total_minutes || 0).toLocaleString()}
+            color="text-[#e066ff]"
+          />
+          <StatBox
+            label="Total XP"
+            value={(user?.total_xp || 0).toLocaleString()}
+            color="text-[#ffb347]"
+          />
           <StatBox
             label="Achievement"
-            value="18"
+            value={user?.total_achievements || 0}
             color="text-[#3b82f6]"
             isLast
           />
