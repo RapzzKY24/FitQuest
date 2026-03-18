@@ -14,26 +14,26 @@ export default async function QuestsRoute() {
   if (!user) redirect("/auth/login");
   
 
-  // ⚡ 1. PANCING DATABASE: "Pastikan user ini punya quest buat hari ini!"
-  // Fungsi ini aman dipanggil berkali-kali karena di SQL-nya ada NOT EXISTS
-  await supabase.rpc("fn_generate_daily_quests", {p_user_id: user.id});
+  // Bikin variabel hari ini (format YYYY-MM-DD)
+  const today = new Date().toISOString().split('T')[0];
 
-  // 2. Tarik data Quests yang SEKARANG PASTI ADA ISINYA
+  // 1. PANCING DATABASE (tetep panggil fungsi ini ya)
+  await supabase.rpc('fn_generate_daily_quests', { p_user_id: user.id });
+
+  // 2. Tarik data Quests dengan FILTER YANG BENER
   const {data: rawUserQuests, error: questError} = await supabase
     .from("user_quests")
-    .select(
-      `
-      id, progress, is_completed, is_claimed, period_start,
+    .select(`
+      id, progress, is_completed, is_claimed, period_start, period_end,
       quests (id, title, description, icon, quest_type, target_value, xp_reward)
-    `,
-    )
+    `)
     .eq("user_id", user.id)
-    .eq("period_start", new Date().toISOString().split("T")[0]); // Opsional: Pastikan cuma narik quest hari ini
+    .lte("period_start", today) // ⚡ period_start HARUS hari ini atau sebelumnya (Senin)
+    .gte("period_end", today);  // ⚡ period_end HARUS hari ini atau setelahnya (Minggu)
 
   if (questError) {
     console.error("Gagal narik quest:", questError.message);
   }
-
   const formattedQuests = rawUserQuests as unknown as UserQuestWithDetails[];
 
   // 3. Tarik data Stats...
