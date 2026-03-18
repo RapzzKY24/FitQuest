@@ -6,7 +6,13 @@ import { Card } from "@/src/components/ui/Card";
 
 export type AchievementRarity = "legendary" | "epic" | "rare" | "common";
 export type AchievementStatus = "unlocked" | "locked" | "in-progress";
-type BadgePillColor = "primary" | "accent" | "success" | "muted" | "info";
+type BadgePillColor =
+  | "primary"
+  | "accent"
+  | "success"
+  | "muted"
+  | "info"
+  | "purple";
 
 export interface Achievement {
   id: number;
@@ -29,27 +35,27 @@ interface RarityStyle {
 
 const rarityConfig: Record<AchievementRarity, RarityStyle> = {
   legendary: {
-    border: "border-orange-500/40",
-    bg: "bg-orange-500/5",
-    progress: "bg-orange-500",
+    border: "border-primary",
+    bg: "bg-primary/10",
+    progress: "bg-primary",
     pill: "accent",
   },
   epic: {
     border: "border-purple-500/40",
-    bg: "bg-purple-500/5",
+    bg: "bg-purple-500/10",
     progress: "bg-purple-500",
-    pill: "info",
+    pill: "purple",
   },
   rare: {
-    border: "border-blue-500/40",
-    bg: "bg-blue-500/5",
-    progress: "bg-blue-500",
+    border: "border-info",
+    bg: "bg-info/10",
+    progress: "bg-info",
     pill: "info",
   },
   common: {
-    border: "border-zinc-800",
-    bg: "bg-zinc-900/50",
-    progress: "bg-zinc-600",
+    border: "border-muted",
+    bg: "bg-muted/10",
+    progress: "bg-muted",
     pill: "muted",
   },
 };
