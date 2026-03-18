@@ -113,7 +113,7 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
           <StatBox
             label="Total Menit"
             value={(user?.total_minutes || 0).toLocaleString()}
-            color="text-[#e066ff]"
+            color="text-[#3b82f6]"
           />
           <StatBox
             label="Total XP"
@@ -123,7 +123,7 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
           <StatBox
             label="Achievement"
             value={user?.total_achievements || 0}
-            color="text-[#3b82f6]"
+            color="text-[#e066ff]"
             isLast
           />
         </div>

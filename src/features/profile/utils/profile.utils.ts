@@ -1,74 +1,12 @@
-export interface RawProfile {
-  display_name: string | null;
-  username: string | null;
-  avatar_emoji: string | null;
-  created_at: string;
-}
-
-export interface RawStats {
-  level: number;
-  level_title: string;
-  xp_current: number;
-  xp_to_next: number;
-  streak_current: number;
-  total_sessions: number;
-  total_minutes: number;
-  xp_total: number;
-  monthly_xp: number;
-}
-
-export interface RawWorkoutLog {
-  id: string;
-  intensity: string;
-  duration_min: number;
-  xp_earned: number;
-  logged_at: string;
-  workout_types:
-    | {
-        name: string;
-        icon: string;
-      }
-    | {
-        name: string;
-        icon: string;
-      }[]
-    | null;
-}
-
-export interface UserProfileData {
-  name: string;
-  username: string;
-  avatar: string;
-  created_at: string;
-  level: number;
-  title: string;
-  xp: number;
-  xpMax: number;
-  streak: number;
-  total_sessions: number;
-  total_minutes: number;
-  total_xp: number;
-  total_achievements: number;
-}
-
-export interface MonthlyData {
-  session: number;
-  totalMinutes: number;
-  expEarned: number;
-  favSportName: string;
-  favSportEmoji: string;
-  favIntensity: string;
-}
-
-export interface FormattedWorkoutLog {
-  id: string;
-  emoji: string;
-  name: string;
-  intensity: string;
-  duration: number;
-  xp: number;
-  timestamp: string;
-}
+import {
+  FormattedWorkoutLog,
+  HeatCell,
+  MonthlyData,
+  RawProfile,
+  RawStats,
+  RawWorkoutLog,
+  UserProfileData,
+} from "../types/profile.types";
 
 export const formatProfileData = (
   profile: RawProfile | null,
@@ -156,4 +94,25 @@ export const formatMonthlyAndLogs = (
   };
 
   return { monthlyData, formattedLogs };
+};
+
+export const formatHeatmapData = (
+  rawLogs: { logged_at: string }[] | null,
+): HeatCell[] => {
+  if (!rawLogs) return [];
+
+  const counts: Record<string, number> = {};
+
+  rawLogs.forEach((log) => {
+    // Ambil tanggal saja (YYYY-MM-DD)
+    const date = new Date(log.logged_at).toISOString().split("T")[0];
+    // Ganti strip jadi slash sesuai format Heatmap lu "YYYY/MM/DD"
+    const formattedDate = date.replace(/-/g, "/");
+    counts[formattedDate] = (counts[formattedDate] || 0) + 1;
+  });
+
+  return Object.entries(counts).map(([date, count]) => ({
+    date,
+    count,
+  }));
 };

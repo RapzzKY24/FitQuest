@@ -5,11 +5,25 @@ import { Tabs } from "@/src/components/ui/Tabs";
 import InfoTabs from "../components/InfoTabs";
 import ActivityTabs from "../components/ActivityTabs";
 import Gymbro from "../components/Gymbro";
+<<<<<<< HEAD
+=======
+import { RecapMonthlyData } from "../components/activity/MontlyStats";
+import { WorkoutLog } from "../components/activity/WorkoutHistory";
+import { HeatCell } from "../types/profile.types";
+
+interface ProfilePagesProps {
+  userData: UserProfileData;
+  monthlyData: RecapMonthlyData;
+  workoutLog: WorkoutLog[];
+  heatMapData: HeatCell[];
+}
+>>>>>>> 615013b (feat: connect heatmap to supabase)
 
 const ProfilePages = ({
   userData,
   monthlyData,
   workoutLog,
+  heatMapData,
 }: ProfilePagesProps) => {
   const [tabVal, setTabVal] = useState("info");
   const PROFILE_TABS = [
@@ -39,7 +53,17 @@ const ProfilePages = ({
         />
         {/* tabs section */}
         {tabVal == "info" && <InfoTabs />}
+<<<<<<< HEAD
         {tabVal == "aktivitas" && <ActivityTabs />}
+=======
+        {tabVal == "aktivitas" && (
+          <ActivityTabs
+            monthlyData={monthlyData}
+            workoutHistory={workoutLog}
+            heatmapData={heatMapData}
+          />
+        )}
+>>>>>>> 615013b (feat: connect heatmap to supabase)
         {tabVal == "gymbro" && <Gymbro />}
       </div>
     </main>

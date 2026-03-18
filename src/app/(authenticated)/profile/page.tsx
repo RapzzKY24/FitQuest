@@ -1,5 +1,6 @@
 import ProfilePages from "@/src/features/profile/pages/ProfilePage";
 import {
+  formatHeatmapData,
   formatMonthlyAndLogs,
   formatProfileData,
 } from "@/src/features/profile/utils/profile.utils";
@@ -22,6 +23,7 @@ const ProfilePage = async () => {
     { data: statsData },
     { count: achievementCount },
     { data: logsData },
+    { data: heatmapLogs },
   ] = await Promise.all([
     supabase.from("user_profiles").select("*").eq("id", user.id).single(),
     supabase.from("user_stats").select("*").eq("id", user.id).single(),
@@ -44,6 +46,7 @@ const ProfilePage = async () => {
       .eq("user_id", user.id)
       .order("logged_at", { ascending: false })
       .limit(5),
+    supabase.from("workout_logs").select("logged_at").eq("user_id", user.id),
   ]);
 
   const userData = formatProfileData(profileData, statsData, achievementCount);
@@ -52,8 +55,11 @@ const ProfilePage = async () => {
     statsData,
   );
 
+  const heatmapData = formatHeatmapData(heatmapLogs);
+
   return (
     <ProfilePages
+      heatMapData={heatmapData}
       userData={userData}
       monthlyData={monthlyData}
       workoutLog={formattedLogs}
