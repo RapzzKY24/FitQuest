@@ -3,11 +3,7 @@
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
 import { SectionLabel } from "../shared/SectionLabel";
 import React, { useMemo } from "react";
-
-interface HeatCell {
-  date: string;
-  count: number;
-}
+import { HeatCell } from "../../types/profile.types";
 
 const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 const MONTHS = [

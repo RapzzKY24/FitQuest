@@ -7,17 +7,20 @@ import ActivityTabs from "../components/ActivityTabs";
 import Gymbro from "../components/Gymbro";
 import { RecapMonthlyData } from "../components/activity/MontlyStats";
 import { WorkoutLog } from "../components/activity/WorkoutHistory";
+import { HeatCell } from "../types/profile.types";
 
 interface ProfilePagesProps {
   userData: UserProfileData;
   monthlyData: RecapMonthlyData;
   workoutLog: WorkoutLog[];
+  heatMapData: HeatCell[];
 }
 
 const ProfilePages = ({
   userData,
   monthlyData,
   workoutLog,
+  heatMapData,
 }: ProfilePagesProps) => {
   const [tabVal, setTabVal] = useState("info");
   const PROFILE_TABS = [
@@ -47,7 +50,11 @@ const ProfilePages = ({
         {/* tabs section */}
         {tabVal == "info" && <InfoTabs />}
         {tabVal == "aktivitas" && (
-          <ActivityTabs monthlyData={monthlyData} workoutHistory={workoutLog} />
+          <ActivityTabs
+            monthlyData={monthlyData}
+            workoutHistory={workoutLog}
+            heatmapData={heatMapData}
+          />
         )}
         {tabVal == "gymbro" && <Gymbro />}
       </div>
