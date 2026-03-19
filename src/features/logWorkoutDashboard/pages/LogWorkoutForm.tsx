@@ -1,18 +1,18 @@
 "use client";
 
 import React from "react";
-import {useForm} from "react-hook-form";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Card, CardContent, CardHeader} from "@/src/components/ui/Card";
-import {Slider} from "@/src/components/ui/Slider";
-import {Textarea} from "@/src/components/ui/TextArea"; // Import Textarea lu
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
+import { Slider } from "@/src/components/ui/Slider";
+import { Textarea } from "@/src/components/ui/TextArea"; // Import Textarea lu
 import HeaderCard from "../components/shared/HeaderCard";
-import {Button} from "@/src/components/ui/Button";
-import {ArrowLeft, Zap} from "lucide-react";
-import {logWorkoutSession} from "../actions/workout";
-import {useRouter} from "next/navigation";
-import {useToast, ToastContainer} from "@/src/components/ui/Toast";
+import { Button } from "@/src/components/ui/Button";
+import { ArrowLeft, Zap } from "lucide-react";
+import { logWorkoutSession } from "../actions/workout";
+import { useRouter } from "next/navigation";
+import { useToast, ToastContainer } from "@/src/components/ui/Toast";
 
 // 1. Schema Zod (Update: notes dibatasin 200 karakter)
 const workoutSchema = z.object({
@@ -40,22 +40,23 @@ type WorkoutType = {
 
 export const WorkoutLogForm = ({
   workoutTypes,
+  isLimitReached,
 }: {
   workoutTypes: WorkoutType[];
+  isLimitReached: boolean;
 }) => {
   const router = useRouter();
 
-  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
+  const { toasts, show: showToast, dismiss: dismissToast } = useToast();
 
   // --- MOCK DATA ---
 
   const MockDataSliderTime = [
-    {id: 1, duration: 15},
-    {id: 2, duration: 30},
-    {id: 3, duration: 45},
-    {id: 4, duration: 60},
-    {id: 5, duration: 75},
-    {id: 6, duration: 80},
+    { id: 1, duration: 5 }, // Nilai Min
+    { id: 2, duration: 30 },
+    { id: 3, duration: 60 },
+    { id: 4, duration: 90 },
+    { id: 5, duration: 120 }, // Nilai Max
   ];
 
   const colorStyles = {
@@ -112,7 +113,7 @@ export const WorkoutLogForm = ({
     handleSubmit,
     setValue,
     watch,
-    formState: {errors, isSubmitting},
+    formState: { errors, isSubmitting },
   } = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutSchema),
     defaultValues: {
@@ -178,12 +179,14 @@ export const WorkoutLogForm = ({
                       isSelected
                         ? "border-primary border-2 bg-primary/10"
                         : "opacity-40 hover:opacity-100"
-                    }`}>
+                    }`}
+                  >
                     <div className="text-2xl mb-2">{item.icon}</div>
                     <div
                       className={`text-[10px] font-bold tracking-widest uppercase text-center ${
                         isSelected ? "text-primary" : "text-white/60"
-                      }`}>
+                      }`}
+                    >
                       {item.name}
                     </div>
                   </Card>
@@ -201,11 +204,10 @@ export const WorkoutLogForm = ({
 
       {/* SECTION 2: DURASI (Slider UI) */}
       <section>
-        {/* ... (Kode Slider Durasi sama persis kayak sebelumnya) ... */}
         <Card className="w-full bg-black/40 border-white/5">
           <CardHeader className="flex flex-row justify-between items-center px-6 pt-6">
             <h1 className="text-sm font-bold tracking-[0.3em] uppercase text-muted">
-              Duration
+              Durasi
             </h1>
             <h2 className="text-2xl font-bold tracking-[0.3em] uppercase text-primary">
               {currentDuration}
@@ -219,7 +221,7 @@ export const WorkoutLogForm = ({
               step={5}
               value={currentDuration}
               onChange={(val) =>
-                setValue("duration_min", val, {shouldValidate: true})
+                setValue("duration_min", val, { shouldValidate: true })
               }
               unit=" min"
             />
@@ -236,7 +238,8 @@ export const WorkoutLogForm = ({
                     currentDuration === time.duration
                       ? "text-primary"
                       : "text-white/50 hover:text-white"
-                  }`}>
+                  }`}
+                >
                   {time.duration}m
                 </h1>
               ))}
@@ -278,19 +281,22 @@ export const WorkoutLogForm = ({
                           ? `border-2 ${style.border} ${style.bg} ${style.shadow} scale-105`
                           : "opacity-40 hover:opacity-100 border-white/5 hover:bg-white/5"
                       }
-                    `}>
+                    `}
+                  >
                     <div className="text-3xl mb-3">{item.icon}</div>
                     <div className="text-center space-y-1">
                       <div
                         className={`text-[11px] font-bold tracking-[0.2em] uppercase ${
                           isSelected ? style.text : "text-white/80"
-                        }`}>
+                        }`}
+                      >
                         {item.label}
                       </div>
                       <div
                         className={`text-[9px] font-medium tracking-widest ${
                           isSelected ? style.text : "text-white/40"
-                        }`}>
+                        }`}
+                      >
                         {item.exp}
                       </div>
                     </div>
@@ -325,6 +331,15 @@ export const WorkoutLogForm = ({
         </Card>
       </section>
 
+      {isLimitReached && (
+        <Card className="border-warning/50 p-2">
+          <p className="text-warning text-xs text-center font-mono tracking-wider uppercase">
+            ⚠️ Limit Harian Tercapai.Kamu bisa mencatat lagi besok untuk
+            mendapatkan XP!
+          </p>
+        </Card>
+      )}
+
       <div className="w-full flex items-center gap-4">
         <Button variant="outline" className="w-[35%]" disabled={isSubmitting}>
           <div className="flex items-center gap-2">
@@ -332,10 +347,20 @@ export const WorkoutLogForm = ({
             Batal
           </div>
         </Button>
-        <Button className="w-[65%]" type="submit" disabled={isSubmitting}>
+        <Button
+          className="w-[65%]"
+          type="submit"
+          disabled={isSubmitting || isLimitReached}
+        >
           <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-            {isSubmitting ? "Mencatat..." : " Simpan dan Klaim EXP"}
+            <Zap
+              className={`h-4 w-4 ${isLimitReached ? "text-gray-500" : "text-yellow-500 fill-yellow-500"}`}
+            />
+            {isSubmitting
+              ? "Mencatat..."
+              : isLimitReached
+                ? "Limit Tercapai"
+                : "Simpan dan Klaim EXP"}
           </div>
         </Button>
       </div>

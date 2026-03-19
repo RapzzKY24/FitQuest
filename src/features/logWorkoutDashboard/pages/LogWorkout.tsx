@@ -1,20 +1,44 @@
 import ExpBreakdown from "../components/ExpBreakdown";
-import {createClient} from "@/src/utils/supabase/server";
-import {WorkoutLogForm} from "./LogWorkoutForm";
+import { createClient } from "@/src/utils/supabase/server";
+import { WorkoutLogForm } from "./LogWorkoutForm";
 
 const LogWorkoutPages = async () => {
   const supabase = await createClient();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   // Fetch data workout types yang statusnya aktif
-  const {data: workoutTypes, error} = await supabase
+  const { data: workoutTypes, error } = await supabase
     .from("workout_types")
     .select("id, name, icon, category")
     .eq("is_active", true)
-    .order("name", {ascending: true});
+    .order("name", { ascending: true });
 
   if (error) {
     console.error("Gagal tarik data workout_types:", error.message);
   }
+
+  const todayStrId = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "UTC",
+  }).format(new Date());
+
+  const startOfTodayUTC = `${todayStrId}T00:00:00Z`;
+
+  const { count: sessionCount } = await supabase
+    .from("workout_logs")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user?.id)
+    .gte("logged_at", startOfTodayUTC);
+
+  const { data: activeQuests } = await supabase
+    .from("quests")
+    .select("*")
+    .eq("is_active", true)
+    .limit(3); // Ambil 3 aja buat daily
+
+  const isLimitReached = (sessionCount ?? 0) >= 3;
 
   return (
     <main className="w-full ">
@@ -34,10 +58,16 @@ const LogWorkoutPages = async () => {
         {/* grid section log */}
         <div className="grid grid-cols-5 gap-3">
           <div className="grid col-span-4  gap-y-2.5">
-            <WorkoutLogForm workoutTypes={workoutTypes || []} />
+            <WorkoutLogForm
+              workoutTypes={workoutTypes || []}
+              isLimitReached={isLimitReached}
+            />
           </div>
           <div className="grid col-span-1 ">
-            <ExpBreakdown />
+            <ExpBreakdown
+              todaySessions={sessionCount || 0}
+              activeQuests={activeQuests || []}
+            />
           </div>
         </div>
       </div>
