@@ -91,7 +91,7 @@ const WeeklyActivityClient = ({ weeklyData, totals }: Props) => {
         <div className="grid grid-cols-3 border-t border-border/60 pt-6">
           <div className="flex flex-col items-center justify-center border-r border-border/60">
             <h2 className="text-broken-white font-black text-3xl md:text-4xl mb-1 drop-shadow-sm">
-              {totals.sessions}
+              {totals.sessions.toLocaleString("id-ID")}
             </h2>
             <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">
               Sesi
@@ -100,7 +100,7 @@ const WeeklyActivityClient = ({ weeklyData, totals }: Props) => {
 
           <div className="flex flex-col items-center justify-center border-r border-border/60">
             <h2 className="font-black text-3xl md:text-4xl mb-1 drop-shadow-sm text-info">
-              {totals.minutes}
+              {totals.minutes.toLocaleString("id-ID")}
             </h2>
             <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">
               Menit
@@ -109,7 +109,7 @@ const WeeklyActivityClient = ({ weeklyData, totals }: Props) => {
 
           <div className="flex flex-col items-center justify-center">
             <h2 className="text-primary font-black text-3xl md:text-4xl mb-1 drop-shadow-sm">
-              +{totals.xp}
+              +{totals.xp.toLocaleString("id-ID")}
             </h2>
             <p className="text-muted font-mono text-[9px] font-bold tracking-[0.2em] uppercase">
               XP
