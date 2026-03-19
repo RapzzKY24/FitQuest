@@ -170,6 +170,7 @@ export const AchievementCard = ({
             onClick={handleClaim}
             disabled={achievement.status !== "claimable"}
             className="w-full"
+            size="sm"
           >
             <span className="relative z-10 flex items-center justify-center gap-2 group-hover:scale-105 transition-transform duration-300">
               {achievement.status === "claimable"
