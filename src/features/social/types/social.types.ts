@@ -37,3 +37,19 @@ export interface WeeklyLeaderboardRecord {
   weekly_xp: number | null;
   rank: number | null;
 }
+
+export interface ActivityFeedRecord {
+  feed_id: string;
+  activity_type: 'workout' | 'quest' | 'level_up' | 'badge';
+  title: string;
+  description: string | null;
+  xp_earned: number | null;
+  created_at: string;
+  
+  actor_id: string;
+  actor_username: string | null;
+  actor_avatar: string | null;
+  actor_level: number | null;
+  
+  reaction_counts: Record<string, number>;
+}

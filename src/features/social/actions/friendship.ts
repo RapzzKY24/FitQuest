@@ -93,3 +93,29 @@ export async function sendFriendRequest(addresseeId: string) {
   revalidatePath("/social"); // Refresh UI
   return { success: true };
 }
+
+// Action buat ngasih / batalin React
+export async function toggleReaction(feedId: string, emoji: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Not logged in" };
+
+  // Coba insert reaction
+  const { error } = await supabase
+    .from("activity_reactions")
+    .insert({ feed_id: feedId, user_id: user.id, reaction_type: emoji });
+
+  // Kalau error 23505 (Unique Violation), berarti user udah pernah nge-react emoji ini.
+  // Logikanya: Kita hapus aja react-nya (kayak fitur Unlike)
+  if (error && error.code === '23505') {
+    await supabase
+      .from("activity_reactions")
+      .delete()
+      .match({ feed_id: feedId, user_id: user.id, reaction_type: emoji });
+  } else if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/social"); // Refresh UI feed
+  return { success: true };
+}

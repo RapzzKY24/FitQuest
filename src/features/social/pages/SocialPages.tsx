@@ -5,13 +5,18 @@ import React from "react";
 import FeedTabs from "../components/FeedTabs";
 import LeaderboardTabs from "../components/LeaderboardTabs";
 import FriendTabs from "../components/FriendTabs";
-import {FriendshipRecord, WeeklyLeaderboardRecord} from "../types/social.types";
+import {
+  ActivityFeedRecord,
+  FriendshipRecord,
+  WeeklyLeaderboardRecord,
+} from "../types/social.types";
 
 // Bikin tipe data props-nya (Biar TypeScript lu gak marah)
 interface SocialPagesProps {
   initialPending: FriendshipRecord[];
   initialFriends: FriendshipRecord[];
   initialLeaderboard: WeeklyLeaderboardRecord[];
+  initialFeed: ActivityFeedRecord[];
   currentUserId: string;
 }
 
@@ -20,6 +25,7 @@ const SocialPages = ({
   initialFriends,
   currentUserId,
   initialLeaderboard,
+  initialFeed,
 }: SocialPagesProps) => {
   const [tabVal, setTabVal] = React.useState("feed"); // Gua set default 'friend' buat testing
 
@@ -27,7 +33,7 @@ const SocialPages = ({
   const pendingCount = initialPending.length;
 
   const SOCIAL_TABS = [
-    {value: "feed", label: "Activity Feed", badge: "3"},
+    {value: "feed", label: "Activity Feed"},
     {value: "leaderboard", label: "Leaderboard"},
     {
       value: "friend",
@@ -48,7 +54,14 @@ const SocialPages = ({
           variant="underline"
         />
 
-        {tabVal == "feed" && <FeedTabs />}
+        {tabVal == "feed" && (
+          <FeedTabs
+            currentUserId={currentUserId}
+            feedData={initialFeed}
+            friends={initialFriends}
+            leaderboardData={initialLeaderboard}
+          />
+        )}
 
         {tabVal == "leaderboard" && (
           <LeaderboardTabs

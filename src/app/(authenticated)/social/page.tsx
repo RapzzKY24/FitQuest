@@ -33,16 +33,26 @@ const Social = async () => {
     .from("v_weekly_leaderboard")
     .select("*")
     .order("rank", {ascending: true}) // ⚡ Urutin dari rank 1 ke bawah
-    .limit(50); // Boleh di-limit sesuai selera
+    .limit(50);
 
+// 4. Narik Data Activity Feed (Pake Filter Viewer!)
+  const { data: feedData } = await supabase
+    .from("v_friend_activity_feed")
+    .select("*")
+    .eq("viewer_id", user.id) // ⚡ Tambahin baris ini!
+    .order("created_at", { ascending: false })
+    .limit(20);
+    
   return (
-    <SocialPages
-      initialPending={pendingRequests || []}
+    <SocialPages 
+      initialPending={pendingRequests || []} 
       initialFriends={friendsList || []}
-      initialLeaderboard={leaderboardData || []}
-      currentUserId={user.id}
+      initialLeaderboard={leaderboardData || []} 
+      initialFeed={feedData || []} // ⚡ Tambahin ini
+      currentUserId={user.id} 
     />
   );
+
 };
 
 export default Social;
