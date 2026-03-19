@@ -3,28 +3,13 @@ import { ProgressBar } from "@/src/components/ui/ProgressBar";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import React from "react";
 import StreakBadgePill from "./shared/StreakBadgePill";
+import { UserProfileData } from "../types/profile.types";
 
 interface StatBoxProps {
   label: string;
   value: string | number;
   color?: string;
   isLast?: boolean;
-}
-
-export interface UserProfileData {
-  name: string;
-  username: string;
-  avatar: string;
-  created_at: string;
-  level: number;
-  title: string;
-  xp: number;
-  xpMax: number;
-  streak: number;
-  total_sessions: number;
-  total_minutes: number;
-  total_xp: number;
-  total_achievements: number;
 }
 
 interface ProfileCardProps {
@@ -55,7 +40,7 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-y-6 min-w-[400px]">
+            <div className="flex flex-col gap-y-6 min-w-100">
               <div className="flex items-center gap-4">
                 <h1 className="font-black text-4xl uppercase tracking-tighter">
                   {user?.name}

@@ -38,7 +38,11 @@ export interface RawWorkoutLog {
 export interface UserProfileData {
   name: string;
   username: string;
+  email?: string;
   avatar: string;
+  weight?: number;
+  height?: number;
+  fitness_goal?: string;
   created_at: string;
   level: number;
   title: string;
