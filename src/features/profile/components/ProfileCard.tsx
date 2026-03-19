@@ -112,12 +112,12 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
           <StatBox label="Total Sesi" value={user?.total_sessions || 0} />
           <StatBox
             label="Total Menit"
-            value={(user?.total_minutes || 0).toLocaleString()}
+            value={(user?.total_minutes || 0).toLocaleString("id-ID")}
             color="text-[#3b82f6]"
           />
           <StatBox
             label="Total XP"
-            value={(user?.total_xp || 0).toLocaleString()}
+            value={(user?.total_xp || 0).toLocaleString("id-ID")}
             color="text-[#ffb347]"
           />
           <StatBox

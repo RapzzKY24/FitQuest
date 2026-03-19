@@ -1,3 +1,4 @@
+import { FetchUserAchievement } from "@/src/features/achievement/service/achievement.service";
 import ProfilePages from "@/src/features/profile/pages/ProfilePage";
 import {
   formatHeatmapData,
@@ -49,6 +50,8 @@ const ProfilePage = async () => {
     supabase.from("workout_logs").select("logged_at").eq("user_id", user.id),
   ]);
 
+  const achievementsData = await FetchUserAchievement(user.id);
+
   const userData = formatProfileData(profileData, statsData, achievementCount);
   const { monthlyData, formattedLogs } = formatMonthlyAndLogs(
     logsData,
@@ -63,6 +66,7 @@ const ProfilePage = async () => {
       userData={userData}
       monthlyData={monthlyData}
       workoutLog={formattedLogs}
+      achievement={achievementsData}
     />
   );
 };
