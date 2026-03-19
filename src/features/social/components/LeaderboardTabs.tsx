@@ -1,61 +1,45 @@
+"use client";
 import {BadgePill} from "@/src/components/ui/badge-pill";
 import {Card, CardContent} from "@/src/components/ui/Card";
 import {ProgressBar} from "@/src/components/ui/ProgressBar";
-import {ArrowUp, Dot} from "lucide-react";
+import {Dot} from "lucide-react";
 import React from "react";
+import {WeeklyLeaderboardRecord} from "../types/social.types";
 
-export const leaderboardUsers = [
-  {
-    rank: 4,
-    name: "Iron Mike",
-    avatar: "🎃",
-    level: 8,
-    sessions: 22,
-    xp: 12670,
-    xpGain: 250,
-  },
-  {
-    rank: 5,
-    name: "Sarah Connor",
-    avatar: "🚀",
-    level: 7,
-    sessions: 18,
-    xp: 11840,
-    xpGain: 180,
-  },
-  {
-    rank: 6,
-    name: "John Wick",
-    avatar: "🐶",
-    level: 7,
-    sessions: 16,
-    xp: 11220,
-    xpGain: 140,
-  },
-  {
-    rank: 7,
-    name: "Tony Stark",
-    avatar: "🤖",
-    level: 6,
-    sessions: 14,
-    xp: 10450,
-    xpGain: 120,
-  },
-  {
-    rank: 8,
-    name: "Lara Croft",
-    avatar: "🏹",
-    level: 6,
-    sessions: 13,
-    xp: 9980,
-    xpGain: 95,
-  },
-];
+interface LeaderboardTabsProps {
+  leaderboardData: WeeklyLeaderboardRecord[];
+  currentUserId: string;
+  // Opsional: Kalau lu mau jumlah teman di kanan bawah dinamis, oper dari SocialPages
+  // friendsCount?: number;
+}
 
-const LeaderboardTabs = () => {
+const LeaderboardTabs = ({
+  leaderboardData,
+  currentUserId,
+}: LeaderboardTabsProps) => {
+  // 1. Ekstrak Podium (Top 3)
+  const rank1 = leaderboardData[0];
+  const rank2 = leaderboardData[1];
+  const rank3 = leaderboardData[2];
+
+  // 2. Ekstrak Sisanya (Rank 4 ke bawah)
+  const nonPodium = leaderboardData.slice(3);
+
+  // 3. Ekstrak Data User Saat Ini (Buat panel "Statistikku" di kanan)
+  const myData = leaderboardData.find((u) => u.user_id === currentUserId);
+  const myRank = myData?.rank || 0;
+
+  // 4. Logika "Kejar Rank Atas"
+  const userAbove = leaderboardData.find((u) => u.rank === myRank - 1);
+  const xpToCatchUp =
+    userAbove && myData
+      ? (userAbove.weekly_xp || 0) - (myData.weekly_xp || 0)
+      : 0;
+
   return (
     <section className="flex gap-4">
-      <section className="flex-8">
+      {/* KIRI: DAFTAR LEADERBOARD */}
+      <section className="flex-[8]">
         <Card>
           <CardContent className="text-xs text-muted">
             {/* Card Header */}
@@ -66,19 +50,27 @@ const LeaderboardTabs = () => {
               <div className="h-px w-full bg-white/10" />
             </div>
 
-            {/* Podium */}
-
+            {/* PODIUM SECTION */}
             <section className="flex items-end gap-4 pt-24 pb-6">
+              {/* JUARA 1 (Tengah) */}
               <div className="w-full text-center space-y-4">
-                <BadgePill color="accent">
-                  <span className="text-4xl">🎃</span>
-                </BadgePill>
-                <div>
-                  <p className="text-broken-white text-sm font-black">
-                    Warrior Adi
-                  </p>
-                  <p className="text-accent">13.450 XP</p>
-                </div>
+                {rank1 ? (
+                  <>
+                    <BadgePill color="accent">
+                      <span className="text-4xl">
+                        {rank1.avatar_emoji || "🏆"}
+                      </span>
+                    </BadgePill>
+                    <div>
+                      <p className="text-broken-white text-sm font-black">
+                        {rank1.display_name || rank1.username}
+                      </p>
+                      <p className="text-accent">{rank1.weekly_xp || 0} XP</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-[100px]" /> /* Placeholder kosong */
+                )}
                 <div
                   className="text-center p-6 bg-accent/10 border border-accent/30"
                   style={{
@@ -88,16 +80,26 @@ const LeaderboardTabs = () => {
                   <p className="text-accent font-black text-2xl">1</p>
                 </div>
               </div>
+
+              {/* JUARA 2 (Kiri) */}
               <div className="order-first w-full text-center space-y-4">
-                <BadgePill color="blue">
-                  <span className="text-4xl">🌊</span>
-                </BadgePill>
-                <div>
-                  <p className="text-broken-white text-sm font-black">
-                    FitriSari
-                  </p>
-                  <p className="text-info">14.450 XP</p>
-                </div>
+                {rank2 ? (
+                  <>
+                    <BadgePill color="blue">
+                      <span className="text-4xl">
+                        {rank2.avatar_emoji || "🥈"}
+                      </span>
+                    </BadgePill>
+                    <div>
+                      <p className="text-broken-white text-sm font-black">
+                        {rank2.display_name || rank2.username}
+                      </p>
+                      <p className="text-info">{rank2.weekly_xp || 0} XP</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-[70px]" />
+                )}
                 <div
                   className="text-center p-3 bg-info/10 border border-info/30"
                   style={{
@@ -107,16 +109,28 @@ const LeaderboardTabs = () => {
                   <p className="text-info font-black text-xl">2</p>
                 </div>
               </div>
+
+              {/* JUARA 3 (Kanan) */}
               <div className="order-last w-full text-center space-y-4">
-                <BadgePill color="primary">
-                  <span className="text-4xl">👾</span>
-                </BadgePill>
-                <div>
-                  <p className="text-broken-white text-sm font-black">
-                    Runner Dewa
-                  </p>
-                  <p className="text-secondary">12.950 XP</p>
-                </div>
+                {rank3 ? (
+                  <>
+                    <BadgePill color="primary">
+                      <span className="text-4xl">
+                        {rank3.avatar_emoji || "🥉"}
+                      </span>
+                    </BadgePill>
+                    <div>
+                      <p className="text-broken-white text-sm font-black">
+                        {rank3.display_name || rank3.username}
+                      </p>
+                      <p className="text-secondary">
+                        {rank3.weekly_xp || 0} XP
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-[60px]" />
+                )}
                 <div
                   className="text-center p-1 bg-secondary/10 border border-secondary/30"
                   style={{
@@ -129,11 +143,11 @@ const LeaderboardTabs = () => {
             </section>
             <div className="h-px w-full bg-white/10" />
 
-            {/* non-podium */}
+            {/* NON-PODIUM (RANK 4 DST) */}
             <section className="space-y-4 pt-6">
-              {leaderboardUsers?.map((data) => (
-                <React.Fragment key={data.name}>
-                  {data?.name == "John Wick" ? (
+              {nonPodium.map((data) => (
+                <React.Fragment key={data.user_id}>
+                  {data.user_id === currentUserId ? (
                     <>
                       <div className="flex items-center gap-3">
                         <div className="h-px w-full bg-primary/30" />
@@ -148,82 +162,76 @@ const LeaderboardTabs = () => {
                           clipPath:
                             "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
                         }}>
-                        {/* LEFT SIDE */}
                         <div className="flex items-center gap-4">
-                          <span>{data?.rank}</span>
-
+                          <span className="font-bold w-4">{data.rank}</span>
                           <BadgePill color="primary">
-                            <span className="text-xl">{data?.avatar}</span>
+                            <span className="text-xl">
+                              {data.avatar_emoji || "👤"}
+                            </span>
                           </BadgePill>
-
                           <div>
                             <p className="font-black text-sm">
-                              {data?.name} (Kamu)
+                              {data.display_name || data.username} (Kamu)
                             </p>
                             <div className="flex items-center gap-1 ">
-                              <span>LV. {data.level}</span>
+                              <span>LV. {data.level || 1}</span>
                               <Dot size={10} />
-                              <span>{data?.sessions} Sesi</span>
+                              <span>{data.streak_current || 0} Streak</span>
                             </div>
                           </div>
                         </div>
-
-                        {/* RIGHT SIDE */}
-                        <div className="text-right">
+                        <div className="text-right pr-2">
                           <p className="text-primary font-black mb-1">
-                            {data?.xp} XP
+                            {data.weekly_xp || 0} XP
                           </p>
-                          <span className="flex items-center justify-end gap-1 text-success">
-                            <ArrowUp size={10} /> +{data?.xpGain}
-                          </span>
                         </div>
                       </section>
                     </>
                   ) : (
-                    <>
-                      <section className="flex items-center justify-between p-2">
-                        {/* LEFT SIDE */}
-                        <div className="flex items-center gap-4">
-                          <span>{data?.rank}</span>
-
-                          <BadgePill color="muted">
-                            <span className="text-xl">{data?.avatar}</span>
-                          </BadgePill>
-
-                          <div>
-                            <p className="text-broken-white font-black text-sm">
-                              {data?.name}
-                            </p>
-                            <div className="flex items-center gap-1">
-                              <span>LV.{data.level}</span>
-                              <Dot size={10} />
-                              <span>{data?.sessions} Sesi</span>
-                            </div>
+                    <section className="flex items-center justify-between p-2">
+                      <div className="flex items-center gap-4">
+                        <span className="w-4 text-center">{data.rank}</span>
+                        <BadgePill color="muted">
+                          <span className="text-xl">
+                            {data.avatar_emoji || "👤"}
+                          </span>
+                        </BadgePill>
+                        <div>
+                          <p className="text-broken-white font-black text-sm">
+                            {data.display_name || data.username}
+                          </p>
+                          <div className="flex items-center gap-1">
+                            <span>LV. {data.level || 1}</span>
+                            <Dot size={10} />
+                            <span>{data.streak_current || 0} Streak</span>
                           </div>
                         </div>
-
-                        {/* RIGHT SIDE */}
-                        <div className="text-right">
-                          <p className="text-broken-white font-black mb-1">
-                            {data?.xp} XP
-                          </p>
-                          <span className="flex items-center justify-end gap-1 text-success">
-                            <ArrowUp size={10} /> +{data?.xpGain}
-                          </span>
-                        </div>
-                      </section>
-                    </>
+                      </div>
+                      <div className="text-right pr-2">
+                        <p className="text-broken-white font-black mb-1">
+                          {data.weekly_xp || 0} XP
+                        </p>
+                      </div>
+                    </section>
                   )}
                 </React.Fragment>
               ))}
+
+              {/* Kalau data kosong */}
+              {nonPodium.length === 0 && (
+                <p className="text-center text-muted-foreground italic">
+                  Belum ada data ranking mingguan.
+                </p>
+              )}
             </section>
           </CardContent>
         </Card>
       </section>
+
+      {/* KANAN: STATISTIKKU */}
       <section className="flex-2 space-y-4">
         <Card className="w-full">
           <CardContent className="text-muted text-xs space-y-4">
-            {/* Card Header */}
             <div className="flex items-center gap-3">
               <p className="uppercase tracking-[0.3em] text-nowrap font-black">
                 {"//"} STATISTIKKU
@@ -231,51 +239,36 @@ const LeaderboardTabs = () => {
               <div className="h-px w-full bg-white/10" />
             </div>
 
-            {/* Card Body */}
-
+            {/* Rank Global Kamu */}
             <section
               className="bg-primary/10 border border-primary/30 p-4 flex gap-2 flex-col items-center"
               style={{
                 clipPath:
                   "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
               }}>
-              <span className="text-primary text-3xl font-black">#6</span>
+              <span className="text-primary text-3xl font-black">
+                #{myRank > 0 ? myRank : "-"}
+              </span>
               <span>RANK GLOBAL</span>
             </section>
 
-            <section>
-              <div className="flex items-center justify-between mb-2">
-                <p className="flex items-center gap-4">KEJAR #5</p>
-                <p>45 XP</p>
-              </div>
-              <ProgressBar
-                value={400}
-                max={700}
-                variant="orange"
-                type="linear"
-              />
-            </section>
-
-            <section className="flex gap-3 items-center">
-              <div
-                className="flex flex-col w-full text-nowrap text-center bg-elevated py-2 px-4"
-                style={{
-                  clipPath:
-                    "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
-                }}>
-                <p className="text-xl text-success font-black">#6</p>
-                <p>Rank Global</p>
-              </div>
-              <div
-                className="flex flex-col w-full text-nowrap text-center bg-elevated py-2 px-4"
-                style={{
-                  clipPath:
-                    "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
-                }}>
-                <p className="text-xl text-accent font-black">12</p>
-                <p>Jumlah Teman</p>
-              </div>
-            </section>
+            {/* Kejar XP Orang di Atas Lu */}
+            {myRank > 1 && userAbove && (
+              <section className="pb-2">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="flex items-center gap-4">
+                    KEJAR #{userAbove.rank}
+                  </p>
+                  <p>{xpToCatchUp} XP</p>
+                </div>
+                <ProgressBar
+                  value={myData?.weekly_xp || 0}
+                  max={userAbove.weekly_xp || 100}
+                  variant="orange"
+                  type="linear"
+                />
+              </section>
+            )}
           </CardContent>
         </Card>
       </section>

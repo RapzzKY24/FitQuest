@@ -25,3 +25,15 @@ export interface UserSearchResult {
   username: string | null;
   avatar_emoji: string | null;
 }
+
+export interface WeeklyLeaderboardRecord {
+  user_id: string; // Ingat, ini user_id bukan id
+  display_name: string | null;
+  username: string | null;
+  avatar_emoji: string | null;
+  level: number | null;
+  level_title: string | null;
+  streak_current: number | null;
+  weekly_xp: number | null;
+  rank: number | null;
+}

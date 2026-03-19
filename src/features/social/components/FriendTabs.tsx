@@ -268,9 +268,6 @@ const FriendTabs = ({
                             {friendAvatar || "👤"}
                           </span>
                         </BadgePill>
-                        <div
-                          className={`p-1.5 border-2 border-background rounded-full absolute right-0 bottom-0 ${index % 2 === 0 ? "bg-success" : "bg-muted"}`}
-                        />
                       </div>
 
                       <div>

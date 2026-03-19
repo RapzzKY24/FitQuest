@@ -5,28 +5,34 @@ import React from "react";
 import FeedTabs from "../components/FeedTabs";
 import LeaderboardTabs from "../components/LeaderboardTabs";
 import FriendTabs from "../components/FriendTabs";
-import { FriendshipRecord } from "../types/social.types";
+import {FriendshipRecord, WeeklyLeaderboardRecord} from "../types/social.types";
 
 // Bikin tipe data props-nya (Biar TypeScript lu gak marah)
 interface SocialPagesProps {
   initialPending: FriendshipRecord[];
   initialFriends: FriendshipRecord[];
+  initialLeaderboard: WeeklyLeaderboardRecord[];
   currentUserId: string;
 }
 
-const SocialPages = ({ initialPending, initialFriends, currentUserId }: SocialPagesProps) => {
-  const [tabVal, setTabVal] = React.useState("friend"); // Gua set default 'friend' buat testing
-  
+const SocialPages = ({
+  initialPending,
+  initialFriends,
+  currentUserId,
+  initialLeaderboard,
+}: SocialPagesProps) => {
+  const [tabVal, setTabVal] = React.useState("feed"); // Gua set default 'friend' buat testing
+
   // Hitung badge (notification) untuk jumlah pending request
   const pendingCount = initialPending.length;
-  
+
   const SOCIAL_TABS = [
     {value: "feed", label: "Activity Feed", badge: "3"},
     {value: "leaderboard", label: "Leaderboard"},
     {
-      value: "friend", 
-      label: "Teman", 
-      badge: pendingCount > 0 ? pendingCount.toString() : undefined // Otomatis hilang kalau 0
+      value: "friend",
+      label: "Teman",
+      badge: pendingCount > 0 ? pendingCount.toString() : undefined, // Otomatis hilang kalau 0
     },
   ];
 
@@ -43,13 +49,19 @@ const SocialPages = ({ initialPending, initialFriends, currentUserId }: SocialPa
         />
 
         {tabVal == "feed" && <FeedTabs />}
-        {tabVal == "leaderboard" && <LeaderboardTabs />}
-        
+
+        {tabVal == "leaderboard" && (
+          <LeaderboardTabs
+            leaderboardData={initialLeaderboard}
+            currentUserId={currentUserId}
+          />
+        )}
+
         {/* Oper datanya ke FriendTabs */}
         {tabVal == "friend" && (
-          <FriendTabs 
-            pendingRequests={initialPending} 
-            friends={initialFriends} 
+          <FriendTabs
+            pendingRequests={initialPending}
+            friends={initialFriends}
             currentUserId={currentUserId}
           />
         )}
