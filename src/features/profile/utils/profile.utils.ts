@@ -76,7 +76,7 @@ export const formatMonthlyAndLogs = (
       intensity: intensityMap[log.intensity] ?? "Sedang",
       duration: log.duration_min,
       xp: log.xp_earned,
-      timestamp: new Intl.DateTimeFormat("id-ID", {
+      timestamp: new Intl.DateTimeFormat("en-EN", {
         day: "numeric",
         month: "short",
         hour: "2-digit",
