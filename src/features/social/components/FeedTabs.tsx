@@ -1,246 +1,212 @@
+"use client";
 import {BadgePill} from "@/src/components/ui/badge-pill";
-import {Button} from "@/src/components/ui/Button";
 import {Card, CardContent} from "@/src/components/ui/Card";
 import {ProgressBar} from "@/src/components/ui/ProgressBar";
-import {Dot, X} from "lucide-react";
+import {Dot} from "lucide-react";
 import React from "react";
 
-const FeedTabs = () => {
+import {toggleReaction} from "@/src/features/social/actions/friendship"; // Sesuaikan path
+import {
+  ActivityFeedRecord,
+  FriendshipRecord,
+  WeeklyLeaderboardRecord,
+} from "../types/social.types";
+
+interface FeedTabsProps {
+  feedData: ActivityFeedRecord[];
+  leaderboardData: WeeklyLeaderboardRecord[];
+  friends: FriendshipRecord[];
+  currentUserId: string;
+}
+
+// Fungsi pembantu buat ngitung "X menit yang lalu"
+const timeAgo = (dateString: string) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffInMinutes = Math.floor((now.getTime() - past.getTime()) / 60000);
+
+  if (diffInMinutes < 1) return "Baru saja";
+  if (diffInMinutes < 60) return `${diffInMinutes} menit yang lalu`;
+  if (diffInMinutes < 1440)
+    return `${Math.floor(diffInMinutes / 60)} jam yang lalu`;
+  return `${Math.floor(diffInMinutes / 1440)} hari yang lalu`;
+};
+
+// Fungsi pembantu buat styling UI berdasarkan tipe aktivitas
+const getActivityConfig = (type: string) => {
+  switch (type) {
+    case "workout":
+      return {
+        actionText: "Baru saja log workout",
+        icon: "🤸",
+        bg: "bg-elevated",
+        border: "",
+        badgeColor: "default",
+      };
+    case "badge":
+      return {
+        actionText: "membuka achievement baru!",
+        icon: "💎",
+        bg: "bg-purple-500/10",
+        border: "border border-purple-500/20",
+        badgeColor: "default",
+      };
+    case "level_up":
+      return {
+        actionText: "naik level!",
+        icon: "⚡️",
+        bg: "bg-primary/10",
+        border: "border border-primary/20",
+        badgeColor: "default",
+      };
+    case "quest":
+      return {
+        actionText: "menyelesaikan quest",
+        icon: "🎯",
+        bg: "bg-success/10",
+        border: "border border-success/20",
+        badgeColor: "default",
+      };
+    default:
+      return {
+        actionText: "melakukan aktivitas",
+        icon: "📌",
+        bg: "bg-elevated",
+        border: "",
+        badgeColor: "default",
+      };
+  }
+};
+
+const FeedTabs = ({
+  feedData,
+  leaderboardData,
+  friends,
+  currentUserId,
+}: FeedTabsProps) => {
+  // Data buat panel "POSISIKU" di kanan
+  const myData = leaderboardData.find((u) => u.user_id === currentUserId);
+  const myRank = myData?.rank || 0;
+  const userAbove = leaderboardData.find((u) => u.rank === myRank - 1);
+  const xpToCatchUp =
+    userAbove && myData
+      ? (userAbove.weekly_xp || 0) - (myData.weekly_xp || 0)
+      : 0;
+
+  // Fungsi Action React
+  const handleReact = async (feedId: string, emoji: string) => {
+    const res = await toggleReaction(feedId, emoji);
+    if (!res.success) console.error(res.error);
+  };
+
   return (
     <section className="flex gap-4">
+      {/* KIRI: ACTIVITY FEED LIST */}
       <Card className="w-full flex-8">
         <CardContent className="text-xs text-muted space-y-8">
-          {/* Card Header */}
           <div className="flex items-center gap-3">
             <p className="uppercase tracking-[0.3em] text-nowrap">FEED TEMAN</p>
             <div className="h-px w-full bg-white/10" />
           </div>
 
-          {/* Activities */}
-          <section className="space-y-3">
-            <div className="flex gap-4 w-full">
-              {/* avatar */}
-              <div>
-                <BadgePill color="muted">
-                  <span className="text-xl">🤖</span>
-                </BadgePill>
-              </div>
+          {feedData.length === 0 && (
+            <p className="text-center italic py-10">
+              Belum ada aktivitas dari temanmu.
+            </p>
+          )}
 
-              {/* Activity Information */}
-              <div className="w-full space-y-3">
-                <div className="flex items-center gap-2">
-                  {/* Username */}
-                  <span className="text-primary font-black">
-                    Warrior Adi
-                  </span>{" "}
-                  {/* Activity */}
-                  <p>Baru saja log workout</p>
-                </div>
+          {feedData.map((feed) => {
+            const config = getActivityConfig(feed.activity_type);
 
-                {/* Block Section */}
-                <div
-                  className="flex justify-between items-center bg-elevated p-2"
-                  style={{
-                    clipPath:
-                      "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
-                  }}>
-                  <div className="flex items-center gap-4">
-                    <span className="text-2xl">🤸</span>
-                    <div>
-                      <p className="text-broken-white text-sm">
-                        Gym - Chest Day
-                      </p>
-                      <div className="flex items-center">
-                        <span>Intense</span> <Dot size={12} />{" "}
-                        <span>75 Menit</span> <Dot size={12} />
-                        <span className="text-primary">+120 XP</span>
+            return (
+              <section key={feed.feed_id} className="space-y-3">
+                <div className="flex gap-4 w-full">
+                  {/* Avatar */}
+                  <div>
+                    <BadgePill color="muted">
+                      <span className="text-xl">
+                        {feed.actor_avatar || "👤"}
+                      </span>
+                    </BadgePill>
+                  </div>
+
+                  {/* Activity Info */}
+                  <div className="w-full space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-primary font-black">
+                        {feed.actor_username}
+                      </span>
+                      <p>{config.actionText}</p>
+                    </div>
+
+                    {/* Block Section Content */}
+                    <div
+                      className={`flex justify-between items-center p-2 ${config.bg} ${config.border}`}
+                      style={{
+                        clipPath:
+                          "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
+                      }}>
+                      <div className="flex items-center gap-4">
+                        <span className="text-2xl">{config.icon}</span>
+                        <div>
+                          <p className="text-broken-white text-sm">
+                            {feed.title}
+                          </p>
+                          <div className="flex items-center flex-wrap gap-1">
+                            {feed.description && (
+                              <span>{feed.description}</span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <BadgePill>🔥 INTENSE</BadgePill>
-                </div>
 
-                {/* User Reaction */}
-                <div className="flex gap-2">
-                  <BadgePill>💪🏻 12</BadgePill>
-                  <BadgePill color="muted">🔥 8</BadgePill>
-                  <BadgePill color="muted">⚡️ 3</BadgePill>
-                </div>
+                    {/* User Reactions */}
+                    <div className="flex gap-2">
+                      {/* Tombol React 🔥 */}
+                      <button
+                        onClick={() => handleReact(feed.feed_id, "🔥")}
+                        className="hover:scale-105 transition-transform">
+                        <BadgePill color={"primary"}>
+                          🔥 {feed.reaction_counts?.["🔥"] || 0}
+                        </BadgePill>
+                      </button>
 
-                {/* Update Time */}
-                <p>2 menit yang lalu</p>
-              </div>
-            </div>
-            <div className="h-px w-full bg-white/10" />
-          </section>
+                      {/* Tombol React 💪🏻 */}
+                      <button
+                        onClick={() => handleReact(feed.feed_id, "💪🏻")}
+                        className="hover:scale-105 transition-transform">
+                        <BadgePill color={"accent"}>
+                          💪🏻 {feed.reaction_counts?.["💪🏻"] || 0}
+                        </BadgePill>
+                      </button>
 
-          <section className="space-y-3">
-            <div className="flex gap-4 w-full">
-              {/* avatar */}
-              <div>
-                <BadgePill color="muted">
-                  <span className="text-xl">🌊</span>
-                </BadgePill>
-              </div>
-
-              {/* Activity Information */}
-              <div className="w-full space-y-3">
-                <div className="flex items-center gap-2">
-                  {/* Username */}
-                  <span className="text-primary font-black">
-                    Fitri Sari
-                  </span>{" "}
-                  {/* Activity */}
-                  <p>membuka achievement baru!</p>
-                </div>
-
-                {/* Block Section */}
-                <div
-                  className="flex justify-between items-center bg-purple-500/10 border border-purple-500/20 p-2"
-                  style={{
-                    clipPath:
-                      "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
-                  }}>
-                  <div className="flex items-center gap-4">
-                    <span className="text-2xl">💎</span>
-                    <div>
-                      <p className="text-broken-white text-sm">Iron Will</p>
-                      <div className="flex items-center text-purple-500/80">
-                        <span>Epic</span> <Dot size={12} />{" "}
-                        <span>Streak 7 hari</span>
-                      </div>
+                      {/* Tombol React ⚡️ */}
+                      <button
+                        onClick={() => handleReact(feed.feed_id, "⚡️")}
+                        className="hover:scale-105 transition-transform">
+                        <BadgePill color={"info"}>
+                          ⚡️ {feed.reaction_counts?.["⚡️"] || 0}
+                        </BadgePill>
+                      </button>
                     </div>
+
+                    {/* Waktu */}
+                    <p>{timeAgo(feed.created_at)}</p>
                   </div>
                 </div>
-
-                {/* User Reaction */}
-                <div className="flex gap-2">
-                  <BadgePill color="muted">💪🏻 12</BadgePill>
-                  <BadgePill>🔥 8</BadgePill>
-                  <BadgePill color="muted">⚡️ 3</BadgePill>
-                </div>
-
-                {/* Update Time */}
-                <p>11 menit yang lalu</p>
-              </div>
-            </div>
-            <div className="h-px w-full bg-white/10" />
-          </section>
-
-          <section className="space-y-3">
-            <div className="flex gap-4 w-full">
-              {/* avatar */}
-              <div>
-                <BadgePill color="muted">
-                  <span className="text-xl">🎃</span>
-                </BadgePill>
-              </div>
-
-              {/* Activity Information */}
-              <div className="w-full space-y-3">
-                <div className="flex items-center gap-2">
-                  {/* Username */}
-                  <span className="text-primary font-black">
-                    Runner Dewa
-                  </span>{" "}
-                  {/* Activity */}
-                  <p>naik level!</p>
-                </div>
-
-                {/* Block Section */}
-                <div
-                  className="flex justify-between items-center bg-primary/10 border border-primary/20 p-2"
-                  style={{
-                    clipPath:
-                      "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
-                  }}>
-                  <div className="flex items-center gap-4">
-                    <span className="text-2xl">⚡️</span>
-                    <div>
-                      <p className="text-broken-white text-sm">
-                        Level 10 - Steel Lord
-                      </p>
-                      <div className="flex items-center text-primary/80">
-                        <span>Level up 🔥</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* User Reaction */}
-                <div className="flex gap-2">
-                  <BadgePill color="muted">💪🏻 12</BadgePill>
-                  <BadgePill color="muted">🔥 8</BadgePill>
-                  <BadgePill>⚡️ 3</BadgePill>
-                </div>
-
-                {/* Update Time */}
-                <p>23 menit yang lalu</p>
-              </div>
-            </div>
-            <div className="h-px w-full bg-white/10" />
-          </section>
-
-          <section className="space-y-3">
-            <div className="flex gap-4 w-full">
-              {/* avatar */}
-              <div>
-                <BadgePill color="muted">
-                  <span className="text-xl">👑</span>
-                </BadgePill>
-              </div>
-
-              {/* Activity Information */}
-              <div className="w-full space-y-3">
-                <div className="flex items-center gap-2">
-                  {/* Username */}
-                  <span className="text-primary font-black">
-                    King Yoga
-                  </span>{" "}
-                  {/* Activity */}
-                  <p>menyelesaikan quest</p>
-                </div>
-
-                {/* Block Section */}
-                <div
-                  className="flex justify-between items-center bg-success/10 border border-success/20 p-2"
-                  style={{
-                    clipPath:
-                      "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
-                  }}>
-                  <div className="flex items-center gap-4">
-                    <span className="text-2xl">🎯</span>
-                    <div>
-                      <p className="text-broken-white text-sm">
-                        30 Menit Non-Stop
-                      </p>
-                      <div className="flex items-center text-success/80">
-                        <span>+150 XP Diklaim!</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* User Reaction */}
-                <div className="flex gap-2">
-                  <BadgePill color="muted">💪🏻 12</BadgePill>
-                  <BadgePill color="muted">🔥 8</BadgePill>
-                  <BadgePill>⚡️ 3</BadgePill>
-                </div>
-
-                {/* Update Time */}
-                <p>23 menit yang lalu</p>
-              </div>
-            </div>
-            <div className="h-px w-full bg-white/10" />
-          </section>
+                <div className="h-px w-full bg-white/10" />
+              </section>
+            );
+          })}
         </CardContent>
       </Card>
 
+      {/* KANAN: STATISTIK & ONLINE */}
       <section className="flex-2 space-y-4">
+        {/* POSISIKU (Pake data asli dari Leaderboard) */}
         <Card className="w-full border-primary/30 bg-primary/5">
           <CardContent className="text-muted text-xs space-y-4">
-            {/* Card Header */}
             <div className="flex items-center gap-3">
               <p className="uppercase tracking-[0.3em] text-nowrap text-primary font-black">
                 {"//"} POSISIKU
@@ -248,22 +214,24 @@ const FeedTabs = () => {
               <div className="h-px w-full bg-white/10" />
             </div>
 
-            {/* Card Body */}
-
-            {/* avatar */}
             <section className="flex gap-3">
               <div>
                 <BadgePill>
-                  <span className="text-xl">💪🏻</span>
+                  <span className="text-xl">
+                    {myData?.avatar_emoji || "👤"}
+                  </span>
                 </BadgePill>
               </div>
               <div>
-                <p className="text-broken-white font-black">Budi Warrior</p>
+                <p className="text-broken-white font-black">
+                  {myData?.display_name || myData?.username}
+                </p>
                 <p className="flex items-center gap-1">
-                  budiwarrior <Dot size={10} /> LV. 7
+                  {myData?.username} <Dot size={10} /> LV. {myData?.level || 1}
                 </p>
               </div>
             </section>
+
             <section className="flex gap-3 items-center">
               <div
                 className="flex flex-col w-full text-nowrap text-center bg-elevated py-2 px-4"
@@ -271,7 +239,9 @@ const FeedTabs = () => {
                   clipPath:
                     "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
                 }}>
-                <p className="text-xl text-primary font-black">#7</p>
+                <p className="text-xl text-primary font-black">
+                  #{myRank > 0 ? myRank : "-"}
+                </p>
                 <p>Rank Global</p>
               </div>
               <div
@@ -280,98 +250,77 @@ const FeedTabs = () => {
                   clipPath:
                     "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
                 }}>
-                <p className="text-xl text-accent font-black">12</p>
+                <p className="text-xl text-accent font-black">
+                  {friends.length}
+                </p>
                 <p>Jumlah Teman</p>
               </div>
             </section>
-            <section>
-              <div className="flex items-center justify-between mb-2">
-                <p className="flex items-center gap-4">XP MENGEJAR #6</p>
-                <p>400 / 700</p>
-              </div>
-              <ProgressBar
-                value={400}
-                max={700}
-                variant="orange"
-                type="linear"
-              />
-            </section>
+
+            {myRank > 1 && userAbove && (
+              <section>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="flex items-center gap-4">
+                    XP MENGEJAR #{userAbove.rank}
+                  </p>
+                  <p>{xpToCatchUp} XP</p>
+                </div>
+                <ProgressBar
+                  value={myData?.weekly_xp || 0}
+                  max={userAbove.weekly_xp || 100}
+                  variant="orange"
+                  type="linear"
+                />
+              </section>
+            )}
           </CardContent>
         </Card>
 
+        {/* ONLINE SEKARANG (Daftar Teman) */}
         <Card className="w-full">
           <CardContent className="text-muted text-xs space-y-4">
-            {/* Card Header */}
             <div className="flex items-center gap-3">
               <p className="uppercase tracking-[0.3em] text-nowrap font-black">
-                {"//"} ONLINE SEKARANG
+                {"//"} TEMANMU
               </p>
               <div className="h-px w-full bg-white/10" />
             </div>
 
-            {/* Users List*/}
-            <section className="flex justify-between items-center">
-              <div className="flex gap-3">
-                {/* avatar */}
-                <div>
-                  <BadgePill color="muted">
-                    <span className="text-base">🤖</span>
-                  </BadgePill>
-                </div>
-                {/* User Info */}
-                <div>
-                  <p className="text-broken-white font-black">Ardi Epic</p>
-                  <p className="flex items-center gap-1 text-success font-black">
-                    <span className="p-1 rounded-full bg-success" /> Online
-                  </p>
-                </div>
-              </div>
-              <Button variant="outline" size="xs" className="p-0">
-                <X size={10} />
-              </Button>
-            </section>
+            {friends.length === 0 && (
+              <p className="italic text-center py-2">Belum ada teman.</p>
+            )}
 
-            <section className="flex justify-between items-center">
-              <div className="flex gap-3">
-                {/* avatar */}
-                <div>
-                  <BadgePill color="muted">
-                    <span className="text-base">🌊</span>
-                  </BadgePill>
-                </div>
-                {/* User Info */}
-                <div>
-                  <p className="text-broken-white font-black">Fit Sari</p>
-                  <p className="flex items-center gap-1 text-success font-black">
-                    <span className="p-1 rounded-full bg-success" /> Online
-                  </p>
-                </div>
-              </div>
-              <Button variant="outline" size="xs" className="p-0">
-                <X size={10} />
-              </Button>
-            </section>
+            {/* Render 5 teman pertama aja biar sidebar ga kepanjangan */}
+            {friends.slice(0, 5).map((friend) => {
+              const isRequester = friend.requester_id === currentUserId;
+              const friendAvatar = isRequester
+                ? friend.add_avatar
+                : friend.req_avatar;
+              const friendUsername = isRequester
+                ? friend.add_username
+                : friend.req_username;
 
-            <section className="flex justify-between items-center">
-              <div className="flex gap-3">
-                {/* avatar */}
-                <div>
-                  <BadgePill color="muted">
-                    <span className="text-base">👑</span>
-                  </BadgePill>
-                </div>
-                {/* User Info */}
-                <div>
-                  <p className="text-muted font-black">Yoga King</p>
-                  <p className="flex items-center gap-1 text-muted font-black">
-                    <span className="p-1 rounded-full bg-muted" /> Offline
-                  </p>
-                </div>
-              </div>
-              <Button variant="outline" size="xs" className="p-0">
-                <X size={10} />
-              </Button>
-            </section>
+              return (
+                <section
+                  key={friend.id}
+                  className="flex justify-between items-center">
+                  <div className="flex gap-3">
+                    <div>
+                      <BadgePill color="muted">
+                        <span className="text-base">
+                          {friendAvatar || "👤"}
+                        </span>
+                      </BadgePill>
+                    </div>
+                    <div>
+                      <p className="text-broken-white font-black">
+                        {friendUsername}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
           </CardContent>
         </Card>
       </section>
