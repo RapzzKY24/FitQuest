@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import ProfileCard, { UserProfileData } from "../components/ProfileCard";
+import ProfileCard from "../components/ProfileCard";
 import { Tabs } from "@/src/components/ui/Tabs";
 import InfoTabs from "../components/InfoTabs";
 import ActivityTabs from "../components/ActivityTabs";
 import Gymbro from "../components/Gymbro";
 import { RecapMonthlyData } from "../components/activity/MontlyStats";
 import { WorkoutLog } from "../components/activity/WorkoutHistory";
-import { HeatCell } from "../types/profile.types";
+import { HeatCell, UserProfileData } from "../types/profile.types";
 import { Achievement } from "../../achievement/components/AchievementCard";
 
 interface ProfilePagesProps {
@@ -51,7 +51,9 @@ const ProfilePages = ({
           variant="underline"
         />
         {/* tabs section */}
-        {tabVal == "info" && <InfoTabs achievements={achievement} />}
+        {tabVal == "info" && (
+          <InfoTabs achievements={achievement} userData={userData} />
+        )}
         {tabVal == "aktivitas" && (
           <ActivityTabs
             monthlyData={monthlyData}

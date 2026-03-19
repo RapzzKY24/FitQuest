@@ -52,7 +52,15 @@ const ProfilePage = async () => {
 
   const achievementsData = await FetchUserAchievement(user.id);
 
-  const userData = formatProfileData(profileData, statsData, achievementCount);
+  const userData = formatProfileData(
+    profileData,
+    statsData,
+    achievementCount,
+    user?.email,
+    profileData?.height_cm,
+    profileData?.weight_kg,
+    profileData?.goal,
+  );
   const { monthlyData, formattedLogs } = formatMonthlyAndLogs(
     logsData,
     statsData,
