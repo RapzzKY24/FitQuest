@@ -28,10 +28,18 @@ const Social = async () => {
     .eq("status", "accepted")
     .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
 
+  // 3. Narik Data Leaderboard Mingguan
+  const {data: leaderboardData, error: leadError} = await supabase
+    .from("v_weekly_leaderboard")
+    .select("*")
+    .order("rank", {ascending: true}) // ⚡ Urutin dari rank 1 ke bawah
+    .limit(50); // Boleh di-limit sesuai selera
+
   return (
     <SocialPages
       initialPending={pendingRequests || []}
       initialFriends={friendsList || []}
+      initialLeaderboard={leaderboardData || []}
       currentUserId={user.id}
     />
   );
