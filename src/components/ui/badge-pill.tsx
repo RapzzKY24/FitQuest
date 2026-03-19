@@ -70,9 +70,9 @@ export function BadgePill({
         letterSpacing: 1,
         textTransform: "uppercase",
         padding: "3px 10px",
-        background: c.bg,
-        color: isHovered ? "#fff" : c.text,
-        border: `1px solid ${c.border}`,
+        background: c?.bg,
+        color: isHovered ? "#fff" : c?.text,
+        border: `1px solid ${c?.border}`,
         transition: "all 0.2s ease",
         clipPath:
           "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
