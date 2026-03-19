@@ -71,7 +71,7 @@ const StatsDashboard = async () => {
               <div className="space-y-2.5">
                 <span className="text-2xl">{stat.icon}</span>
                 <h1 className={`font-extrabold text-5xl ${stat.valueColor}`}>
-                  {stat.value}
+                  {stat.value.toLocaleString("id-ID")}
                 </h1>
                 <p className="text-muted tracking-[0.2rem] uppercase text-[10px] font-bold">
                   {stat.label}
