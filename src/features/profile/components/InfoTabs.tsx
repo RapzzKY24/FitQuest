@@ -4,32 +4,12 @@ import { Input } from "@/src/components/ui/Input";
 import { ProgressBar } from "@/src/components/ui/ProgressBar";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import React from "react";
+import { Achievement } from "../../achievement/components/AchievementCard";
 
-const ACHIEVEMENTS_DATA = [
-  {
-    id: 1,
-    title: "Iron Will",
-    rarity: "Epic",
-    icon: "💎",
-    color: "text-[#e066ff]",
-  },
-  {
-    id: 2,
-    title: "Intensity Master",
-    rarity: "Epic",
-    icon: "⚡",
-    color: "text-[#e066ff]",
-  },
-  {
-    id: 3,
-    title: "Early Bird",
-    rarity: "Rare",
-    icon: "🌅",
-    color: "text-info",
-  },
-];
-
-const InfoTabs = () => {
+interface InfoTabProps {
+  achievements: Achievement[];
+}
+const InfoTabs = ({ achievements }: InfoTabProps) => {
   return (
     <section className="space-y-4 grid grid-cols-4 gap-3">
       <div className="grid col-span-3 space-y-4 ">
@@ -39,7 +19,7 @@ const InfoTabs = () => {
       <div className="grid col-span-1">
         <div className="flex flex-col space-y-4">
           <GymBroInformation />
-          <LeaderboardAchievement />
+          <LeaderboardAchievement achievements={achievements} />
         </div>
       </div>
     </section>
@@ -141,31 +121,75 @@ const GymBroInformation = () => {
   );
 };
 
-const LeaderboardAchievement = () => {
+interface LeaderboardAchievementProps {
+  achievements: Achievement[];
+}
+
+const rarityColorMap: Record<string, string> = {
+  legendary: "text-primary drop-shadow-[0_0_8px_rgba(255,77,0,0.5)]",
+  epic: "text-purple-500",
+  rare: "text-info",
+  common: "text-muted",
+};
+
+const LeaderboardAchievement = ({
+  achievements = [],
+}: LeaderboardAchievementProps) => {
+  const unlockedAchievements = achievements.filter(
+    (a) => a.status === "unlocked" || a.status === "claimable",
+  );
+
+  // Urutin biar Legendary/Epic muncul di atas
+  const rarityWeight: Record<string, number> = {
+    legendary: 4,
+    epic: 3,
+    rare: 2,
+    common: 1,
+  };
+
+  const topAchievements = unlockedAchievements
+    .sort((a, b) => rarityWeight[b.rarity] - rarityWeight[a.rarity])
+    .slice(0, 3);
   return (
     <Card className="px-4 space-y-3 w-full overflow-hidden bg-warning/10">
       <CardHeader>
-        <div className="flex items-center gap-4 uppercase tracking-[0.2em] text-muted">
-          <h2 className="whitespace-nowrap text-warning">
-            {"//"} Top Achievement
-          </h2>
+        <div className="flex items-center gap-4 uppercase tracking-[0.2rem] text-muted">
+          <h2 className="whitespace-nowrap">{"//"} Top Achievement</h2>
           <div className="h-px flex-1 bg-border" />
         </div>
       </CardHeader>
-      <CardContent className="space-y-2.5">
-        {ACHIEVEMENTS_DATA.map((item) => (
-          <Card key={item.id} className="p-3 bg-primary/10">
-            <div className="flex items-center gap-4">
-              <span className="text-2xl">{item.icon}</span>
-              <div className="flex flex-col justify-center gap-y-2">
-                <h1 className="text-broken-white text-md font-bold">
-                  {item.title}
-                </h1>
-                <p className={`uppercase ${item.color}`}>{item.rarity}</p>
+      <CardContent className="space-y-2.5 pb-4">
+        {topAchievements.length > 0 ? (
+          topAchievements.map((item) => (
+            <Card
+              key={item.id}
+              className="p-3 bg-primary/10 border border-primary/20"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-8 h-8 shrink-0 text-2xl">
+                  {item.icon}
+                </div>
+
+                <div className="flex flex-col justify-center gap-y-1">
+                  <h1 className="text-broken-white text-[15px] font-bold leading-none">
+                    {item.title}
+                  </h1>
+                  <p
+                    className={`uppercase text-[10px] font-mono font-bold tracking-[0.15em] ${rarityColorMap[item.rarity]}`}
+                  >
+                    {item.rarity}
+                  </p>
+                </div>
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))
+        ) : (
+          <div className="py-4 text-center border border-dashed border-border/50 rounded bg-surface/50">
+            <p className="text-xs text-muted font-mono uppercase">
+              Belum ada pencapaian.
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

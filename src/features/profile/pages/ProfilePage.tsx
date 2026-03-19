@@ -10,12 +10,14 @@ import Gymbro from "../components/Gymbro";
 import { RecapMonthlyData } from "../components/activity/MontlyStats";
 import { WorkoutLog } from "../components/activity/WorkoutHistory";
 import { HeatCell } from "../types/profile.types";
+import { Achievement } from "../../achievement/components/AchievementCard";
 
 interface ProfilePagesProps {
   userData: UserProfileData;
   monthlyData: RecapMonthlyData;
   workoutLog: WorkoutLog[];
   heatMapData: HeatCell[];
+  achievement: Achievement[];
 }
 >>>>>>> 615013b (feat: connect heatmap to supabase)
 
@@ -24,6 +26,7 @@ const ProfilePages = ({
   monthlyData,
   workoutLog,
   heatMapData,
+  achievement,
 }: ProfilePagesProps) => {
   const [tabVal, setTabVal] = useState("info");
   const PROFILE_TABS = [
@@ -52,10 +55,14 @@ const ProfilePages = ({
           variant="underline"
         />
         {/* tabs section */}
+<<<<<<< HEAD
         {tabVal == "info" && <InfoTabs />}
 <<<<<<< HEAD
         {tabVal == "aktivitas" && <ActivityTabs />}
 =======
+=======
+        {tabVal == "info" && <InfoTabs achievements={achievement} />}
+>>>>>>> 249ecaa (feat : wire up dynamic achievements to info tabs)
         {tabVal == "aktivitas" && (
           <ActivityTabs
             monthlyData={monthlyData}
