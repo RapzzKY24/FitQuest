@@ -17,7 +17,7 @@ export default async function ProfileContainer() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   // Fetching data
