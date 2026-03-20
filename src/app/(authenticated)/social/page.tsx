@@ -16,7 +16,7 @@ const Social = async () => {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   // 1. Narik Pending Requests (Orang yang nge-add user lu)

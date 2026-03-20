@@ -9,7 +9,7 @@ export default async function AchievementContainer() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect("/auth/login");
 
   const achievementsRawData = await FetchUserAchievement(user.id);
 
