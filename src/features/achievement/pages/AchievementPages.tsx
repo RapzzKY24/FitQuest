@@ -30,7 +30,7 @@ const AchievementPages = ({ achievements }: AchievementPagesProps) => {
         {/* Header */}
         <div className="space-y-3.5">
           <p className="text-sm font-light tracking-[0.3em] uppercase text-primary">
-            Koleksi Pencapaian
+            {"//"}Koleksi Pencapaian
           </p>
           <h1 className="font-extrabold text-4xl text-broken-white uppercase ">
             Achieve<span className="text-primary">ment</span>

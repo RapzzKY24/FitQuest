@@ -1,6 +1,6 @@
 // SocialPages.tsx
 "use client";
-import {Tabs} from "@/src/components/ui/Tabs";
+import { Tabs } from "@/src/components/ui/Tabs";
 import React from "react";
 import FeedTabs from "../components/FeedTabs";
 import LeaderboardTabs from "../components/LeaderboardTabs";
@@ -33,8 +33,8 @@ const SocialPages = ({
   const pendingCount = initialPending.length;
 
   const SOCIAL_TABS = [
-    {value: "feed", label: "Activity Feed"},
-    {value: "leaderboard", label: "Leaderboard"},
+    { value: "feed", label: "Activity Feed" },
+    { value: "leaderboard", label: "Leaderboard" },
     {
       value: "friend",
       label: "Teman",
@@ -46,6 +46,14 @@ const SocialPages = ({
     <main className="w-full">
       <div className="px-4 py-6 flex flex-col justify-center gap-y-4 ">
         {/* ... (Header tetap sama) ... */}
+        <div className="space-y-3.5">
+          <p className="text-sm font-light tracking-[0.3em] uppercase text-primary">
+            {"//"} KOMUNITAS WARIOR
+          </p>
+          <h1 className="font-extrabold text-4xl text-broken-white uppercase ">
+            so<span className="text-primary">cial</span>
+          </h1>
+        </div>
 
         <Tabs
           tabs={SOCIAL_TABS}
