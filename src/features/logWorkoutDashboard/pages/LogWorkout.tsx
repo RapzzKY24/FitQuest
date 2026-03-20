@@ -46,7 +46,7 @@ const LogWorkoutPages = async () => {
         {/* header page */}
         <div className="spacey-y-3.5">
           <p className="text-sm font-light tracking-[0.3em] uppercase text-primary">
-            Catat Aktivitas
+            {"//"}Catat Aktivitas
           </p>
           <h1 className="font-extrabold text-4xl text-white uppercase">
             Log <span className="text-primary">Workout</span>
