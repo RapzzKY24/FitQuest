@@ -1,7 +1,12 @@
 import AchievementPages from "@/src/features/achievement/pages/AchievementPages";
 import { FetchUserAchievement } from "@/src/features/achievement/service/achievement.service";
+import { constructMetadata } from "@/src/utils/metadata";
 import { createClient } from "@/src/utils/supabase/server";
 import { redirect } from "next/navigation";
+
+export const metadata = constructMetadata({
+  title: "Achievement",
+});
 
 export default async function Page() {
   const supabase = await createClient();

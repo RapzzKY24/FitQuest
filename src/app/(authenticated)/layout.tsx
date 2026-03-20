@@ -1,5 +1,14 @@
 import { Sidebar } from "@/src/components/ui/Sidebar";
 import { createClient } from "@/src/utils/supabase/server";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "FitQuest - Level Up Your Life",
+    template: "%s - FitQuest",
+  },
+  description: "Gamified fitness tracker for the ultimate gym bros.",
+};
 
 export default async function AutheticatedLayout({
   children,
