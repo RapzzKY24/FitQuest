@@ -1,26 +1,19 @@
-import AchievementPages from "@/src/features/achievement/pages/AchievementPages";
-import { FetchUserAchievement } from "@/src/features/achievement/service/achievement.service";
+import AchievementContainer from "@/src/features/achievement/pages/AchievementContainer";
 import { constructMetadata } from "@/src/utils/metadata";
-import { createClient } from "@/src/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { Skeleton } from "@/src/components/ui/Skeleton";
+import AchievementLoading from "@/src/features/achievement/components/AchievementLoading";
 
 export const metadata = constructMetadata({
   title: "Achievement",
 });
 
-export default async function Page() {
-  const supabase = await createClient();
-
-  // 1. Cek User yang lagi login
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/login");
-  }
-
-  // 2. FETCH DATA
-  const achievementsData = await FetchUserAchievement(user.id);
-
-  return <AchievementPages achievements={achievementsData} />;
+export default function Page() {
+  return (
+    <main className="w-full bg-black min-h-screen">
+      <Suspense fallback={<AchievementLoading />}>
+        <AchievementContainer />
+      </Suspense>
+    </main>
+  );
 }
