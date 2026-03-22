@@ -1,13 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { C } from "./Theme";
+import Image from "next/image";
 
 export interface AvatarProps {
   src?: string;
   alt?: string;
-  fallback: string;
+  fallback: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
   ringColor?: string;
+  className?: string;
 }
 
 export function Avatar({
@@ -16,6 +18,7 @@ export function Avatar({
   fallback,
   size = "md",
   ringColor,
+  className = "", // Default string kosong
 }: AvatarProps) {
   const [imgError, setImgError] = useState(false);
 
@@ -29,6 +32,7 @@ export function Avatar({
 
   return (
     <div
+      className={className}
       style={{
         width: s.width,
         height: s.height,
@@ -60,9 +64,12 @@ export function Avatar({
             color: ringColor || C.text,
             textTransform: "uppercase",
             letterSpacing: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {fallback.substring(0, 2)}
+          {typeof fallback === "string" ? fallback.substring(0, 2) : fallback}
         </span>
       )}
     </div>
