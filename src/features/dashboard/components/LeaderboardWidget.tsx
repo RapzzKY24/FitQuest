@@ -59,7 +59,7 @@ const LeaderboardWidget = async () => {
         <div className="flex flex-col">
           {topLeaderboard.map((u, index) => (
             <div
-              key={u.rank}
+              key={index}
               className={`py-4 flex items-center justify-between ${
                 index !== topLeaderboard.length - 1
                   ? "border-b border-border/60"
