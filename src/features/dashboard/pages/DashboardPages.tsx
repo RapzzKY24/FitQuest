@@ -8,11 +8,12 @@ import GymbroWidget from "../components/GymbroWidget";
 import LeaderboardWidget from "../components/LeaderboardWidget";
 import LevelProgressWidget from "../components/LevelProgresWidget";
 import WeeklyActivity from "../components/WeeklyActivity";
-import { Skeleton, SkeletonCard } from "@/src/components/ui/Skeleton";
+import { Skeleton } from "@/src/components/ui/Skeleton";
+import { FQCoachWidget } from "../components/FQCoachWidget";
 
 const DashboardPages = () => {
   return (
-    <main className="flex flex-col gap-6 p-6">
+    <main className="flex flex-col gap-6 p-6 relative">
       <Suspense fallback={<Skeleton height={100} />}>
         <HeaderDashboard />
       </Suspense>
@@ -62,6 +63,8 @@ const DashboardPages = () => {
           </Suspense>
         </div>
       </div>
+
+      <FQCoachWidget />
     </main>
   );
 };
