@@ -6,6 +6,43 @@ import { createClient } from "@/src/utils/supabase/server";
 import { dashboardUtils } from "@/src/utils/DashboardUtils";
 import { DashboardService } from "../services/dashboard.service";
 
+export type AchievementRarity = "common" | "rare" | "epic" | "legendary";
+
+export type RarityStyle = {
+  border: string;
+  bg: string;
+  progress: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pill: "accent" | "purple" | "info" | "muted" | "default" | any;
+};
+
+const rarityConfig: Record<AchievementRarity, RarityStyle> = {
+  legendary: {
+    border: "border-primary",
+    bg: "bg-primary/10",
+    progress: "bg-primary",
+    pill: "accent",
+  },
+  epic: {
+    border: "border-purple-500/40",
+    bg: "bg-purple-500/10",
+    progress: "bg-purple-500",
+    pill: "purple",
+  },
+  rare: {
+    border: "border-info",
+    bg: "bg-info/10",
+    progress: "bg-info",
+    pill: "info",
+  },
+  common: {
+    border: "border-muted",
+    bg: "bg-muted/10",
+    progress: "bg-muted",
+    pill: "muted",
+  },
+};
+
 export type UserBadgeLog = {
   earned_at: string;
   badges: {
@@ -13,7 +50,7 @@ export type UserBadgeLog = {
     name: string;
     description: string;
     icon: string;
-    rarity: "common" | "rare" | "epic" | "legendary";
+    rarity: AchievementRarity;
   } | null;
 };
 
@@ -32,13 +69,13 @@ const LatestAchievements = async () => {
     user.id,
   );
 
-  // 3. Format Data DB biar pas sama Desain UI lu
+  // 3. Format Data DB pake rarityConfig
   const formattedAchievements =
     recentBadges
       ?.filter((log) => log.badges !== null)
       .map((log, index) => {
         const badge = log.badges!;
-        const style = dashboardUtils.getRarityStyle(badge.rarity);
+        const style = rarityConfig[badge.rarity] || rarityConfig.common;
 
         return {
           id: `${badge.id}-${index}`,
@@ -46,9 +83,8 @@ const LatestAchievements = async () => {
           icon: badge.icon || "🏅",
           subtitle: `${badge.description} · ${dashboardUtils.formatRelativeTime(log.earned_at)}`,
           badgeText: badge.rarity.toUpperCase(),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          badgeColor: style.badgeColor as any,
-          iconBg: style.iconBg,
+          badgeColor: style.pill,
+          iconBg: `${style.bg} ${style.border}`,
         };
       }) || [];
 
@@ -69,7 +105,6 @@ const LatestAchievements = async () => {
           </Link>
         </div>
 
-        {/* --- LIST ACHIEVEMENT --- */}
         <div className="flex flex-col">
           {formattedAchievements.length === 0 ? (
             <p className="text-muted text-sm text-center py-4">
@@ -85,7 +120,6 @@ const LatestAchievements = async () => {
                     : "pt-4 pb-0"
                 }`}
               >
-                {/* Info Kiri (Icon + Teks) */}
                 <div className="flex items-center gap-4">
                   {/* Icon Box */}
                   <div
