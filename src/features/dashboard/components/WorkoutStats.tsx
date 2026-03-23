@@ -21,20 +21,17 @@ export type RecentWorkoutLog = {
 const WorkoutStats = async () => {
   const supabase = await createClient();
 
-  // 1. Cek User
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) return null;
 
-  // 2. Tarik log terakhir (Join table workout_logs & workout_types)
   const { recentWorkouts } = await DashboardService.workoutStats(
     supabase,
     user.id,
   );
 
-  // 3. Format data dari DB biar pas sama UI lu
   const formattedWorkouts =
     recentWorkouts?.map((log) => ({
       id: log.id,
@@ -46,39 +43,35 @@ const WorkoutStats = async () => {
 
   return (
     <Card className="w-full bg-surface border-border" variant="default">
-      <CardContent className="p-6 md:p-8">
-        {/* --- HEADER --- */}
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-muted tracking-[0.2em] text-[11px] font-bold uppercase">
+      <CardContent className="p-4 sm:p-6 md:p-8">
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <span className="text-muted tracking-[0.2em] text-[10px] md:text-[11px] font-bold uppercase">
             Workout Terakhir
           </span>
-          <div className="flex-1 h-px bg-border mx-4"></div>
-          <span className="text-muted tracking-[0.2em] text-[11px] font-semibold uppercase cursor-pointer hover:text-broken-white transition-colors">
+          <div className="flex-1 h-px bg-border mx-2 md:mx-4"></div>
+          <span className="text-muted tracking-[0.2em] text-[10px] md:text-[11px] font-semibold uppercase cursor-pointer hover:text-broken-white transition-colors">
             <Link href={"/log"}>Lihat Semua &rarr;</Link>
           </span>
         </div>
 
-        {/* --- LIST WORKOUT --- */}
         <div className="flex flex-col">
           {formattedWorkouts.length === 0 ? (
-            <p className="text-muted text-sm text-center py-4">
+            <p className="text-muted text-xs md:text-sm text-center py-4">
               Belum ada riwayat workout. Yuk mulai!
             </p>
           ) : (
             formattedWorkouts.map((workout, index) => (
               <div
                 key={workout.id}
-                className={`py-4 flex items-center justify-between ${
+                className={`py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 ${
                   index !== formattedWorkouts.length - 1
                     ? "border-b border-border/60"
-                    : "pt-4 pb-0"
+                    : "pt-3 md:pt-4 pb-0"
                 }`}
               >
-                {/* Info Kiri (Icon + Teks) */}
-                <div className="flex items-center gap-4">
-                  {/* Icon Box */}
+                <div className="flex items-center gap-3 md:gap-4 min-w-0">
                   <div
-                    className="w-12 h-12 flex items-center justify-center bg-elevated/50 border border-border text-2xl shadow-inner"
+                    className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-elevated/50 border border-border text-xl md:text-2xl shadow-inner"
                     style={{
                       clipPath:
                         "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -87,19 +80,19 @@ const WorkoutStats = async () => {
                     {workout.icon}
                   </div>
 
-                  {/* Text Stack */}
-                  <div className="flex flex-col gap-1">
-                    <h3 className="text-broken-white font-bold text-[15px] tracking-wide">
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <h3 className="text-broken-white font-bold text-sm md:text-[15px] tracking-wide truncate">
                       {workout.title}
                     </h3>
-                    <p className="text-muted text-[12px] font-medium tracking-wide">
+                    <p className="text-muted text-[10px] md:text-[12px] font-medium tracking-wide truncate">
                       {workout.subtitle}
                     </p>
                   </div>
                 </div>
 
-                {/* XP Badge Kanan */}
-                <BadgePill color="primary">{workout.xp}</BadgePill>
+                <div className="flex-shrink-0">
+                  <BadgePill color="primary">{workout.xp}</BadgePill>
+                </div>
               </div>
             ))
           )}
