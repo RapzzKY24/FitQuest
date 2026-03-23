@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/incompatible-library */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/src/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
 import { Input } from "@/src/components/ui/Input";
 import { ProgressBar } from "@/src/components/ui/ProgressBar";
 import { BadgePill } from "@/src/components/ui/badge-pill";
-import React, { useState } from "react";
+import React from "react";
 import { Achievement } from "../../achievement/components/AchievementCard";
 import { ToastContainer, useToast } from "@/src/components/ui/Toast";
 import { useForm } from "react-hook-form";
@@ -18,18 +20,17 @@ interface InfoTabProps {
   achievements: Achievement[];
   userData: UserProfileData;
 }
+
 const InfoTabs = ({ achievements, userData }: InfoTabProps) => {
   return (
-    <section className="space-y-4 grid grid-cols-4 gap-3">
-      <div className="grid col-span-3 space-y-4 ">
+    <section className="flex flex-col lg:grid lg:grid-cols-[1fr_320px] gap-4 md:gap-6 items-start">
+      <div className="flex flex-col gap-4 md:gap-6 w-full min-w-0">
         <PersonalInformation userData={userData} />
         <PhysicalStats userData={userData} />
       </div>
-      <div className="grid col-span-1">
-        <div className="flex flex-col space-y-4">
-          <GymBroInformation />
-          <LeaderboardAchievement achievements={achievements} />
-        </div>
+
+      <div className="flex flex-col gap-4 md:gap-6 w-full min-w-0">
+        <LeaderboardAchievement achievements={achievements} />
       </div>
     </section>
   );
@@ -69,7 +70,6 @@ const PhysicalStats = ({ userData }: { userData: any }) => {
 
   const onSubmit = async (data: PhysicalFormValues) => {
     const result = await updatePhysicalInformation(data);
-
     if (result.success) {
       showToast({
         type: "success",
@@ -83,19 +83,19 @@ const PhysicalStats = ({ userData }: { userData: any }) => {
 
   return (
     <section>
-      <Card className="px-4 space-y-3 w-full ">
-        <CardHeader>
-          <div className="flex items-center gap-4 uppercase tracking-[0.2em] text-muted">
-            <h2 className="whitespace-nowrap">Data Tubuh</h2>
+      <Card className="px-4 md:px-6 space-y-3 w-full border-border bg-surface">
+        <CardHeader className="pt-6 pb-2">
+          <div className="flex items-center gap-4 uppercase tracking-[0.15rem] md:tracking-[0.2em] text-muted text-xs md:text-sm font-bold">
+            <h2 className="whitespace-nowrap">{"//"} Data Tubuh</h2>
             <div className="h-px flex-1 bg-border" />
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-6">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-y-5"
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Input
                   {...register("weight")}
@@ -122,16 +122,16 @@ const PhysicalStats = ({ userData }: { userData: any }) => {
                 value={currentGoal}
                 onChange={(val) => setValue("goal", val, { shouldDirty: true })}
               />
-              {/* Hidden input biar RHF tetep bisa validasi kalau perlu */}
               <input type="hidden" {...register("goal")} />
             </div>
 
-            <div className="flex justify-start">
+            <div className="flex justify-start pt-2">
               <Button
                 type="submit"
                 disabled={isSubmitting}
                 variant="secondary"
                 size="sm"
+                className="w-full sm:w-auto"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Data Tubuh"}
               </Button>
@@ -182,11 +182,8 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
 
   const currentEmoji = watch("avatar_emoji");
 
-  // 3. Fungsi pas form disubmit
   const onSubmit = async (data: ProfileFormValues) => {
-    // Data yang dikirim ini udah rapi berkat RHF
     const result = await updatePersonalInfoAction(data);
-
     if (result.success) {
       showToast({
         type: "success",
@@ -200,41 +197,39 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
 
   return (
     <section>
-      <Card className="px-4 space-y-3 w-full overflow-hidden bg-surface border-border">
-        <CardHeader>
-          <div className="flex items-center gap-4 uppercase tracking-[0.2em] text-muted">
-            <h2 className="whitespace-nowrap">Informasi Pribadi</h2>
+      <Card className="px-4 md:px-6 space-y-3 w-full overflow-hidden bg-surface border-border">
+        <CardHeader className="pt-6 pb-2">
+          <div className="flex items-center gap-4 uppercase tracking-[0.15rem] md:tracking-[0.2em] text-muted text-xs md:text-sm font-bold">
+            <h2 className="whitespace-nowrap">{"//"} Informasi Pribadi</h2>
             <div className="h-px flex-1 bg-border" />
           </div>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="pb-6">
           <form
             className="flex flex-col justify-center gap-y-6"
             onSubmit={handleSubmit(onSubmit)}
           >
-            {/* 1. BAGIAN PEMILIHAN EMOJI (AVATAR) */}
             <div className="space-y-3">
-              <label className="text-xs font-mono text-muted uppercase tracking-widest">
+              <label className="text-[10px] md:text-xs font-mono text-muted uppercase tracking-widest">
                 Pilih Avatar Emoji
               </label>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 md:gap-3">
                 {PRESET_EMOJIS.map((emoji) => (
                   <button
                     key={emoji}
                     type="button"
-                    // Pas diklik, suruh RHF nyatet nilai barunya
                     onClick={() =>
                       setValue("avatar_emoji", emoji, { shouldDirty: true })
                     }
                     className={`
-                    w-12 h-12 flex items-center justify-center text-2xl rounded-xl transition-all duration-300
-                    ${
-                      currentEmoji === emoji
-                        ? "bg-primary/20 border-2 border-primary scale-110 shadow-[0_0_15px_rgba(255,77,0,0.3)]"
-                        : "bg-elevated border border-white/5 hover:bg-white/10 grayscale hover:grayscale-0"
-                    }
-                  `}
+                      w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-xl md:text-2xl rounded-lg md:rounded-xl transition-all duration-300
+                      ${
+                        currentEmoji === emoji
+                          ? "bg-primary/20 border-2 border-primary scale-110 shadow-[0_0_15px_rgba(255,77,0,0.3)]"
+                          : "bg-elevated border border-white/5 hover:bg-white/10 grayscale hover:grayscale-0"
+                      }
+                    `}
                   >
                     {emoji}
                   </button>
@@ -242,8 +237,7 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
               </div>
             </div>
 
-            {/* 2. BAGIAN INPUT TEKS */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
                 <Input
                   {...register("display_name", {
@@ -253,7 +247,7 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
                   label="Display Name"
                 />
                 {errors.display_name && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-red-500 text-[10px] md:text-xs">
                     {errors.display_name.message}
                   </span>
                 )}
@@ -268,7 +262,7 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
                   label="Username"
                 />
                 {errors.username && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-red-500 text-[10px] md:text-xs">
                     {errors.username.message}
                   </span>
                 )}
@@ -281,12 +275,14 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
               label="Email"
               disabled
             />
-            <div className="flex justify-start">
+
+            <div className="flex justify-start pt-2">
               <Button
                 type="submit"
                 disabled={isSubmitting}
                 size="sm"
                 variant="secondary"
+                className="w-full sm:w-auto"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
@@ -296,51 +292,6 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
       </Card>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </section>
-  );
-};
-
-const GymBroInformation = () => {
-  return (
-    <Card className="px-4 space-y-3 w-full overflow-hidden">
-      <CardHeader>
-        <div className="flex items-center gap-4 uppercase tracking-[0.2em] text-muted">
-          <h2 className="whitespace-nowrap">Gymbro</h2>
-          <div className="h-px flex-1 bg-border" />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex flex-col items-center justify-center gap-y-4">
-            <BadgePill color="muted">
-              <span className="text-6xl p-6">💪</span>
-            </BadgePill>
-            <div className="flex flex-col items-center justify-center gap-y-1.5">
-              <h1 className="font-extrabold text-3xl tracking-normal">
-                Stage 2 — Fighter
-              </h1>
-              <p className="text-muted tracking-[2]">
-                47 / 100 sesi untuk Stage 3
-              </p>
-            </div>
-            <div className="flex items-center">
-              <span className="text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]" />
-              <span className="text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]" />
-              <span className="text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]" />
-              <span className="text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]" />
-              <span className="text-white before:content-[''] before:inline-block before:w-4 before:h-4 before:mr-3 before:bg-[#42a5f5] before:[clip-path:polygon(0_0,75%_0,100%_25%,100%_100%,25%_100%,0_75%)]" />
-            </div>
-          </div>
-          <div className="flex flex-col justify-center gap-y-4">
-            <div className="flex justify-between items-center text-muted uppercase">
-              <h1>STAGE PROGRESS</h1>
-              <p>47%</p>
-            </div>
-            <ProgressBar value={47} max={100} />
-            <Button variant="outline">LIHAT DETAIL →</Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   );
 };
 
@@ -362,7 +313,6 @@ const LeaderboardAchievement = ({
     (a) => a.status === "unlocked" || a.status === "claimable",
   );
 
-  // Urutin biar Legendary/Epic muncul di atas
   const rarityWeight: Record<string, number> = {
     legendary: 4,
     epic: 3,
@@ -373,10 +323,11 @@ const LeaderboardAchievement = ({
   const topAchievements = unlockedAchievements
     .sort((a, b) => rarityWeight[b.rarity] - rarityWeight[a.rarity])
     .slice(0, 3);
+
   return (
     <Card className="px-4 space-y-3 w-full overflow-hidden bg-warning/10">
       <CardHeader>
-        <div className="flex items-center gap-4 uppercase tracking-[0.2rem] text-muted">
+        <div className="flex items-center gap-4 uppercase tracking-[0.2rem] text-muted text-xs md:text-sm font-bold">
           <h2 className="whitespace-nowrap">{"//"} Top Achievement</h2>
           <div className="h-px flex-1 bg-border" />
         </div>
@@ -392,9 +343,8 @@ const LeaderboardAchievement = ({
                 <div className="flex items-center justify-center w-8 h-8 shrink-0 text-2xl">
                   {item.icon}
                 </div>
-
-                <div className="flex flex-col justify-center gap-y-1">
-                  <h1 className="text-broken-white text-[15px] font-bold leading-none">
+                <div className="flex flex-col justify-center gap-y-1 min-w-0">
+                  <h1 className="text-broken-white text-[14px] md:text-[15px] font-bold leading-none truncate">
                     {item.title}
                   </h1>
                   <p

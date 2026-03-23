@@ -95,64 +95,59 @@ export const ActivityHeatmap = ({
 
   return (
     <Card className="w-full overflow-hidden border-border bg-surface">
-      <CardHeader className="px-6 pt-6 pb-0">
+      <CardHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-0">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <SectionLabel>Activity Heatmap</SectionLabel>
-          <span className="font-mono text-muted text-xs uppercase tracking-[2px]">
-            26 MINGGU TERAKHIR
-          </span>
+          <h1 className="uppercase tracking-[0.15rem] md:tracking-[0.2rem] text-muted font-bold whitespace-nowrap text-xs md:text-base">
+            {"//"} Activity Heatmap
+          </h1>
         </div>
       </CardHeader>
-
-      <CardContent className="px-6 pb-6 pt-5">
-        <div className="w-full">
+      <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 pt-4 sm:pt-5">
+        <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
           <div
-            className="grid gap-[3px]"
+            className="grid gap-[2px] sm:gap-[3px] min-w-[500px] lg:min-w-full pr-4 sm:pr-0"
             style={{
               gridTemplateColumns: `max-content repeat(${weeks.length}, minmax(0, 1fr))`,
             }}
           >
             <div />
-
             {/* Render nama bulan */}
             {weeks.map((week, wi) => {
               const first = week.find((d) => d.date.getDate() === 1);
               return (
-                <div key={wi} className="relative h-5">
+                <div key={wi} className="relative h-4 sm:h-5">
                   {first && (
-                    <span className="absolute bottom-1 left-0 font-mono text-muted text-[9px] whitespace-nowrap z-10">
+                    <span className="absolute bottom-1 left-0 font-mono text-muted text-[8px] sm:text-[9px] whitespace-nowrap z-10">
                       {MONTHS[first.date.getMonth()]}
                     </span>
                   )}
                 </div>
               );
             })}
-
             {/* ── BARIS 2-8: Nama Hari & Kotak Heatmap ── */}
             {WEEK_DAYS.map((dayName, dayIdx) => (
               <React.Fragment key={dayName}>
                 {/* Kolom 1: Nama Hari */}
-                <div className="flex items-center justify-end pr-3">
-                  <span className="font-mono text-muted text-[9px] leading-none">
+                <div className="flex items-center justify-end pr-2 sm:pr-3">
+                  <span className="font-mono text-muted text-[8px] sm:text-[9px] leading-none">
                     {dayName}
                   </span>
                 </div>
-
-                {/* Kolom 2 - 27: Kotak Heatmap untuk hari tersebut (di-render per minggu) */}
+                {/* Kolom 2 - 27: Kotak Heatmap */}
                 {weeks.map((week, wi) => {
-                  const { date, count } = week[dayIdx]; // Ambil data sesuai index hari (0-6)
+                  const { date, count } = week[dayIdx];
                   const level = toLevel(count);
                   const tip = `${date.toLocaleDateString("id-ID", {
                     weekday: "short",
                     day: "numeric",
                     month: "short",
                   })}: ${count} workout`;
-
                   return (
                     <div
                       key={`${wi}-${dayIdx}`}
                       title={tip}
-                      className={`w-full aspect-square rounded-[2px] cursor-default transition-opacity hover:opacity-70 ${CELL_BG[level]}`}
+                      // rounded disesuaikan biar gak terlalu tajam/kotak banget di ukuran kecil
+                      className={`w-full aspect-square rounded-sm sm:rounded-[2px] cursor-default transition-opacity hover:opacity-70 ${CELL_BG[level]}`}
                     />
                   );
                 })}
@@ -160,18 +155,19 @@ export const ActivityHeatmap = ({
             ))}
           </div>
         </div>
-
-        {/* ── Legend ── */}
-        <div className="flex items-center justify-end gap-2 mt-5">
-          <span className="font-mono text-muted text-[9px] uppercase tracking-[2px]">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2 mt-4 sm:mt-5">
+          <span className="font-mono text-muted text-[8px] sm:text-[9px] uppercase tracking-[1px] sm:tracking-[2px]">
             Less
           </span>
           <div className="flex gap-1">
             {LEGEND_LEVELS.map((lv) => (
-              <div key={lv} className={`size-3.5 rounded-sm ${CELL_BG[lv]}`} />
+              <div
+                key={lv}
+                className={`size-3 sm:size-3.5 rounded-sm ${CELL_BG[lv]}`}
+              />
             ))}
           </div>
-          <span className="font-mono text-muted text-[9px] uppercase tracking-[2px]">
+          <span className="font-mono text-muted text-[8px] sm:text-[9px] uppercase tracking-[1px] sm:tracking-[2px]">
             More
           </span>
         </div>
