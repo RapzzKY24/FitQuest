@@ -57,19 +57,16 @@ export type UserBadgeLog = {
 const LatestAchievements = async () => {
   const supabase = await createClient();
 
-  // 1. Cek User
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  // 2. Tarik log achievement terakhir
   const { recentBadges } = await DashboardService.latestAchievement(
     supabase,
     user.id,
   );
 
-  // 3. Format Data DB pake rarityConfig
   const formattedAchievements =
     recentBadges
       ?.filter((log) => log.badges !== null)
@@ -90,16 +87,15 @@ const LatestAchievements = async () => {
 
   return (
     <Card className="w-full bg-surface border-border" variant="default">
-      <CardContent className="p-6 md:p-8">
-        {/* --- HEADER --- */}
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-muted tracking-[0.2em] text-[11px] font-bold uppercase">
+      <CardContent className="p-4 sm:p-6 md:p-8">
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <span className="text-muted tracking-[0.2em] text-[10px] md:text-[11px] font-bold uppercase">
             Achievement Terbaru
           </span>
-          <div className="flex-1 h-px bg-border mx-4"></div>
+          <div className="flex-1 h-px bg-border mx-2 md:mx-4"></div>
           <Link
             href="/achievement"
-            className="text-muted tracking-[0.2em] text-[11px] font-semibold uppercase hover:text-broken-white transition-colors"
+            className="text-muted tracking-[0.2em] text-[10px] md:text-[11px] font-semibold uppercase hover:text-broken-white transition-colors"
           >
             Lihat Semua &rarr;
           </Link>
@@ -107,23 +103,22 @@ const LatestAchievements = async () => {
 
         <div className="flex flex-col">
           {formattedAchievements.length === 0 ? (
-            <p className="text-muted text-sm text-center py-4">
+            <p className="text-muted text-xs md:text-sm text-center py-4">
               Belum ada achievement. Tetap semangat latihan! 💪
             </p>
           ) : (
             formattedAchievements.map((achievement, index) => (
               <div
                 key={achievement.id}
-                className={`py-4 flex items-center justify-between ${
+                className={`py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 ${
                   index !== formattedAchievements.length - 1
                     ? "border-b border-border/60"
-                    : "pt-4 pb-0"
+                    : "pt-3 md:pt-4 pb-0"
                 }`}
               >
-                <div className="flex items-center gap-4">
-                  {/* Icon Box */}
+                <div className="flex items-center gap-3 md:gap-4 min-w-0">
                   <div
-                    className={`w-12 h-12 flex items-center justify-center border text-2xl shadow-inner ${achievement.iconBg}`}
+                    className={`shrink-0 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border text-xl md:text-2xl shadow-inner ${achievement.iconBg}`}
                     style={{
                       clipPath:
                         "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -132,21 +127,21 @@ const LatestAchievements = async () => {
                     {achievement.icon}
                   </div>
 
-                  {/* Text Stack */}
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="text-broken-white font-bold text-[15px] tracking-wide leading-none">
+                  <div className="flex flex-col gap-1 md:gap-1.5 min-w-0">
+                    <h3 className="text-broken-white font-bold text-sm md:text-[15px] tracking-wide leading-none truncate">
                       {achievement.title}
                     </h3>
-                    <p className="text-muted font-mono text-[10px] tracking-wider uppercase leading-none mt-1">
+                    <p className="text-muted font-mono text-[9px] md:text-[10px] tracking-wider uppercase leading-none mt-0.5 md:mt-1 truncate">
                       {achievement.subtitle}
                     </p>
                   </div>
                 </div>
 
-                {/* Rarity Badge Kanan */}
-                <BadgePill color={achievement.badgeColor}>
-                  {achievement.badgeText}
-                </BadgePill>
+                <div className="shrink-0">
+                  <BadgePill color={achievement.badgeColor}>
+                    {achievement.badgeText}
+                  </BadgePill>
+                </div>
               </div>
             ))
           )}

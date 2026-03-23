@@ -4,7 +4,6 @@ import StatsDashboard from "../components/StatsDashboard";
 import DailyQuest from "../components/DailyQuest";
 import WorkoutStats from "../components/WorkoutStats";
 import LatestAchievements from "../components/LatestAchievement";
-import GymbroWidget from "../components/GymbroWidget";
 import LeaderboardWidget from "../components/LeaderboardWidget";
 import LevelProgressWidget from "../components/LevelProgresWidget";
 import WeeklyActivity from "../components/WeeklyActivity";
@@ -52,9 +51,6 @@ const DashboardPages = () => {
           </div>
         </div>
         <div className="lg:col-span-1 flex flex-col gap-6">
-          <Suspense fallback={<Skeleton height={320} />}>
-            <GymbroWidget />
-          </Suspense>
           <Suspense fallback={<Skeleton height={150} />}>
             <LevelProgressWidget />
           </Suspense>
