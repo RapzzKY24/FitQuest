@@ -100,7 +100,7 @@ const DailyQuestClient = ({ quests }: Props) => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3 md:gap-5 min-w-0 pr-2">
                   <div
-                    className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center border ${quest.iconBg} text-lg md:text-xl`}
+                    className={`shrink-0 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center border ${quest.iconBg} text-lg md:text-xl`}
                     style={{
                       clipPath:
                         "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -117,7 +117,7 @@ const DailyQuestClient = ({ quests }: Props) => {
                   </span>
                 </div>
 
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {quest.status === "DONE" && (
                     <BadgePill color="success">DONE</BadgePill>
                   )}

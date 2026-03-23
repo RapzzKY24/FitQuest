@@ -90,7 +90,7 @@ const WorkoutStats = async () => {
                   </div>
                 </div>
 
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <BadgePill color="primary">{workout.xp}</BadgePill>
                 </div>
               </div>
