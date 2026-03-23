@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { C } from "./Theme";
+import {C} from "./Theme";
 
 export interface TabOption {
   value: string;
@@ -36,8 +36,7 @@ export function Tabs({
             ? "polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))"
             : "none",
         flexWrap: "wrap",
-      }}
-    >
+      }}>
       {tabs.map((tab) => {
         const isActive = value === tab.value;
         const baseStyle = {
@@ -46,7 +45,7 @@ export function Tabs({
           gap: 6,
           fontFamily: "'Barlow Condensed',sans-serif",
           fontWeight: 700,
-          fontSize: "1rem",
+          // fontSize: "1rem",
           textTransform: "uppercase" as const,
           letterSpacing: "1.5px",
           cursor: "pointer",
@@ -58,6 +57,7 @@ export function Tabs({
         if (variant === "underline")
           return (
             <button
+              className="text-xs md:text-base"
               key={tab.value}
               onClick={() => onChange(tab.value)}
               style={{
@@ -69,9 +69,8 @@ export function Tabs({
                   ? `2px solid ${C.primary}`
                   : "2px solid transparent",
                 marginBottom: -1,
-              }}
-            >
-              {tab.icon && <span style={{ fontSize: 15 }}>{tab.icon}</span>}
+              }}>
+              {tab.icon && <span style={{fontSize: 15}}>{tab.icon}</span>}
               {tab.label}
               {tab.badge && (
                 <span
@@ -83,8 +82,7 @@ export function Tabs({
                     color: "white",
                     clipPath:
                       "polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px))",
-                  }}
-                >
+                  }}>
                   {tab.badge}
                 </span>
               )}
@@ -94,6 +92,7 @@ export function Tabs({
         if (variant === "pill")
           return (
             <button
+              className="text-xs md:text-base"
               key={tab.value}
               onClick={() => onChange(tab.value)}
               style={{
@@ -104,9 +103,8 @@ export function Tabs({
                 border: `1px solid ${isActive ? C.primary : C.border}`,
                 clipPath:
                   "polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px))",
-              }}
-            >
-              {tab.icon && <span style={{ fontSize: 15 }}>{tab.icon}</span>}
+              }}>
+              {tab.icon && <span style={{fontSize: 15}}>{tab.icon}</span>}
               {tab.label}
               {tab.badge && (
                 <span
@@ -117,8 +115,7 @@ export function Tabs({
                     background: isActive ? "rgba(255,255,255,0.2)" : C.border,
                     clipPath:
                       "polygon(0 0,calc(100% - 3px) 0,100% 3px,100% 100%,3px 100%,0 calc(100% - 3px))",
-                  }}
-                >
+                  }}>
                   {tab.badge}
                 </span>
               )}
@@ -127,6 +124,7 @@ export function Tabs({
 
         return (
           <button
+            className="text-xs md:text-base"
             key={tab.value}
             onClick={() => onChange(tab.value)}
             style={{
@@ -140,9 +138,8 @@ export function Tabs({
                 ? "polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px))"
                 : "none",
               borderBottom: isActive ? `2px solid ${C.primary}` : "none",
-            }}
-          >
-            {tab.icon && <span style={{ fontSize: 15 }}>{tab.icon}</span>}
+            }}>
+            {tab.icon && <span style={{fontSize: 15}}>{tab.icon}</span>}
             {tab.label}
           </button>
         );
