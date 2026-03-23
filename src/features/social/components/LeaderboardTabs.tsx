@@ -37,7 +37,7 @@ const LeaderboardTabs = ({
       : 0;
 
   return (
-    <section className="flex gap-4">
+    <section className="flex flex-col-reverse lg:flex-row gap-4">
       {/* KIRI: DAFTAR LEADERBOARD */}
       <section className="flex-[8]">
         <Card>
@@ -208,7 +208,7 @@ const LeaderboardTabs = ({
                         </div>
                       </div>
                       <div className="text-right pr-2">
-                        <p className="text-broken-white font-black mb-1">
+                        <p className="text-broken-white font-black mb-1 text-nowrap">
                           {data.weekly_xp || 0} XP
                         </p>
                       </div>
