@@ -15,15 +15,12 @@ const ActivityTabs = ({
   workoutHistory,
   heatmapData,
 }: ActivityTabsProps) => (
-  <section className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
-    {/* Kolom Kiri*/}
-    <div className="flex flex-col gap-6">
+  <section className="grid grid-cols-1 min-[1440px]:grid-cols-[1fr_320px] gap-6 items-start">
+    <div className="flex flex-col gap-6 w-full">
       <ActivityHeatmap data={heatmapData} />
       <WorkoutHistory logs={workoutHistory} />
     </div>
-
-    {/* Kolom Kanan */}
-    <div className="lg:sticky lg:top-6">
+    <div className="w-full min-[1440px]:sticky min-[1440px]:top-6">
       <MonthlyStatsPanel data={monthlyData} />
     </div>
   </section>

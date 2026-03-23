@@ -66,22 +66,28 @@ export const StageListItem = ({
 
   return (
     <Card
-      className={`flex items-center gap-3 p-3 border ${styles.wrapper} transition-all duration-200`}
+      className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border ${styles.wrapper} transition-all duration-200`}
     >
-      <span className="text-xl shrink-0 leading-none">{config.emoji}</span>
-
+      <span className="text-xl sm:text-2xl md:text-3xl shrink-0 leading-none">
+        {config.emoji}
+      </span>
       <div className="flex-1 min-w-0">
-        <p className={`text-xl font-bold leading-tight ${styles.title}`}>
+        <p
+          className={`text-sm sm:text-base md:text-lg font-bold leading-tight truncate ${styles.title}`}
+        >
           Stage {stageIdx} — {config.stageName}
         </p>
-        <p className={`font-mono text-[16px] mt-0.5 ${styles.meta}`}>
-          {config.sessionRange} · {STATUS_BADGE[status]}
+        <p
+          className={`font-mono text-[10px] sm:text-xs md:text-[14px] mt-1 truncate ${styles.meta}`}
+        >
+          {config.sessionRange} <span className="opacity-50">·</span>{" "}
+          {STATUS_BADGE[status]}
         </p>
       </div>
 
       {status === "current" && (
         <span
-          className={`size-2 rounded-full shrink-0 ${styles.dot} animate-pulse`}
+          className={`size-2 sm:size-2.5 rounded-full shrink-0 ${styles.dot} animate-pulse`}
         />
       )}
     </Card>

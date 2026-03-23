@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/src/components/ui/Card";
-import { SectionLabel } from "../shared/SectionLabel";
 import { ProgressBar } from "@/src/components/ui/ProgressBar";
 
 interface MonthStat {
@@ -44,14 +43,16 @@ const FavCard = ({
   label: string;
   value: string;
 }) => (
-  <Card className="cc-sm bg-elevated overflow-hidden w-full">
-    <CardContent>
-      <div className="flex flex-col items-center justify-center gap-y-2 ">
-        <div className="text-3xl leading-none">{emoji}</div>
-        <p className="f-mono text-muted text-[16px] uppercase tracking-[1.5px] mt-1">
+  <Card className="cc-sm bg-elevated overflow-hidden w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
+    <CardContent className="p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col items-center justify-center gap-y-1 sm:gap-y-2">
+        <div className="text-2xl sm:text-3xl leading-none">{emoji}</div>
+
+        <p className="f-mono text-muted text-xxs sm:text-[14px] md:text-[16px] uppercase tracking-[1px] sm:tracking-[1.5px] mt-1 text-center ">
           {label}
         </p>
-        <p className="text-sm font-bold text-broken-white mt-1 text-center">
+
+        <p className="text-xxs sm:text-sm md:text-base font-bold text-broken-white mt-0.5 sm:mt-1 text-center">
           {value}
         </p>
       </div>
@@ -60,13 +61,13 @@ const FavCard = ({
 );
 
 const StatProgressRow = ({ stat }: { stat: MonthStat }) => (
-  <div className="flex flex-col gap-2">
-    <div className="flex items-center justify-between">
-      <span className="f-mono text-muted text-xs uppercase tracking-[2px]">
+  <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
+    <div className="flex items-center justify-between gap-3">
+      <span className="f-mono text-muted text-[10px] sm:text-xs uppercase tracking-[1px] sm:tracking-[2px] truncate">
         {stat.label}
       </span>
       <span
-        className={`f-mono text-sm font-bold ${textColorMap[stat.gradient]}`}
+        className={`f-mono text-xs sm:text-sm font-bold shrink-0 ${textColorMap[stat.gradient]}`}
       >
         {stat.value}
       </span>
@@ -77,7 +78,7 @@ const StatProgressRow = ({ stat }: { stat: MonthStat }) => (
       max={100}
       variant={variantMap[stat.gradient]}
       type="linear"
-      className="h-2 cc-xs"
+      className="h-1.5 sm:h-2 cc-xs w-full"
     />
   </div>
 );
@@ -144,7 +145,9 @@ export const MonthlyStatsPanel = ({ data }: MonthlyStatsPanelProps) => {
 
   return (
     <div className="border border-border bg-surface p-6 cc-lg flex flex-col gap-6">
-      <SectionLabel>{"// "}Statistik Bulan Ini</SectionLabel>
+      <h1 className="uppercase tracking-[0.2rem] text-muted font-bold whitespace-nowrap text-xs md:text-base">
+        {"// "}Statistik Bulan Ini
+      </h1>
 
       <div className="flex flex-col gap-6">
         {MONTH_STATS.map((stat) => (
