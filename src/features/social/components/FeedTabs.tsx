@@ -100,7 +100,7 @@ const FeedTabs = ({
   };
 
   return (
-    <section className="flex gap-4">
+    <section className="flex flex-col-reverse lg:flex-row gap-4">
       {/* KIRI: ACTIVITY FEED LIST */}
       <Card className="w-full flex-8">
         <CardContent className="text-xs text-muted space-y-8">
@@ -146,10 +146,10 @@ const FeedTabs = ({
                         clipPath:
                           "polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))",
                       }}>
-                      <div className="flex items-center gap-4">
-                        <span className="text-2xl">{config.icon}</span>
+                      <div className="flex items-center gap-2 lg:gap-4">
+                        <span className="text-xl lg:text-2xl">{config.icon}</span>
                         <div>
-                          <p className="text-broken-white text-sm">
+                          <p className="text-broken-white text-xs lg:text-sm">
                             {feed.title}
                           </p>
                           <div className="flex items-center flex-wrap gap-1">
