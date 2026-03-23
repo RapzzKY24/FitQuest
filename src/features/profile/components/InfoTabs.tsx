@@ -3,8 +3,6 @@
 import { Button } from "@/src/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
 import { Input } from "@/src/components/ui/Input";
-import { ProgressBar } from "@/src/components/ui/ProgressBar";
-import { BadgePill } from "@/src/components/ui/badge-pill";
 import React from "react";
 import { Achievement } from "../../achievement/components/AchievementCard";
 import { ToastContainer, useToast } from "@/src/components/ui/Toast";
