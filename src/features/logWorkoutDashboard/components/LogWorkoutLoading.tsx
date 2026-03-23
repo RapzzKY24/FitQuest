@@ -12,9 +12,9 @@ export function LogWorkoutLoading() {
         </div>
 
         {/* Grid section  */}
-        <div className="grid grid-cols-5 gap-3 animate-pulse">
+        <div className="flex flex-col-reverse lg:flex-row gap-3 animate-pulse">
           {/* KIRI: Form (col-span-4) */}
-          <div className="grid col-span-4 gap-y-2.5">
+          <div className="flex-7 gap-y-2.5">
             {/* Skeleton Jenis Olahraga */}
             <Card className="w-full bg-black/40 border-white/5">
               <CardHeader>
@@ -77,14 +77,14 @@ export function LogWorkoutLoading() {
             </Card>
 
             {/* Skeleton Buttons */}
-            <div className="flex gap-4">
+            <div className="flex gap-4 p-2">
               <Skeleton width="35%" height={48} className="rounded-lg" />
               <Skeleton width="65%" height={48} className="rounded-lg" />
             </div>
           </div>
 
           {/* KANAN: Exp Breakdown */}
-          <div className="grid col-span-1 h-fit">
+          <div className="flex-3 h-fit">
             <Card className="w-full bg-black/60 border-none">
               <CardHeader>
                 <Skeleton width={50} height={12} />

@@ -342,8 +342,8 @@ export const WorkoutLogForm = ({
 
       <div className="w-full flex items-center gap-4">
         <Button variant="outline" className="w-[35%]" disabled={isSubmitting}>
-          <div className="flex items-center gap-2">
-            <ArrowLeft size={18} />
+          <div className="flex items-center gap-2 text-xs lg:text-base">
+            <ArrowLeft size={14} />
             Batal
           </div>
         </Button>
@@ -352,7 +352,7 @@ export const WorkoutLogForm = ({
           type="submit"
           disabled={isSubmitting || isLimitReached}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-xs lg:text-base">
             <Zap
               className={`h-4 w-4 ${isLimitReached ? "text-gray-500" : "text-yellow-500 fill-yellow-500"}`}
             />

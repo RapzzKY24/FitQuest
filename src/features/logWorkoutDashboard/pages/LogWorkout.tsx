@@ -41,14 +41,14 @@ const LogWorkoutPages = async () => {
   const isLimitReached = (sessionCount ?? 0) >= 3;
 
   return (
-    <main className="w-full ">
+    <main className="w-full">
       <div className="px-4 py-6 flex flex-col justify-center gap-y-4 ">
         {/* header page */}
         <div className="spacey-y-3.5">
-          <p className="text-sm font-light tracking-[0.3em] uppercase text-primary">
+          <p className="text-xxs lg:text-sm font-light tracking-[0.3em] uppercase text-primary">
             {"//"}Catat Aktivitas
           </p>
-          <h1 className="font-extrabold text-4xl text-white uppercase">
+          <h1 className="font-extrabold text-2xl lg:text-4xl text-white uppercase">
             Log <span className="text-primary">Workout</span>
           </h1>
         </div>
@@ -56,14 +56,14 @@ const LogWorkoutPages = async () => {
         {/* <StepperLog /> */}
 
         {/* grid section log */}
-        <div className="grid grid-cols-5 gap-3">
-          <div className="grid col-span-4  gap-y-2.5">
+        <div className="flex flex-col-reverse lg:flex-row gap-6 w-full">
+          <div className="flex-7">
             <WorkoutLogForm
               workoutTypes={workoutTypes || []}
               isLimitReached={isLimitReached}
             />
           </div>
-          <div className="grid col-span-1 ">
+          <div className="flex-2">
             <ExpBreakdown
               todaySessions={sessionCount || 0}
               activeQuests={activeQuests || []}
