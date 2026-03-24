@@ -1,34 +1,34 @@
 // src/features/auth/components/LoginForm.tsx
 "use client";
 
-import {useState} from "react";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import {signIn} from "../actions/auth.actions";
-import {loginSchema} from "../schemas/auth.schemas";
-import type {LoginSchema} from "../schemas/auth.schemas";
-import {Input} from "@/src/components/ui/Input";
-import {Button} from "@/src/components/ui/Button";
-import {useRouter} from "next/navigation";
-import {ToastContainer, useToast} from "@/src/components/ui/Toast";
-import {EyeClosedIcon, EyeIcon, Zap} from "lucide-react";
+import { signIn } from "../actions/auth.actions";
+import { loginSchema } from "../schemas/auth.schemas";
+import type { LoginSchema } from "../schemas/auth.schemas";
+import { Input } from "@/src/components/ui/Input";
+import { Button } from "@/src/components/ui/Button";
+import { useRouter } from "next/navigation";
+import { ToastContainer, useToast } from "@/src/components/ui/Toast";
+import { EyeIcon, EyeOffIcon, Zap } from "lucide-react";
 
 export function LoginForm() {
   const router = useRouter();
-  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
+  const { toasts, show: showToast, dismiss: dismissToast } = useToast();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [inputType, setInputType] = useState<string>("password");
 
-  const handleChangeInputType = (type : string)=>{
-    setInputType(type)
-  }
+  const handleChangeInputType = (type: string) => {
+    setInputType(type);
+  };
 
   const {
     register,
     handleSubmit,
-    formState: {errors},
+    formState: { errors },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
@@ -118,9 +118,9 @@ export function LoginForm() {
         {/* Stats teaser */}
         <div className="relative z-10 flex gap-8">
           {[
-            {value: "2.4K+", label: "Warriors Aktif"},
-            {value: "18K+", label: "Sesi Dilog"},
-            {value: "94%", label: "Konsistensi"},
+            { value: "2.4K+", label: "Warriors Aktif" },
+            { value: "18K+", label: "Sesi Dilog" },
+            { value: "94%", label: "Konsistensi" },
           ].map((stat) => (
             <div key={stat.label}>
               <p className="font-display font-black text-2xl">{stat.value}</p>
@@ -191,7 +191,19 @@ export function LoginForm() {
                 </Link> */}
               </div>
               <Input
-                suffixNode={inputType === "password" ? <EyeIcon className="cursor-pointer hover:text-primary transition-colors" onClick={() => handleChangeInputType("text")} /> : <EyeClosedIcon className="cursor-pointer hover:text-primary transition-colors" onClick={() => handleChangeInputType("password")}/>}
+                suffixNode={
+                  inputType === "password" ? (
+                    <EyeIcon
+                      className="cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => handleChangeInputType("text")}
+                    />
+                  ) : (
+                    <EyeOffIcon
+                      className="cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => handleChangeInputType("password")}
+                    />
+                  )
+                }
                 {...register("password")}
                 type={inputType}
                 placeholder="••••••••"
@@ -228,7 +240,8 @@ export function LoginForm() {
             Belum punya akun?{" "}
             <Link
               href="/auth/register"
-              className="text-primary font-semibold hover:text-secondary transition-colors">
+              className="text-primary font-semibold hover:text-secondary transition-colors"
+            >
               Daftar gratis
             </Link>
           </p>

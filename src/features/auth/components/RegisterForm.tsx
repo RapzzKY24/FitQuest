@@ -1,23 +1,23 @@
 "use client";
 
-import {useState} from "react";
-import {useForm, useWatch} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import {signUp} from "../actions/auth.actions";
-import {registerSchema} from "../schemas/auth.schemas";
-import type {RegisterSchema} from "../schemas/auth.schemas";
-import {Input} from "@/src/components/ui/Input";
-import {Button} from "@/src/components/ui/Button";
-import {ToastContainer, useToast} from "@/src/components/ui/Toast";
-import {useRouter} from "next/navigation";
-import {EyeClosedIcon, EyeIcon, Zap} from "lucide-react";
+import { signUp } from "../actions/auth.actions";
+import { registerSchema } from "../schemas/auth.schemas";
+import type { RegisterSchema } from "../schemas/auth.schemas";
+import { Input } from "@/src/components/ui/Input";
+import { Button } from "@/src/components/ui/Button";
+import { ToastContainer, useToast } from "@/src/components/ui/Toast";
+import { useRouter } from "next/navigation";
+import { EyeClosedIcon, EyeIcon, Zap } from "lucide-react";
 
-function PasswordStrength({password}: {password: string}) {
+function PasswordStrength({ password }: { password: string }) {
   const checks = [
-    {label: "8+ karakter", ok: password.length >= 8},
-    {label: "Huruf kapital", ok: /[A-Z]/.test(password)},
-    {label: "Angka", ok: /[0-9]/.test(password)},
+    { label: "8+ karakter", ok: password.length >= 8 },
+    { label: "Huruf kapital", ok: /[A-Z]/.test(password) },
+    { label: "Angka", ok: /[0-9]/.test(password) },
   ];
   const strength = checks.filter((c) => c.ok).length;
   const colors = [
@@ -29,7 +29,6 @@ function PasswordStrength({password}: {password: string}) {
   // const labels = ["", "Lemah", "Lumayan", "Kuat"];
 
   if (!password) return null;
-  
 
   return (
     <div className="mt-2 space-y-2">
@@ -51,7 +50,8 @@ function PasswordStrength({password}: {password: string}) {
             key={c.label}
             className={`font-mono text-xxs tracking-wide transition-colors ${
               c.ok ? "text-success" : "text-muted"
-            }`}>
+            }`}
+          >
             {c.ok ? "✓" : "○"} {c.label}
           </span>
         ))}
@@ -64,25 +64,24 @@ export function RegisterForm() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
-    const [inputType, setInputType] = useState<string>("password");
+  const { toasts, show: showToast, dismiss: dismissToast } = useToast();
+  const [inputType, setInputType] = useState<string>("password");
 
-  const handleChangeInputType = (type : string)=>{
-    setInputType(type)
-  }
-
+  const handleChangeInputType = (type: string) => {
+    setInputType(type);
+  };
 
   const {
     register,
     handleSubmit,
     control,
-    formState: {errors},
+    formState: { errors },
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
 
   const passwordValue =
-    useWatch({control, name: "password", defaultValue: ""}) ?? "";
+    useWatch({ control, name: "password", defaultValue: "" }) ?? "";
 
   async function onSubmit(data: RegisterSchema) {
     setIsLoading(true);
@@ -209,7 +208,7 @@ export function RegisterForm() {
           {/* Confirm Password */}
           <div>
             <Input
-             suffixNode={
+              suffixNode={
                 inputType === "password" ? (
                   <EyeIcon
                     className="cursor-pointer hover:text-primary transition-colors"
@@ -249,7 +248,8 @@ export function RegisterForm() {
           Sudah punya akun?{" "}
           <Link
             href="/auth/login"
-            className="text-primary font-semibold hover:text-secondary transition-colors">
+            className="text-primary font-semibold hover:text-secondary transition-colors"
+          >
             Masuk
           </Link>
         </p>
