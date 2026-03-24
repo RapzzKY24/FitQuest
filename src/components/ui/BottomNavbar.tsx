@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import {usePathname} from "next/navigation";
+import React, {useState} from "react";
 import {
   LayoutDashboard,
   Trophy,
@@ -11,7 +11,9 @@ import {
   Users,
   Dumbbell,
   Target,
+  LogOut,
 } from "lucide-react";
+import {signOut} from "@/src/features/auth/actions/auth.actions";
 
 // ─────────────────────────────────────────────────────────
 // TYPES
@@ -30,7 +32,7 @@ interface NavItem {
 const LEFT_ITEMS: NavItem[] = [
   {
     href: "/dashboard",
-    label: "Home",
+    label: "Dashboard",
     icon: <LayoutDashboard size={20} strokeWidth={1.8} />,
   },
   {
@@ -65,6 +67,11 @@ const MORE_ITEMS: NavItem[] = [
     label: "Profile",
     icon: <User size={18} strokeWidth={1.8} />,
   },
+  {
+    href: "/logout",
+    label: "Logout",
+    icon: <LogOut size={18} strokeWidth={1.8} />,
+  },
 ];
 
 // ─────────────────────────────────────────────────────────
@@ -84,8 +91,7 @@ const NavBtn = ({
   <Link
     href={item.href}
     onClick={onClick}
-    className="flex flex-col items-center justify-center gap-1 flex-1 h-full relative group"
-  >
+    className="flex flex-col items-center justify-center gap-1 flex-1 h-full relative group">
     {/* active indicator pill */}
     {active && (
       <span
@@ -100,16 +106,14 @@ const NavBtn = ({
     <span
       className={`transition-colors duration-150 ${
         active ? "text-primary" : "text-muted group-hover:text-broken-white"
-      }`}
-    >
+      }`}>
       {item.icon}
     </span>
 
     <span
       className={`f-mono text-[7px] uppercase tracking-[2px] transition-colors duration-150 ${
         active ? "text-primary" : "text-muted group-hover:text-broken-white"
-      }`}
-    >
+      }`}>
       {item.label}
     </span>
   </Link>
@@ -122,6 +126,12 @@ const NavBtn = ({
 export const BottomNav = () => {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
+
+  const onUserSignOut = () => {
+    localStorage.clear();
+    signOut();
+    setMoreOpen(false);
+  };
 
   const isActive = (href: string) =>
     href === "/dashboard"
@@ -154,29 +164,45 @@ export const BottomNav = () => {
               animation: "popUp .18s ease both",
               minWidth: 160,
               /* little arrow pointing down-right */
-            }}
-          >
+            }}>
             {/* arrow tip */}
             <div className="absolute -bottom-[5px] right-6 w-2.5 h-2.5 bg-surface border-r border-b border-border rotate-45" />
 
             {MORE_ITEMS.map((item, i) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMoreOpen(false)}
-                className={[
-                  "flex items-center gap-3 px-4 py-3 transition-colors",
-                  i < MORE_ITEMS.length - 1 ? "border-b border-border" : "",
-                  isActive(item.href)
-                    ? "text-primary bg-primary/5"
-                    : "text-muted hover:text-broken-white hover:bg-white/2",
-                ].join(" ")}
-              >
-                {item.icon}
-                <span className="f-mono text-[10px] uppercase tracking-[2px] font-bold">
-                  {item.label}
-                </span>
-              </Link>
+              <React.Fragment key={item.href}>
+                {item?.href === "/logout" ? (
+                  <button
+                    key={item.href}
+                    onClick={onUserSignOut}
+                    className={[
+                      "flex items-center gap-3 px-4 py-3 transition-colors",
+                      i < MORE_ITEMS.length - 1 ? "border-b border-border" : "",
+                      "text-muted hover:text-broken-white hover:bg-white/2",
+                    ].join(" ")}>
+                    {item.icon}
+                    <span className="f-mono text-[10px] uppercase tracking-[2px] font-bold">
+                      {item.label}
+                    </span>
+                  </button>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMoreOpen(false)}
+                    className={[
+                      "flex items-center gap-3 px-4 py-3 transition-colors",
+                      i < MORE_ITEMS.length - 1 ? "border-b border-border" : "",
+                      isActive(item.href)
+                        ? "text-primary bg-primary/5"
+                        : "text-muted hover:text-broken-white hover:bg-white/2",
+                    ].join(" ")}>
+                    {item.icon}
+                    <span className="f-mono text-[10px] uppercase tracking-[2px] font-bold">
+                      {item.label}
+                    </span>
+                  </Link>
+                )}
+              </React.Fragment>
             ))}
           </div>
         </>
@@ -185,8 +211,7 @@ export const BottomNav = () => {
       {/* ── BOTTOM NAV BAR ── */}
       <nav
         className="fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border"
-        style={{ height: 60 }}
-      >
+        style={{height: 60}}>
         {/* top accent line */}
         <div className="absolute top-0 left-0 right-0 h-px" />
 
@@ -206,8 +231,7 @@ export const BottomNav = () => {
               <button
                 key="more"
                 onClick={() => setMoreOpen((v) => !v)}
-                className="flex flex-col items-center justify-center gap-1 flex-1 h-full relative group"
-              >
+                className="flex flex-col items-center justify-center gap-1 flex-1 h-full relative group">
                 {isMoreActive && (
                   <span
                     className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2px] bg-primary"
@@ -231,8 +255,7 @@ export const BottomNav = () => {
                     isMoreActive || moreOpen
                       ? "text-primary"
                       : "text-muted group-hover:text-broken-white"
-                  }`}
-                >
+                  }`}>
                   Lainnya
                 </span>
               </button>
@@ -255,7 +278,7 @@ export const BottomNav = () => {
         <Link
           href="/log"
           className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ top: 0 }} /* top:0 = top edge of nav, -50% = floats up */
+          style={{top: 0}} /* top:0 = top edge of nav, -50% = floats up */
         >
           <span
             className="relative flex items-center justify-center rounded-full bg-primary"
@@ -264,8 +287,7 @@ export const BottomNav = () => {
               height: 52,
               boxShadow: "0 4px 20px rgba(255,77,0,.5), 0 0 0 3px #0a0a0a",
               transition: "transform .15s, box-shadow .15s",
-            }}
-          >
+            }}>
             <Dumbbell size={22} strokeWidth={2.2} className="text-white" />
           </span>
 
