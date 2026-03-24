@@ -44,7 +44,7 @@ const LogWorkoutPages = async () => {
     <main className="w-full">
       <div className="px-4 py-6 flex flex-col justify-center gap-y-4 ">
         {/* header page */}
-        <div className="spacey-y-3.5">
+        <div className="md:space-y-3.5">
           <p className="text-xxs lg:text-sm font-light tracking-[0.3em] uppercase text-primary">
             {"//"}Catat Aktivitas
           </p>

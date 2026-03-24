@@ -12,7 +12,7 @@ import { FQCoachWidget } from "../components/FQCoachWidget";
 
 const DashboardPages = () => {
   return (
-    <main className="flex flex-col gap-6 p-6 relative">
+    <main className="flex flex-col gap-6 p-4 lg:p-6 relative">
       <Suspense fallback={<Skeleton height={100} />}>
         <HeaderDashboard />
       </Suspense>

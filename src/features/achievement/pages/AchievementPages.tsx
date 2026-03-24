@@ -28,11 +28,11 @@ const AchievementPages = ({ achievements }: AchievementPagesProps) => {
     <main className="w-full bg-black">
       <div className="px-4 py-6 flex flex-col gap-y-8">
         {/* Header */}
-        <div className="space-y-3.5">
-          <p className="text-sm font-light tracking-[0.3em] uppercase text-primary">
+        <div className="md:space-y-3.5">
+          <p className="text-xxs lg:text-sm font-light tracking-[0.3em] uppercase text-primary">
             {"//"}Koleksi Pencapaian
           </p>
-          <h1 className="font-extrabold text-4xl text-broken-white uppercase ">
+          <h1 className="font-extrabold text-2xl lg:text-4xl text-broken-white uppercase">
             Achieve<span className="text-primary">ment</span>
           </h1>
         </div>

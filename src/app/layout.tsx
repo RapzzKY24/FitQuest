@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${barlowCondensed.variable} 
+        className={`${barlowCondensed.className} 
           ${dmSans.variable} 
           ${spaceMono.variable} antialiased`}
       >

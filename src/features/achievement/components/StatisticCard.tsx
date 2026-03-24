@@ -52,7 +52,7 @@ const StatisticCard = ({
             <CardContent className="flex flex-col justify-center gap-y-2">
               <div className="flex items-baseline gap-1">
                 <h1
-                  className={`text-4xl font-black  tracking-tighter ${stat.color}`}
+                  className={`text-4xl font-black tracking-widest ${stat.color}`}
                 >
                   {stat.value}
                 </h1>
