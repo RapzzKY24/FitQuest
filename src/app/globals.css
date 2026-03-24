@@ -16,7 +16,7 @@
   --warning: #eab308;
   --danger: #ef4444;
   --info: #3b82f6;
-  --text-xxs : 10px;
+  --text-xxs: 10px;
 }
 
 @theme {
@@ -34,7 +34,7 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
-  --text-xxs : var(--text-xxs);
+  --text-xxs: var(--text-xxs);
 }
 
 @layer base {
@@ -319,4 +319,207 @@
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING SCREEN ANIMATIONS (FQ-OS)
+   ═══════════════════════════════════════════════════════════ */
+
+.scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.05) 3px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+}
+
+.grid-drift {
+  background-image:
+    linear-gradient(rgba(255, 77, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 77, 0, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation: gridDrift 20s linear infinite;
+}
+@keyframes gridDrift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 56px 56px;
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.anim-blink {
+  animation: fqBlink 1s infinite;
+}
+@keyframes fqBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+.logo-in {
+  animation: logoIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes logoIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.logo-mark-anim {
+  animation:
+    logoMark 0.7s cubic-bezier(0.16, 1, 0.3, 1) both,
+    aura 2.5s 1s ease-in-out infinite;
+}
+@keyframes aura {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 0, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 77, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 0, 0);
+  }
+}
+@keyframes logoMark {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.word-in {
+  animation: wordIn 0.6s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.tagline-in {
+  animation: wordIn 0.6s 0.25s both;
+}
+@keyframes wordIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bar-wrap-in {
+  animation: barWrapIn 0.5s 0.3s both;
+}
+.log-wrap-in {
+  animation: barWrapIn 0.5s 0.4s both;
+}
+@keyframes barWrapIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 0.8s linear infinite;
+}
+@keyframes shimmer {
+  0% {
+    transform: translateX(-40px);
+  }
+  100% {
+    transform: translateX(40px);
+  }
+}
+
+.step-pulse {
+  animation: stepPulse 0.8s ease-in-out infinite;
+}
+@keyframes stepPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.log-line-anim {
+  animation: logLine 0.2s ease forwards;
+}
+@keyframes logLine {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.loader-exit {
+  animation: loaderExit 0.7s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+@keyframes loaderExit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
