@@ -220,7 +220,7 @@ export function Sidebar({ user = MOCK_USER }: SidebarProps) {
       {/* ── Nav items ── */}
       <nav className="flex-1 py-3 overflow-y-auto overflow-x-hidden">
         {!collapsed && (
-          <p className="fq-section-label px-5 !mb-2 !text-[9px]">Menu</p>
+          <p className="fq-section-label px-5 mb-2 text-[9px]">Menu</p>
         )}
 
         <ul className="space-y-0.5 px-2">
@@ -239,7 +239,7 @@ export function Sidebar({ user = MOCK_USER }: SidebarProps) {
                   } ${
                     isActive
                       ? "bg-primary/10 border-primary text-broken-white"
-                      : "border-transparent text-muted hover:bg-white/[0.03] hover:text-broken-white"
+                      : "border-transparent text-muted hover:bg-white/3 hover:text-broken-white"
                   }`}
                 >
                   <Icon
