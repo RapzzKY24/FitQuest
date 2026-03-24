@@ -76,7 +76,7 @@ export const FQCoachWidget = () => {
   return (
     <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-60 flex flex-col items-end">
       {isOpen && (
-        <Card className="w-[350px] h-[500px] mb-4 flex flex-col overflow-hidden border border-border shadow-2xl p-0 bg-surface">
+        <Card className="w-[calc(100vw-2rem)] sm:w-[350px] h-[65vh] sm:h-[500px] max-h-[600px] mb-4 flex flex-col overflow-hidden border border-border shadow-2xl p-0 bg-surface">
           {/* HEADER */}
           <div className="bg-elevated p-3 border-b border-border flex justify-between items-center shrink-0">
             <div className="flex items-center gap-3">
