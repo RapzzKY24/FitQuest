@@ -115,7 +115,7 @@ export async function generateCoachResponse(userMessage: string) {
     console.log(error);
     return {
       success: false,
-      text: "Waduh, server gua lagi ngos-ngosan nih nahan beban (Error). Coba tanya bentar lagi ya! 🏋️‍♂️",
+      text: "Waduh, server gua lagi ngos-ngosan nih nahan beban. Coba tanya bentar lagi ya! 🏋️‍♂️",
     };
   }
 }
