@@ -1,20 +1,17 @@
 "use client";
-import {BadgePill} from "@/src/components/ui/badge-pill";
-import {Button} from "@/src/components/ui/Button";
-import {Card, CardContent} from "@/src/components/ui/Card";
-import {ProgressBar} from "@/src/components/ui/ProgressBar";
-import {Tabs} from "@/src/components/ui/Tabs";
-import {ArrowRight, Check} from "lucide-react";
+import { BadgePill } from "@/src/components/ui/badge-pill";
+import { Button } from "@/src/components/ui/Button";
+import { Card, CardContent } from "@/src/components/ui/Card";
+import { ProgressBar } from "@/src/components/ui/ProgressBar";
+import { Tabs } from "@/src/components/ui/Tabs";
+import { ArrowRight, Check } from "lucide-react";
 import React from "react";
-import {claimQuestReward} from "./actions/quest";
-import {
-  QuestPageProps,
-  UserQuestWithDetails,
-} from "@/src/features/quests/types/quest";
-import {ToastContainer, useToast} from "@/src/components/ui/Toast";
+import { claimQuestReward } from "./actions/quest";
+import { QuestPageProps } from "@/src/features/quests/types/quest";
+import { ToastContainer, useToast } from "@/src/components/ui/Toast";
 
-const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
-  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
+const QuestPage = ({ initialQuests, userStats }: QuestPageProps) => {
+  const { toasts, show: showToast, dismiss: dismissToast } = useToast();
   const [tabVal, setTabVal] = React.useState("daily");
   const [isClaiming, setIsClaiming] = React.useState(false);
   const [timeLeft, setTimeLeft] = React.useState<string>("00:00:00");
@@ -190,7 +187,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                           : isDone
                             ? "border-success/30 bg-success/5"
                             : ""
-                      }>
+                      }
+                    >
                       <CardContent className="flex items-center justify-between gap-2 lg:gap-6">
                         <div>
                           <BadgePill
@@ -200,7 +198,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                                 : isClaimed
                                   ? "muted"
                                   : "primary"
-                            }>
+                            }
+                          >
                             <span className="text-lg md:text-3xl">
                               {quest.icon}
                             </span>
@@ -242,7 +241,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
 
                         <div className="space-y-2 text-end">
                           <BadgePill
-                            color={isDone && !isClaimed ? "success" : "muted"}>
+                            color={isDone && !isClaimed ? "success" : "muted"}
+                          >
                             <span className="text-[8px] md:text-xs">
                               +{quest.xp_reward} XP
                             </span>
@@ -253,7 +253,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                             <Button
                               size="xs"
                               onClick={() => handleClaim(uq.id)}
-                              disabled={isClaiming}>
+                              disabled={isClaiming}
+                            >
                               KLAIM
                             </Button>
                           ) : isClaimed ? (
@@ -289,7 +290,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                           : isDone
                             ? "border-success/30 bg-success/5"
                             : ""
-                      }>
+                      }
+                    >
                       <CardContent className="flex items-center justify-between gap-2 lg:gap-6">
                         <div>
                           <BadgePill
@@ -299,7 +301,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                                 : isClaimed
                                   ? "muted"
                                   : "primary"
-                            }>
+                            }
+                          >
                             <span className="text-lg md:text-3xl">
                               {quest.icon}
                             </span>
@@ -341,7 +344,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
 
                         <div className="space-y-2 text-end">
                           <BadgePill
-                            color={isDone && !isClaimed ? "success" : "muted"}>
+                            color={isDone && !isClaimed ? "success" : "muted"}
+                          >
                             <span className="text-[8px] md:text-xs">
                               +{quest.xp_reward} XP
                             </span>
@@ -352,7 +356,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                             <Button
                               size="xs"
                               onClick={() => handleClaim(uq.id)}
-                              disabled={isClaiming}>
+                              disabled={isClaiming}
+                            >
                               KLAIM
                             </Button>
                           ) : isClaimed ? (
@@ -388,7 +393,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                           : isDone
                             ? "border-success/30 bg-success/5"
                             : ""
-                      }>
+                      }
+                    >
                       <CardContent className="flex items-center justify-between gap-2 lg:gap-6">
                         <div>
                           <BadgePill
@@ -398,7 +404,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                                 : isClaimed
                                   ? "muted"
                                   : "primary"
-                            }>
+                            }
+                          >
                             <span className="text-lg md:text-3xl">
                               {quest.icon}
                             </span>
@@ -440,7 +447,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
 
                         <div className="space-y-2 text-end">
                           <BadgePill
-                            color={isDone && !isClaimed ? "success" : "muted"}>
+                            color={isDone && !isClaimed ? "success" : "muted"}
+                          >
                             <span className="text-[8px] md:text-xs">
                               +{quest.xp_reward} XP
                             </span>
@@ -451,7 +459,8 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                             <Button
                               size="xs"
                               onClick={() => handleClaim(uq.id)}
-                              disabled={isClaiming}>
+                              disabled={isClaiming}
+                            >
                               KLAIM
                             </Button>
                           ) : isClaimed ? (
@@ -485,7 +494,9 @@ const QuestPage = ({initialQuests, userStats}: QuestPageProps) => {
                     <div className="flex items-center gap-2">
                       <span className="text-2xl xl:text-3xl">🔥</span>
                       <div>
-                        <p className="tracking-[0.3em] text-xxs text-nowrap">CURRENT STREAK</p>
+                        <p className="tracking-[0.3em] text-xxs text-nowrap">
+                          CURRENT STREAK
+                        </p>
                         <p className="text-primary font-black text-3xl">
                           {userStats?.streak_current} HARI
                         </p>
