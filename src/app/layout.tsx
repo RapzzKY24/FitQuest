@@ -37,7 +37,7 @@ export default function RootLayout({
       <body
         className={`${barlowCondensed.className} 
           ${dmSans.variable} 
-          ${spaceMono.variable} antialiased`}
+          ${spaceMono.variable} antialiased scroll-smooth`}
       >
         <LoadingScreen />
         {children}

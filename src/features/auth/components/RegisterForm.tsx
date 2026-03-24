@@ -11,6 +11,7 @@ import { Input } from "@/src/components/ui/Input";
 import { Button } from "@/src/components/ui/Button";
 import { ToastContainer, useToast } from "@/src/components/ui/Toast";
 import { useRouter } from "next/navigation";
+import { Zap } from "lucide-react";
 
 function PasswordStrength({ password }: { password: string }) {
   const checks = [
@@ -107,7 +108,7 @@ export function RegisterForm() {
         {/* Logo */}
         <div className="flex items-center gap-3 mb-10">
           <div className="w-8 h-8 bg-primary cc-xs flex items-center justify-center">
-            <span className="font-display font-black text-sm">FQ</span>
+            <span className="font-display font-black text-sm"><Zap fill="#fff"/></span>
           </div>
           <span className="font-display font-black text-lg tracking-wider uppercase">
             FitQuest
