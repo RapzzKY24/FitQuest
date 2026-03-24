@@ -12,6 +12,7 @@ import {Input} from "@/src/components/ui/Input";
 import {Button} from "@/src/components/ui/Button";
 import {useRouter} from "next/navigation";
 import {ToastContainer, useToast} from "@/src/components/ui/Toast";
+import { Zap } from "lucide-react";
 
 export function LoginForm() {
   const router = useRouter();
@@ -85,7 +86,7 @@ export function LoginForm() {
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-9 h-9 bg-primary cc-sm flex items-center justify-center">
             <span className="font-display font-black text-white text-base leading-none">
-              FQ
+              <Zap fill="#fff"/>
             </span>
           </div>
           <span className="font-display font-black text-xl tracking-wider uppercase">
@@ -133,7 +134,7 @@ export function LoginForm() {
           <div className="flex items-center gap-3 mb-10 lg:hidden">
             <div className="w-8 h-8 bg-primary cc-xs flex items-center justify-center">
               <span className="font-display font-black text-white text-sm">
-                FQ
+                <Zap fill="#fff"/>
               </span>
             </div>
             <span className="font-display font-black text-lg tracking-wider uppercase">
