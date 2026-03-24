@@ -16,7 +16,7 @@ export interface RadioProps {
   onChange: (val: string) => void;
 }
 
-export function Radio({ name, options = [], value, onChange }: RadioProps) {
+export function Radio({ options = [], value, onChange }: RadioProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {options.map((opt) => {

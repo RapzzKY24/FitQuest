@@ -49,11 +49,13 @@ export function Avatar({
       }}
     >
       {src && !imgError ? (
-        <img
+        <Image
           src={src}
           alt={alt}
+          fill
+          sizes={`${s.width}px`}
           onError={() => setImgError(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{ objectFit: "cover" }}
         />
       ) : (
         <span

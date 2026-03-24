@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
-import { SectionLabel } from "../shared/SectionLabel";
 import React, { useMemo } from "react";
 import { HeatCell } from "../../types/profile.types";
 

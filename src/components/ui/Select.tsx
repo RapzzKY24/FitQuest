@@ -29,14 +29,12 @@ export function Select({
   required,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   // 2. STATE UNTUK POSISI
   const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
   const ref = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value);
 
   useEffect(() => {
-    setMounted(true);
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node))
         setOpen(false);
@@ -135,7 +133,7 @@ export function Select({
 
       {/* 4. GUNAKAN PORTAL UNTUK MENU */}
       {open &&
-        mounted &&
+        typeof document !== "undefined" &&
         createPortal(
           <div
             className="anim-fade-up"

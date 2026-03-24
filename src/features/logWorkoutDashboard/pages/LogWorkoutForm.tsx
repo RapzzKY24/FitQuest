@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
@@ -112,7 +112,7 @@ export const WorkoutLogForm = ({
     register, // Tambahin register buat Textarea
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<WorkoutFormValues>({
     resolver: zodResolver(workoutSchema),
@@ -124,9 +124,9 @@ export const WorkoutLogForm = ({
   });
 
   // Pantau state form
-  const selectedSportId = watch("workout_type_id");
-  const currentDuration = watch("duration_min");
-  const currentIntensity = watch("intensity");
+  const selectedSportId = useWatch({ control, name: "workout_type_id" });
+  const currentDuration = useWatch({ control, name: "duration_min" });
+  const currentIntensity = useWatch({ control, name: "intensity" });
 
   const onSubmit = async (data: WorkoutFormValues) => {
     // 1. Panggil Server Action

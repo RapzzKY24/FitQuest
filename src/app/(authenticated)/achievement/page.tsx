@@ -1,7 +1,6 @@
 import AchievementContainer from "@/src/features/achievement/pages/AchievementContainer";
 import { constructMetadata } from "@/src/utils/metadata";
 import { Suspense } from "react";
-import { Skeleton } from "@/src/components/ui/Skeleton";
 import AchievementLoading from "@/src/features/achievement/components/AchievementLoading";
 
 export const metadata = constructMetadata({

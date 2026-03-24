@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
+import { Card, CardContent } from "@/src/components/ui/Card";
 import { BadgePill } from "@/src/components/ui/badge-pill";
 import { ProgressBar } from "@/src/components/ui/ProgressBar";
 import { TargetIcon } from "lucide-react";
