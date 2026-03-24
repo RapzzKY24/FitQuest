@@ -1,6 +1,6 @@
 // SocialPages.tsx
 "use client";
-import {Tabs} from "@/src/components/ui/Tabs";
+import { Tabs } from "@/src/components/ui/Tabs";
 import React from "react";
 import FeedTabs from "../components/FeedTabs";
 import LeaderboardTabs from "../components/LeaderboardTabs";
@@ -11,7 +11,6 @@ import {
   WeeklyLeaderboardRecord,
 } from "../types/social.types";
 
-// Bikin tipe data props-nya (Biar TypeScript lu gak marah)
 interface SocialPagesProps {
   initialPending: FriendshipRecord[];
   initialFriends: FriendshipRecord[];
@@ -33,8 +32,8 @@ const SocialPages = ({
   const pendingCount = initialPending.length;
 
   const SOCIAL_TABS = [
-    {value: "feed", label: "Activity Feed"},
-    {value: "leaderboard", label: "Leaderboard"},
+    { value: "feed", label: "Activity Feed" },
+    { value: "leaderboard", label: "Leaderboard" },
     {
       value: "friend",
       label: "Teman",
