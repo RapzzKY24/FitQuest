@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, DM_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { LoadingScreen } from "../components/ui/LoadingScreen";
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -22,8 +23,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UI KIT FitQuest",
-  description: "Hello world",
+  title: "FitQuest AI",
+  description: "Burn Calories Earn Thropies",
 };
 
 export default function RootLayout({
@@ -38,6 +39,7 @@ export default function RootLayout({
           ${dmSans.variable} 
           ${spaceMono.variable} antialiased`}
       >
+        <LoadingScreen />
         {children}
       </body>
     </html>
