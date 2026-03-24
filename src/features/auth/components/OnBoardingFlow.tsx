@@ -1,7 +1,7 @@
 "use client";
 
 import {useState} from "react";
-import {useForm} from "react-hook-form";
+import {useForm, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {saveOnboarding} from "../actions/auth.actions";
 import {onboardingSchema} from "../schemas/auth.schemas";
@@ -44,14 +44,14 @@ export function OnboardingFlow() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: {errors},
   } = useForm<OnboardingSchema>({
     resolver: zodResolver(onboardingSchema),
   });
 
-  const selectedGoal = watch("goal");
+  const selectedGoal = useWatch({control, name: "goal"});
 
   async function onSubmit(data: OnboardingSchema) {
     setIsLoading(true);

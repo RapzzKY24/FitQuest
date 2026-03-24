@@ -20,21 +20,21 @@ const SocialContainer = async () => {
   }
 
   // 1. Narik Pending Requests (Orang yang nge-add user lu)
-  const { data: pendingRequests, error: pendingError } = await supabase
+  const { data: pendingRequests } = await supabase
     .from("v_user_friendships")
     .select("*")
     .eq("addressee_id", user.id)
     .eq("status", "pending");
 
   // 2. Narik Friend List (Temen yang udah diterima)
-  const { data: friendsList, error: friendsError } = await supabase
+  const { data: friendsList } = await supabase
     .from("v_user_friendships")
     .select("*")
     .eq("status", "accepted")
     .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
 
   // 3. Narik Data Leaderboard Mingguan
-  const { data: leaderboardData, error: leadError } = await supabase
+  const { data: leaderboardData } = await supabase
     .from("v_weekly_leaderboard")
     .select("*")
     .order("rank", { ascending: true }) // ⚡ Urutin dari rank 1 ke bawah

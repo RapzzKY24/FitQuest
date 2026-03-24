@@ -1,7 +1,7 @@
 "use server";
 
-import {createClient} from "@/src/utils/supabase/server";
-import {revalidatePath} from "next/cache";
+import { createClient } from "@/src/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 interface WorkoutSessionData {
   workout_type_id: number;
@@ -16,16 +16,19 @@ export async function logWorkoutSession(data: WorkoutSessionData) {
 
     // 1. Cek User yang lagi login
     const {
-      data: {user},
+      data: { user },
       error: authError,
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return {success: false, error: "Sesi tidak valid. Silakan login ulang."};
+      return {
+        success: false,
+        error: "Sesi tidak valid. Silakan login ulang.",
+      };
     }
 
     // 2. Tembak ke Database & Minta ID-nya kembali (.select('id').single())
-    const {data: insertedLog, error: insertError} = await supabase
+    const { data: insertedLog, error: insertError } = await supabase
       .from("workout_logs")
       .insert({
         user_id: user.id,
@@ -39,11 +42,11 @@ export async function logWorkoutSession(data: WorkoutSessionData) {
 
     if (insertError) {
       console.error("Gagal simpan sesi workout:", insertError.message);
-      return {success: false, error: insertError.message};
+      return { success: false, error: insertError.message };
     }
 
     // 3. Tarik data XP yang udah dihitung sama Trigger SQL lu di background
-    const {data: finalLog, error: fetchError} = await supabase
+    const { data: finalLog } = await supabase
       .from("workout_logs")
       .select("xp_earned")
       .eq("id", insertedLog.id)
@@ -63,6 +66,6 @@ export async function logWorkoutSession(data: WorkoutSessionData) {
     };
   } catch (error) {
     console.error("System error:", error);
-    return {success: false, error: "Terjadi kesalahan pada sistem."};
+    return { success: false, error: "Terjadi kesalahan pada sistem." };
   }
 }

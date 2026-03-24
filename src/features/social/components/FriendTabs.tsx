@@ -1,9 +1,9 @@
 "use client";
-import {BadgePill} from "@/src/components/ui/badge-pill";
-import {Button} from "@/src/components/ui/Button";
-import {Card, CardContent} from "@/src/components/ui/Card";
-import {Input} from "@/src/components/ui/Input";
-import {Check, Dot, Plus, X} from "lucide-react";
+import { BadgePill } from "@/src/components/ui/badge-pill";
+import { Button } from "@/src/components/ui/Button";
+import { Card, CardContent } from "@/src/components/ui/Card";
+import { Input } from "@/src/components/ui/Input";
+import { Check, Dot, Plus, X } from "lucide-react";
 import React from "react";
 import {
   acceptFriendRequest,
@@ -11,8 +11,8 @@ import {
   searchUsers,
   sendFriendRequest,
 } from "../actions/friendship";
-import {FriendshipRecord, UserSearchResult} from "../types/social.types";
-import {ToastContainer, useToast} from "@/src/components/ui/Toast";
+import { FriendshipRecord, UserSearchResult } from "../types/social.types";
+import { ToastContainer, useToast } from "@/src/components/ui/Toast";
 
 // Definisikan tipe props yang diterima dari SocialPages
 interface FriendTabsProps {
@@ -33,7 +33,7 @@ const FriendTabs = ({
   );
   const [isSearching, setIsSearching] = React.useState(false);
 
-  const {toasts, show: showToast, dismiss: dismissToast} = useToast();
+  const { toasts, show: showToast, dismiss: dismissToast } = useToast();
 
   // Fungsi buat nanganin pas user ngetik di input
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,7 +137,8 @@ const FriendTabs = ({
                   {searchResults.map((user) => (
                     <div
                       key={user.id}
-                      className="flex items-center justify-between p-2 hover:bg-white/5 rounded-md transition-colors">
+                      className="flex items-center justify-between p-2 hover:bg-white/5 rounded-md transition-colors"
+                    >
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">
                           {user.avatar_emoji || "👤"}
@@ -150,7 +151,8 @@ const FriendTabs = ({
                         size="xs"
                         variant="primary"
                         icon={<Plus size={12} />}
-                        onClick={() => handleAddFriend(user.id)}>
+                        onClick={() => handleAddFriend(user.id)}
+                      >
                         ADD
                       </Button>
                     </div>
@@ -205,7 +207,8 @@ const FriendTabs = ({
                       size="xs"
                       icon={<Check size={12} />}
                       variant="success"
-                      onClick={() => handleAccept(req.id)}>
+                      onClick={() => handleAccept(req.id)}
+                    >
                       TERIMA
                     </Button>
                     <Button
@@ -240,7 +243,7 @@ const FriendTabs = ({
             )}
 
             {/* --- BAGIAN TEMANKU (ACCEPTED FRIENDS) --- */}
-            {friends.map((friend, index) => {
+            {friends.map((friend) => {
               // LOGIKA BARU: Tentukan mana data teman lu dari View yang rata ini
               const isRequester = friend.requester_id === currentUserId;
 

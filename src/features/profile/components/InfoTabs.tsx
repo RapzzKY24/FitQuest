@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/incompatible-library */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/src/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/Card";
@@ -6,7 +5,7 @@ import { Input } from "@/src/components/ui/Input";
 import React from "react";
 import { Achievement } from "../../achievement/components/AchievementCard";
 import { ToastContainer, useToast } from "@/src/components/ui/Toast";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   updatePersonalInfoAction,
   updatePhysicalInformation,
@@ -53,9 +52,9 @@ const PhysicalStats = ({ userData }: { userData: any }) => {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<PhysicalFormValues>({
     defaultValues: {
       height: userData?.height || "",
@@ -64,7 +63,7 @@ const PhysicalStats = ({ userData }: { userData: any }) => {
     },
   });
 
-  const currentGoal = watch("goal");
+  const currentGoal = useWatch({ control, name: "goal" });
 
   const onSubmit = async (data: PhysicalFormValues) => {
     const result = await updatePhysicalInformation(data);
@@ -168,7 +167,7 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormValues>({
     defaultValues: {
@@ -178,7 +177,7 @@ export const PersonalInformation = ({ userData }: { userData: any }) => {
     },
   });
 
-  const currentEmoji = watch("avatar_emoji");
+  const currentEmoji = useWatch({ control, name: "avatar_emoji" });
 
   const onSubmit = async (data: ProfileFormValues) => {
     const result = await updatePersonalInfoAction(data);
