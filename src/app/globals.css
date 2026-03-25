@@ -1,0 +1,525 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --surface: #141414;
+  --elevated: #1c1c1c;
+  --border: #272727;
+  --text: #f5f5f5;
+  --muted: #555;
+  --primary: #ff4d00;
+  --primary-hover: #ff6a1a;
+  --secondary: #ff8c42;
+  --accent: #ffb347;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --text-xxs: 10px;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-border: var(--border);
+  --color-broken-white: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --text-xxs: var(--text-xxs);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-broken-white;
+    font-family: "DM Sans", sans-serif;
+  }
+}
+
+/* ── CLASS UTILITIES & ANIMATIONS ── */
+* {
+  box-sizing: border-box;
+}
+
+.fq {
+  min-height: 100vh;
+  padding: 40px 28px;
+}
+
+/* ── CUT CORNER SYSTEM ── */
+.cc-xl {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+}
+.cc-lg {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    14px 100%,
+    0 calc(100% - 14px)
+  );
+}
+.cc-md {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+.cc-sm {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 7px) 0,
+    100% 7px,
+    100% 100%,
+    7px 100%,
+    0 calc(100% - 7px)
+  );
+}
+.cc-xs {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 5px) 0,
+    100% 5px,
+    100% 100%,
+    5px 100%,
+    0 calc(100% - 5px)
+  );
+}
+
+/* ── TYPOGRAPHY ── */
+.t-display {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.t-heading {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.t-eyebrow {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--primary);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fq-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fq-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fq-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fq-slide-down {
+  animation: fq-slide-down 0.3s ease both;
+}
+.fq-overlay-in {
+  animation: fq-overlay-in 0.2s ease both;
+}
+.fq-dialog-in {
+  animation: fq-dialog-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── UTILITIES ── */
+.fq-section-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.fq-section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.fq-skel {
+  background: var(--elevated);
+  position: relative;
+  overflow: hidden;
+}
+.fq-skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.04),
+    transparent
+  );
+  animation: fq-shimmer-move 1.6s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TAMBAHAN UNTUK FORM KIT 
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── SHORTCUT CUT CORNER ── */
+.cc {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+/* ── FONT SHORTCUTS ── */
+.f-barlow {
+  font-family: "Barlow Condensed", sans-serif;
+}
+.f-dm {
+  font-family: "DM Sans", sans-serif;
+}
+.f-mono {
+  font-family: "Space Mono", monospace;
+}
+
+/* ── ANIMATIONS UNTUK FORM & TOAST ── */
+@keyframes fq-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fq-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes fq-toast-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+}
+@keyframes fq-pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.7;
+  }
+}
+@keyframes fq-shimmer-move {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes fq-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.anim-fade-up {
+  animation: fq-fade-up 0.3s ease both;
+}
+.anim-shake {
+  animation: fq-shake 0.45s ease;
+}
+.anim-pop {
+  animation: fq-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── CUSTOM SCROLLBAR ── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING SCREEN ANIMATIONS (FQ-OS)
+   ═══════════════════════════════════════════════════════════ */
+
+.scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.05) 3px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+}
+
+.grid-drift {
+  background-image:
+    linear-gradient(rgba(255, 77, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 77, 0, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation: gridDrift 20s linear infinite;
+}
+@keyframes gridDrift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 56px 56px;
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.anim-blink {
+  animation: fqBlink 1s infinite;
+}
+@keyframes fqBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+.logo-in {
+  animation: logoIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes logoIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.logo-mark-anim {
+  animation:
+    logoMark 0.7s cubic-bezier(0.16, 1, 0.3, 1) both,
+    aura 2.5s 1s ease-in-out infinite;
+}
+@keyframes aura {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 0, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 77, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 0, 0);
+  }
+}
+@keyframes logoMark {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.word-in {
+  animation: wordIn 0.6s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.tagline-in {
+  animation: wordIn 0.6s 0.25s both;
+}
+@keyframes wordIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bar-wrap-in {
+  animation: barWrapIn 0.5s 0.3s both;
+}
+.log-wrap-in {
+  animation: barWrapIn 0.5s 0.4s both;
+}
+@keyframes barWrapIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 0.8s linear infinite;
+}
+@keyframes shimmer {
+  0% {
+    transform: translateX(-40px);
+  }
+  100% {
+    transform: translateX(40px);
+  }
+}
+
+.step-pulse {
+  animation: stepPulse 0.8s ease-in-out infinite;
+}
+@keyframes stepPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.log-line-anim {
+  animation: logLine 0.2s ease forwards;
+}
+@keyframes logLine {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.loader-exit {
+  animation: loaderExit 0.7s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+@keyframes loaderExit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
