@@ -43,6 +43,7 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
+        emailRedirectTo : "http://localhost:3000/auth/login",
         data: {
           // Data ini dibaca oleh trigger fn_handle_new_user di Supabase
           // untuk auto-create user_profiles + user_stats

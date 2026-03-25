@@ -12,13 +12,18 @@ import {Input} from "@/src/components/ui/Input";
 import {Button} from "@/src/components/ui/Button";
 import {useRouter} from "next/navigation";
 import {ToastContainer, useToast} from "@/src/components/ui/Toast";
-import { Zap } from "lucide-react";
+import {EyeClosedIcon, EyeIcon, Zap} from "lucide-react";
 
 export function LoginForm() {
   const router = useRouter();
   const {toasts, show: showToast, dismiss: dismissToast} = useToast();
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [inputType, setInputType] = useState<string>("password");
+
+  const handleChangeInputType = (type : string)=>{
+    setInputType(type)
+  }
 
   const {
     register,
@@ -86,7 +91,7 @@ export function LoginForm() {
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-9 h-9 bg-primary cc-sm flex items-center justify-center">
             <span className="font-display font-black text-white text-base leading-none">
-              <Zap fill="#fff"/>
+              <Zap fill="#fff" />
             </span>
           </div>
           <span className="font-display font-black text-xl tracking-wider uppercase">
@@ -134,7 +139,7 @@ export function LoginForm() {
           <div className="flex items-center gap-3 mb-10 lg:hidden">
             <div className="w-8 h-8 bg-primary cc-xs flex items-center justify-center">
               <span className="font-display font-black text-white text-sm">
-                <Zap fill="#fff"/>
+                <Zap fill="#fff" />
               </span>
             </div>
             <span className="font-display font-black text-lg tracking-wider uppercase">
@@ -186,8 +191,9 @@ export function LoginForm() {
                 </Link> */}
               </div>
               <Input
+                suffixNode={inputType === "password" ? <EyeIcon className="cursor-pointer hover:text-primary transition-colors" onClick={() => handleChangeInputType("text")} /> : <EyeClosedIcon className="cursor-pointer hover:text-primary transition-colors" onClick={() => handleChangeInputType("password")}/>}
                 {...register("password")}
-                type="password"
+                type={inputType}
                 placeholder="••••••••"
                 label="Password"
                 autoComplete="current-password"
