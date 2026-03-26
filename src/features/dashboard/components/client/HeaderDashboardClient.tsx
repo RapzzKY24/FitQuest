@@ -43,11 +43,11 @@ const HeaderDashboardClient = ({
                 ? `Streak kamu lagi panas 🔥 — jangan putus hari ini!`
                 : `Yuk mulai olahraga pertamamu hari ini! 💪`}
             </p>
-            <Button variant="primary" size="sm" className="w-full md:w-max">
-              <Link href={"/log"} className="w-full flex justify-center">
+            <Link href={"/log"}>
+              <Button variant="primary" size="sm" className="w-full md:w-max">
                 ⚡ LOG WORKOUT SEKARANG
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center justify-center md:justify-end gap-10 w-full md:w-auto mt-4 md:mt-0">
@@ -96,8 +96,7 @@ const PieDiagramSession = ({ sesiSelesai }: { sesiSelesai: number }) => {
             stroke="none"
             startAngle={90}
             endAngle={-270}
-            cornerRadius={40}
-          >
+            cornerRadius={40}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}

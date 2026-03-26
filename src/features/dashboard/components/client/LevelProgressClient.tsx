@@ -44,7 +44,7 @@ const LevelProgressClient = ({
 
           {/* LEVEL INFO */}
           <div className="flex items-end gap-4 mb-8">
-            <h1 className="text-broken-white font-black text-7xl italic leading-none tracking-tighter drop-shadow-md">
+            <h1 className="text-broken-white font-black text-7xl italic leading-none drop-shadow-md">
               {currentLevel}
             </h1>
             <div className="flex flex-col pb-1.5 gap-1.5">

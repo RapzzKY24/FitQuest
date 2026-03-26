@@ -73,7 +73,7 @@ export const formatMonthlyAndLogs = (
       id: log.id,
       emoji: wIcon,
       name: wName,
-      intensity: intensityMap[log.intensity] ?? "Sedang",
+      intensity: intensityMap[log.intensity] ?? "Belum Ada",
       duration: log.duration_min,
       xp: log.xp_earned,
       timestamp: new Intl.DateTimeFormat("en-EN", {
@@ -98,7 +98,7 @@ export const formatMonthlyAndLogs = (
     expEarned: stats?.monthly_xp ?? stats?.xp_total ?? 0,
     favSportName: topSport?.name ?? "Belum Ada",
     favSportEmoji: topSport?.icon ?? "🏃",
-    favIntensity: intensityMap[topIntensityKey] ?? "Sedang",
+    favIntensity: intensityMap[topIntensityKey] ?? "Belum Ada",
   };
 
   return { monthlyData, formattedLogs };

@@ -45,16 +45,16 @@ const ProfileCardSkeleton = () => (
                 <h2 className="uppercase text-muted text-[10px] sm:text-xxs font-bold tracking-[0.2em] sm:tracking-[0.3em]">
                     <Skeleton width={120} height={12} />
                 </h2>
-                <p className="text-xs sm:text-sm font-bold">
+                <span className="text-xs sm:text-sm font-bold">
                     <Skeleton width={88} height={14} />
-                </p>
+                </span>
               </div>
 
               <Skeleton height={8} className="w-full" />
 
-              <p className="uppercase text-[#555] text-[9px] sm:text-[10px] font-bold tracking-widest sm:tracking-[0.2em] text-left">
+              <span className="uppercase text-[#555] text-[9px] sm:text-[10px] font-bold tracking-widest sm:tracking-[0.2em] text-left">
                 <Skeleton width={176} height={12} />
-              </p>
+              </span>
             </div>
           </div>
         </div>
