@@ -42,7 +42,7 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
     }
 
     // Create new user
-    const { data: authData, error } = await supabase.auth.signUp({
+    const { data: authData } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
