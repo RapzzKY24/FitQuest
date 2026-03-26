@@ -5,14 +5,14 @@ import {
   registerSchema,
   onboardingSchema,
 } from "../schemas/auth.schemas";
-import {redirect} from "next/navigation";
-import type {AuthActionResult} from "../types/auth.types";
+import { redirect } from "next/navigation";
+import type { AuthActionResult } from "../types/auth.types";
 import type {
   LoginSchema,
   RegisterSchema,
   OnboardingSchema,
 } from "../schemas/auth.schemas";
-import {createClient} from "@/src/utils/supabase/server";
+import { createClient } from "@/src/utils/supabase/server";
 
 // ─────────────────────────────────────────────
 // SIGN UP
@@ -20,7 +20,7 @@ import {createClient} from "@/src/utils/supabase/server";
 export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
   const parsed = registerSchema.safeParse(data);
   if (!parsed.success) {
-    return {success: false, error: parsed.error.issues[0].message};
+    return { success: false, error: parsed.error.issues[0].message };
   }
 
   let isSuccess = false;
@@ -28,22 +28,25 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
     const supabase = await createClient();
 
     // Cek username sudah dipakai atau belum
-    const {data: existing} = await supabase
+    const { data: existing } = await supabase
       .from("user_profiles")
       .select("id")
       .eq("username", parsed.data.username)
       .single();
 
     if (existing) {
-      return {success: false, error: "Username sudah dipakai, coba yang lain"};
+      return {
+        success: false,
+        error: "Username sudah dipakai, coba yang lain",
+      };
     }
 
     // Create new user
-    const {error} = await supabase.auth.signUp({
+    const { data: authData, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo : "http://localhost:3000/auth/login",
+        emailRedirectTo: "http://localhost:3000/auth/login",
         data: {
           // Data ini dibaca oleh trigger fn_handle_new_user di Supabase
           // untuk auto-create user_profiles + user_stats
@@ -53,17 +56,15 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
       },
     });
 
-    // Tangkap dan Translate Error dari Supabase
-    if (error) {
-      // Kalau Supabase ngomel karena email udah ada
-      if (error.message.includes("already registered") || error.status === 422)
-        return {
-          success: false,
-          error: "Email ini sudah terdaftar!",
-        };
-
-      // Tangkap error lain (misal: password kurang dari 6 karakter, dll)
-      return {success: false, error: error.message};
+    if (
+      authData.user &&
+      authData.user.identities &&
+      authData.user.identities.length === 0
+    ) {
+      return {
+        success: false,
+        error: "Email ini sudah terdaftar,Silakan login.",
+      };
     }
 
     // Change isSuccess jika tidak ada error dari supabase
@@ -77,11 +78,11 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
   }
   // Return success true jika berhasil membuat user baru
   if (isSuccess) {
-    return {success: true};
+    return { success: true };
   }
 
   // Fallback (seharusnya tidak pernah sampai ke sini)
-  return {success: false, error: "Unknown error occurred"};
+  return { success: false, error: "Unknown error occurred" };
 }
 
 // ─────────────────────────────────────────────
@@ -90,13 +91,13 @@ export async function signUp(data: RegisterSchema): Promise<AuthActionResult> {
 export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
   const parsed = loginSchema.safeParse(data);
   if (!parsed.success) {
-    return {success: false, error: parsed.error.issues[0].message};
+    return { success: false, error: parsed.error.issues[0].message };
   }
 
   try {
     const supabase = await createClient();
 
-    const {data: authData, error: authError} =
+    const { data: authData, error: authError } =
       await supabase.auth.signInWithPassword({
         email: parsed.data.email,
         password: parsed.data.password,
@@ -110,11 +111,11 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
           error: "Email belum diverifikasi. Silakan cek email anda!",
         };
       }
-      return {success: false, error: "Email atau password salah!."};
+      return { success: false, error: "Email atau password salah!." };
     }
 
     // 2. Cek Status Onboarding di user_profiles
-    const {data: profile} = await supabase
+    const { data: profile } = await supabase
       .from("user_profiles")
       .select("height_cm, weight_kg")
       .eq("id", authData.user.id)
@@ -123,7 +124,9 @@ export async function signIn(data: LoginSchema): Promise<AuthActionResult> {
     // 3. Tentukan arah redirect-nya
     // Kalau tinggi atau berat badannya masih null, berarti belum onboarding
     const needsOnboarding = !profile?.height_cm || !profile?.weight_kg;
-    const redirectUrl = needsOnboarding ? "/auth/register/onboarding" : "/dashboard";
+    const redirectUrl = needsOnboarding
+      ? "/auth/register/onboarding"
+      : "/dashboard";
 
     return {
       success: true,
@@ -155,16 +158,16 @@ export async function saveOnboarding(
 ): Promise<AuthActionResult> {
   const parsed = onboardingSchema.safeParse(data);
   if (!parsed.success) {
-    return {success: false, error: "Data tidak valid"};
+    return { success: false, error: "Data tidak valid" };
   }
 
   const supabase = await createClient();
   const {
-    data: {user},
+    data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return {success: false, error: "Sesi tidak ditemukan"};
+  if (!user) return { success: false, error: "Sesi tidak ditemukan" };
 
-  const {error} = await supabase
+  const { error } = await supabase
     .from("user_profiles")
     .update({
       goal: parsed.data.goal as string,
@@ -175,10 +178,10 @@ export async function saveOnboarding(
     } as any)
     .eq("id", user.id);
 
-  if (error) return {success: false, error: error.message};
+  if (error) return { success: false, error: error.message };
 
   if (parsed.data.weightKg) {
-    const {error: weightError} = await supabase.from("weight_logs").insert({
+    const { error: weightError } = await supabase.from("weight_logs").insert({
       user_id: user.id,
       weight_kg: parsed.data.weightKg,
       // Kolom logged_at dan created_at gak perlu diisi manual
