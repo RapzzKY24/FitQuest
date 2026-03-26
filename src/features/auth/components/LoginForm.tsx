@@ -60,7 +60,7 @@ export function LoginForm() {
       // Biarkan tombol muter (loading), arahin sesuai hasil deteksi server
       setTimeout(() => {
         router.push(result.redirectTo as string);
-      }, 2000);
+      }, 1000);
     }
   }
 
