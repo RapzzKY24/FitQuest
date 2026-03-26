@@ -242,7 +242,7 @@ export function LoginForm() {
               href="/auth/register"
               className="text-primary font-semibold hover:text-secondary transition-colors"
             >
-              Daftar gratis
+              Daftar Sekarang
             </Link>
           </p>
         </div>

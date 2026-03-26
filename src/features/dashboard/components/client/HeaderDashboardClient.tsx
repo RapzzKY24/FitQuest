@@ -1,10 +1,10 @@
 "use client";
 
-import { Card, CardContent } from "@/src/components/ui/Card";
+import {Card, CardContent} from "@/src/components/ui/Card";
 import React from "react";
-import { Button } from "@/src/components/ui/Button";
+import {Button} from "@/src/components/ui/Button";
 import StreakBadgePill from "../../../profile/components/shared/StreakBadgePill";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import {Cell, Pie, PieChart, ResponsiveContainer} from "recharts";
 import Link from "next/link";
 
 interface Props {
@@ -13,11 +13,7 @@ interface Props {
   streak: number;
 }
 
-const HeaderDashboardClient = ({
-  displayName,
-  sessionsToday,
-  streak,
-}: Props) => {
+const HeaderDashboardClient = ({displayName, sessionsToday, streak}: Props) => {
   const todayFormatted = new Date().toLocaleDateString("id-ID", {
     weekday: "long",
     day: "numeric",
@@ -43,11 +39,11 @@ const HeaderDashboardClient = ({
                 ? `Streak kamu lagi panas 🔥 — jangan putus hari ini!`
                 : `Yuk mulai olahraga pertamamu hari ini! 💪`}
             </p>
-            <Button variant="primary" size="sm" className="w-full md:w-max">
-              <Link href={"/log"} className="w-full flex justify-center">
+            <Link href={"/log"}>
+              <Button variant="primary" size="sm" className="w-full md:w-max">
                 ⚡ LOG WORKOUT SEKARANG
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center justify-center md:justify-end gap-10 w-full md:w-auto mt-4 md:mt-0">
@@ -71,15 +67,15 @@ const HeaderDashboardClient = ({
   );
 };
 
-const PieDiagramSession = ({ sesiSelesai }: { sesiSelesai: number }) => {
+const PieDiagramSession = ({sesiSelesai}: {sesiSelesai: number}) => {
   const totalSesi = 3;
 
   const safeSelesai = sesiSelesai > totalSesi ? totalSesi : sesiSelesai;
   const safeSisa = totalSesi - safeSelesai;
 
   const data = [
-    { name: "Selesai", value: safeSelesai },
-    { name: "Sisa", value: safeSisa },
+    {name: "Selesai", value: safeSelesai},
+    {name: "Sisa", value: safeSisa},
   ];
 
   return (
@@ -96,8 +92,7 @@ const PieDiagramSession = ({ sesiSelesai }: { sesiSelesai: number }) => {
             stroke="none"
             startAngle={90}
             endAngle={-270}
-            cornerRadius={40}
-          >
+            cornerRadius={40}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}

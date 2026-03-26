@@ -42,7 +42,7 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
 
             <div className="flex flex-col gap-y-4 lg:gap-y-6 w-full text-center sm:text-left">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
-                <h1 className="font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tighter">
+                <h1 className="font-black text-2xl sm:text-3xl lg:text-4xl uppercase">
                   {user?.name}
                 </h1>
                 <BadgePill className="bg-[#1c1c1c] border border-[#272727] px-3 py-1 rounded-sm flex items-center gap-3 w-max">
