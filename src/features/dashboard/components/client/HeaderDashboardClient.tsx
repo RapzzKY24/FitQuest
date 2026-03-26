@@ -1,10 +1,10 @@
 "use client";
 
-import {Card, CardContent} from "@/src/components/ui/Card";
+import { Card, CardContent } from "@/src/components/ui/Card";
 import React from "react";
-import {Button} from "@/src/components/ui/Button";
+import { Button } from "@/src/components/ui/Button";
 import StreakBadgePill from "../../../profile/components/shared/StreakBadgePill";
-import {Cell, Pie, PieChart, ResponsiveContainer} from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import Link from "next/link";
 
 interface Props {
@@ -13,7 +13,11 @@ interface Props {
   streak: number;
 }
 
-const HeaderDashboardClient = ({displayName, sessionsToday, streak}: Props) => {
+const HeaderDashboardClient = ({
+  displayName,
+  sessionsToday,
+  streak,
+}: Props) => {
   const todayFormatted = new Date().toLocaleDateString("id-ID", {
     weekday: "long",
     day: "numeric",
@@ -67,15 +71,15 @@ const HeaderDashboardClient = ({displayName, sessionsToday, streak}: Props) => {
   );
 };
 
-const PieDiagramSession = ({sesiSelesai}: {sesiSelesai: number}) => {
+const PieDiagramSession = ({ sesiSelesai }: { sesiSelesai: number }) => {
   const totalSesi = 3;
 
   const safeSelesai = sesiSelesai > totalSesi ? totalSesi : sesiSelesai;
   const safeSisa = totalSesi - safeSelesai;
 
   const data = [
-    {name: "Selesai", value: safeSelesai},
-    {name: "Sisa", value: safeSisa},
+    { name: "Selesai", value: safeSelesai },
+    { name: "Sisa", value: safeSisa },
   ];
 
   return (

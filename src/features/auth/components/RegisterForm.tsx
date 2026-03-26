@@ -11,7 +11,7 @@ import { Input } from "@/src/components/ui/Input";
 import { Button } from "@/src/components/ui/Button";
 import { ToastContainer, useToast } from "@/src/components/ui/Toast";
 import { useRouter } from "next/navigation";
-import { EyeClosedIcon, EyeIcon, Zap } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Zap } from "lucide-react";
 
 function PasswordStrength({ password }: { password: string }) {
   const checks = [
@@ -189,7 +189,7 @@ export function RegisterForm() {
                     onClick={() => handleChangeInputType("text")}
                   />
                 ) : (
-                  <EyeClosedIcon
+                  <EyeOffIcon
                     className="cursor-pointer hover:text-primary transition-colors"
                     onClick={() => handleChangeInputType("password")}
                   />
@@ -215,7 +215,7 @@ export function RegisterForm() {
                     onClick={() => handleChangeInputType("text")}
                   />
                 ) : (
-                  <EyeClosedIcon
+                  <EyeOffIcon
                     className="cursor-pointer hover:text-primary transition-colors"
                     onClick={() => handleChangeInputType("password")}
                   />
