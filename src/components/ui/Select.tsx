@@ -29,21 +29,31 @@ export function Select({
   required,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
-  // 2. STATE UNTUK POSISI
   const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
   const ref = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value);
 
+  // 🔥 JURUS FIX: Logic Mousedown Anti-Ghosting
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
+      const target = e.target as HTMLElement;
+
+      // 1. Cek apakah kliknya di dalem ref tombol utama
+      const isInsideRef = ref.current?.contains(target);
+
+      // 2. Cek apakah kliknya di dalem Portal Menu (ngeliat class-nya)
+      const isInsideMenu = target.closest(".select-portal-menu");
+
+      // Kalau kliknya di LUAR kedua elemen itu, baru ditutup!
+      if (!isInsideRef && !isInsideMenu) {
         setOpen(false);
+      }
     };
+
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // 3. FUNGSI UNTUK MENGITUNG POSISI SEBELUM BUKA
   const handleToggle = () => {
     if (ref.current && !open) {
       const rect = ref.current.getBoundingClientRect();
@@ -87,7 +97,7 @@ export function Select({
       )}
 
       <div
-        onClick={handleToggle} // PAKAI handleToggle
+        onClick={handleToggle}
         style={{
           display: "flex",
           alignItems: "center",
@@ -136,13 +146,13 @@ export function Select({
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="anim-fade-up"
+            className="anim-fade-up select-portal-menu" // ⚡ INI CLASS PENYELAMATNYA
             style={{
               position: "absolute",
-              top: coords.top + 6, // Pakai koordinat top
-              left: coords.left, // Pakai koordinat left
-              width: coords.width, // Pakai lebar yang sama
-              zIndex: 9999, // Super tinggi biar nembus Card
+              top: coords.top + 6,
+              left: coords.left,
+              width: coords.width,
+              zIndex: 9999,
               background: C.surface,
               border: `1px solid ${C.primary}`,
               clipPath:
@@ -150,13 +160,15 @@ export function Select({
               overflow: "hidden",
               maxHeight: 220,
               overflowY: "auto",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.5)", // Tambahin shadow biar melayang
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
             }}
           >
             {options.map((opt, i) => (
               <div
                 key={opt.value}
-                onClick={() => {
+                onMouseDown={(e) => {
+                  // ✅ GANTI JADI INI
+                  e.preventDefault(); // ⚡ JURUS TAMBAHAN BIAR FOKUS GAK PINDAH
                   onChange(opt.value);
                   setOpen(false);
                 }}

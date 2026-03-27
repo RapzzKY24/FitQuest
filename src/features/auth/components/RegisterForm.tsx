@@ -104,7 +104,7 @@ export function RegisterForm() {
     }
     setTimeout(() => {
       router.push("/auth/login");
-    }, 2000);
+    }, 800);
   }
 
   return (
