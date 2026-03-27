@@ -12,6 +12,9 @@ interface Quest {
   xp_reward: number;
   target_type: string;
   target_value: number;
+  current_progress?: number;
+  is_completed?: boolean;
+  is_claimed?: boolean;
 }
 
 interface ExpBreakdownProps {
@@ -57,16 +60,20 @@ const ExpBreakdown = ({ todaySessions, activeQuests }: ExpBreakdownProps) => {
 
           <div className="flex flex-col gap-y-2">
             {activeQuests.map((quest) => {
-              const isCompleted = todaySessions >= quest.target_value;
+              // ⚡ Tiga State Utama Kita:
+              const progress = quest.current_progress || 0;
+              const isCompleted = quest.is_completed || progress >= quest.target_value;
+              const isClaimed = quest.is_claimed || false;
+
+              // Tentukan gaya styling background berdasarkan state
+              let bgStyle = "bg-white/2 border-white/5 opacity-60"; // Default (Progress)
+              if (isClaimed) bgStyle = "bg-success/5 border-success/20 opacity-50"; // Claimed (Biar keliatan redup dikit)
+              else if (isCompleted) bgStyle = "bg-primary/5 border-primary/20"; // Completed (Mentereng warna orange/primary)
 
               return (
                 <div
                   key={quest.id}
-                  className={`flex items-center justify-between p-3 border transition-all ${
-                    isCompleted
-                      ? "bg-primary/5 border-primary/20"
-                      : "bg-white/2 border-white/5 opacity-60"
-                  }`}
+                  className={`flex items-center justify-between p-3 border transition-all ${bgStyle}`}
                   style={{
                     clipPath:
                       "polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)",
@@ -84,11 +91,14 @@ const ExpBreakdown = ({ todaySessions, activeQuests }: ExpBreakdownProps) => {
                     </div>
                   </div>
 
-                  {isCompleted ? (
+                  {/* ⚡ Render Badge Berdasarkan State */}
+                  {isClaimed ? (
                     <BadgePill color="success">CLAIMED</BadgePill>
+                  ) : isCompleted ? (
+                    <BadgePill color="primary">COMPLETED</BadgePill>
                   ) : (
                     <span className="text-[8px] font-bold text-white/20 uppercase tracking-tighter">
-                      {todaySessions}/{quest.target_value}
+                      {progress}/{quest.target_value} {quest.target_type === "minutes" ? "m" : ""}
                     </span>
                   )}
                 </div>

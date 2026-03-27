@@ -26,19 +26,43 @@ const LogWorkoutPages = async () => {
 
   const startOfTodayUTC = `${todayStrId}T00:00:00Z`;
 
+  // 1. Tarik Sesi Hari Ini (Cuma buat bar progress 3 sesi di UI atas)
   const { count: sessionCount } = await supabase
     .from("workout_logs")
     .select("*", { count: "exact", head: true })
     .eq("user_id", user?.id)
     .gte("logged_at", startOfTodayUTC);
 
+  const isLimitReached = (sessionCount ?? 0) >= 3;
+
+  // 2. Tarik Master Quest Aktif (Daily)
   const { data: activeQuests } = await supabase
     .from("quests")
     .select("*")
     .eq("is_active", true)
-    .limit(3); // Ambil 3 aja buat daily
+    .eq("quest_type", "daily")
+    .limit(3);
 
-  const isLimitReached = (sessionCount ?? 0) >= 3;
+  const questIds = activeQuests?.map((q) => q.id) || [];
+
+  // 3. Tarik Jejak Progress dari tabel user_quests
+  const { data: userQuestData } = await supabase
+    .from("user_quests")
+    .select("quest_id, progress, is_completed, is_claimed")
+    .eq("user_id", user?.id)
+    .in("quest_id", questIds)
+    .eq("period_start", todayStrId); // Cocokin sama tanggal hari ini
+
+  // 4. Gabungin Data Quest & Progress-nya
+  const questsWithProgress = (activeQuests || []).map((quest) => {
+    const uq = userQuestData?.find((u) => u.quest_id === quest.id);
+    return {
+      ...quest,
+      current_progress: uq?.progress || 0,
+      is_completed: uq?.is_completed || false,
+      is_claimed: uq?.is_claimed || false,
+    };
+  });
 
   return (
     <main className="w-full">
@@ -52,8 +76,6 @@ const LogWorkoutPages = async () => {
             Log <span className="text-primary">Workout</span>
           </h1>
         </div>
-        {/* HOLD stepper */}
-        {/* <StepperLog /> */}
 
         {/* grid section log */}
         <div className="flex flex-col-reverse lg:flex-row gap-6 w-full">
@@ -66,7 +88,7 @@ const LogWorkoutPages = async () => {
           <div className="flex-2">
             <ExpBreakdown
               todaySessions={sessionCount || 0}
-              activeQuests={activeQuests || []}
+              activeQuests={questsWithProgress} // Oper data yang udah ada flag completed & claimed
             />
           </div>
         </div>
