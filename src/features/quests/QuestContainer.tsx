@@ -35,7 +35,8 @@ export default async function QuestsContainer() {
     )
     .eq("user_id", user.id)
     .lte("period_start", today) // ⚡ period_start HARUS hari ini atau sebelumnya (Senin)
-    .gte("period_end", today); // ⚡ period_end HARUS hari ini atau setelahnya (Minggu)
+    .gte("period_end", today) // ⚡ period_end HARUS hari ini atau setelahnya (Minggu)
+    .order("is_claimed", { ascending: true });
 
   if (questError) {
     console.error("Gagal narik quest:", questError.message);
